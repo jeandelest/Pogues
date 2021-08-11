@@ -9,7 +9,11 @@ import { WIDGET_QUESTIONNAIRE_NEW_EDIT } from 'constants/dom-constants';
 import ListCheckboxes from 'forms/controls/list-checkboxes';
 import GenericOption from 'forms/controls/generic-option';
 import ListRadios from 'forms/controls/list-radios';
-import { TargetMode, QUESTIONNAIRE_TYPE } from 'constants/pogues-constants';
+import {
+  TargetMode,
+  QUESTIONNAIRE_TYPE,
+  QUESTIONNAIRE_CONTEXT,
+} from 'constants/pogues-constants';
 
 import { updateNameField } from 'utils/utils';
 
@@ -17,6 +21,8 @@ const { COMPONENT_CLASS, FOOTER, CANCEL, VALIDATE } =
   WIDGET_QUESTIONNAIRE_NEW_EDIT;
 
 const { Filtres, Redirections } = QUESTIONNAIRE_TYPE;
+const { household, business } = QUESTIONNAIRE_CONTEXT;
+
 // Componet
 
 function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
@@ -59,6 +65,19 @@ function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
           </GenericOption>
           <GenericOption key={Filtres} value={Filtres}>
             {Dictionary.QFilter}
+          </GenericOption>
+        </Field>
+        <Field
+          name="contextQuestionnaire"
+          component={ListRadios}
+          label={Dictionary.contextQuestionnaire}
+          inline
+        >
+          <GenericOption key={household} value={household}>
+            {Dictionary.household}
+          </GenericOption>
+          <GenericOption key={business} value={business}>
+            {Dictionary.business}
           </GenericOption>
         </Field>
         <div className={FOOTER}>

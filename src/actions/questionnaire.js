@@ -66,7 +66,7 @@ export const loadQuestionnaireFailure = (id, err) => ({
 });
 
 /**
- * Load questionnaire failure
+ * Load questionnaire start
  *
  *  * It's executed before the remote fetch of a questionnaire.
  *

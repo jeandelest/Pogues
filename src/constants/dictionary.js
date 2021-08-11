@@ -434,6 +434,16 @@ const dictionary = {
     en: 'Filter',
   },
 
+  household: {
+    fr: 'Ménage',
+    en: 'Household',
+  },
+
+  business: {
+    fr: 'Entreprise',
+    en: 'Business',
+  },
+
   specify: {
     en: 'Specify',
     fr: 'Préciser',
@@ -1092,6 +1102,10 @@ const dictionary = {
   dynamiqueSpecified: {
     fr: 'Dynamique spécifiée en',
     en: 'Dynamics specified in',
+  },
+  contextQuestionnaire: {
+    fr: 'Contexte',
+    en: 'Context',
   },
   lastUpdate: {
     fr: 'Dernière mise à jour',

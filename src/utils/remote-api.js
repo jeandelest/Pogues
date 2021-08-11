@@ -189,6 +189,46 @@ export const getQuestionnaire = async (id, token) => {
 };
 
 /**
+ * Create new eno parameters entry in database
+ */
+export const postEnoParameters = async (params, token) => {
+  const b = await getBaseURI();
+  return fetch(`${b}/${pathQuestionnaire}/params`, {
+    method: 'POST',
+    headers: getHeaders({ 'Content-Type': 'application/json' }, token),
+    body: JSON.stringify(params),
+  }).then(res => {
+    if (res.ok) return res;
+    throw new Error(`Network request failed :${res.statusText}`);
+  });
+};
+
+/**
+ * Update eno parameters in database
+ */
+export const putEnoParameters = async (params, token) => {
+  const b = await getBaseURI();
+  return fetch(`${b}/${pathQuestionnaire}/${params.idQuestionnaire}/params`, {
+    method: 'PUT',
+    headers: getHeaders({ 'Content-Type': 'application/json' }, token),
+    body: JSON.stringify(params),
+  }).then(res => {
+    if (res.ok) return res;
+    throw new Error(`Network request failed :${res.statusText}`);
+  });
+};
+
+/**
+ * Retrieve Eno parameters for the questionnaire with its id
+ */
+export const getEnoParameters = async (id, token) => {
+  const b = await getBaseURI();
+  return fetch(`${b}/${pathQuestionnaire}/${id}/params`, {
+    headers: getHeaders({ Accept: 'application/json' }, token),
+  }).then(res => res.json());
+};
+
+/**
  * Will send a DELETE request in order to remove an existing questionnaire
  *
  * @param {deleteQuestionnaire} id The id of the questionnaire we want to delete
@@ -201,6 +241,9 @@ export const deleteQuestionnaire = async (id, token) => {
   });
 };
 
+/**
+ * Retrieve initialization parameters from back end
+ */
 export const getInit = async () => {
   const b = await getBaseURI();
   return fetch(`${b}/${pathInit}`, {

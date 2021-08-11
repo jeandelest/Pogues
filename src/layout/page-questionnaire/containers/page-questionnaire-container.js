@@ -5,6 +5,7 @@ import PageQuestionnaire from '../components/page-questionnaire';
 
 import { COMPONENT_TYPE } from 'constants/pogues-constants';
 import { loadQuestionnaire } from 'actions/questionnaire';
+import { loadEnoParameters } from 'actions/enoParameters';
 import { loadCampaignsIfNeeded } from 'actions/metadata';
 import {
   setActiveQuestionnaire,
@@ -81,6 +82,7 @@ const mapStateToProps = (
 const mapDispatchToProps = {
   loadCampaignsIfNeeded,
   loadStatisticalContext,
+  loadEnoParameters,
   setActiveQuestionnaire,
   setActiveComponents,
   setActiveCodeLists,

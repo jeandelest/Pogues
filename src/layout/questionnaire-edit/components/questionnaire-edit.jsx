@@ -41,10 +41,10 @@ function validateAndSubmit(
   activeExternalVariablesById,
   activeCollectedVariablesById,
   activeCodeListsById,
+  updateEnoParameters,
 ) {
   return function (values) {
     validate(values);
-
     const updatedQuestionnaire = transformer.formToState(values);
     const updatedComponentsStore = ComponentFactory(
       {
@@ -59,6 +59,11 @@ function validateAndSubmit(
 
     // Updating the questionnaire store.
     updateQuestionnaire(updatedQuestionnaire);
+
+    // Updating the eno parameters
+    updateEnoParameters({
+      context: values.contextQuestionnaire,
+    });
 
     // Updating the questionnaire component.
     updateComponent(
@@ -88,14 +93,14 @@ function QuestionnaireNew({
   activeExternalVariablesById,
   activeCollectedVariablesById,
   activeCodeListsById,
+  enoParameters,
+  updateEnoParameters,
 }) {
   const validate = setErrorsAction => values =>
     validateQuestionnaireForm(values, setErrorsAction);
   // Initial values
-
   const questionnaireTransformer = Questionnaire(questionnaire);
-  const initialValues = questionnaireTransformer.stateToForm();
-
+  const initialValues = questionnaireTransformer.stateToForm(enoParameters);
   // Validation and submit
 
   return (
@@ -113,6 +118,7 @@ function QuestionnaireNew({
         activeExternalVariablesById,
         activeCollectedVariablesById,
         activeCodeListsById,
+        updateEnoParameters,
       )}
     />
   );

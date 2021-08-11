@@ -56,6 +56,7 @@ const PageQuestionnaire = props => {
     activeQuestionnaire,
     loading,
     loadQuestionnaire,
+    loadEnoParameters,
     setActiveQuestionnaire,
     loadStatisticalContext,
     setActiveComponents,
@@ -86,6 +87,7 @@ const PageQuestionnaire = props => {
       setActiveQuestionnaire(questionnaire);
       loadStatisticalContext(idCampaign, token);
       setQuestionnaireState(questionnaire);
+      loadEnoParameters(id, token);
     }
     if (
       components &&
@@ -136,6 +138,7 @@ const PageQuestionnaire = props => {
     codeListsState,
     id,
     loadQuestionnaire,
+    loadEnoParameters,
     loadStatisticalContext,
     setActiveCodeLists,
     setActiveComponents,

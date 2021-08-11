@@ -13,6 +13,7 @@ export const defaultState = {
   agency: '',
   TargetMode: [],
   dynamiqueSpecified: 'Redirections',
+  contextQuestionnaire: 'default',
   ComponentGroup: [],
 };
 
@@ -38,7 +39,7 @@ export function formToState(form) {
   };
 }
 
-export function stateToForm(currentState) {
+export function stateToForm(currentState, enoParameters) {
   const {
     label,
     name,
@@ -58,6 +59,7 @@ export function stateToForm(currentState) {
     campaigns: campaigns.join(),
     TargetMode: TargetMode.join(),
     dynamiqueSpecified,
+    contextQuestionnaire: enoParameters.context,
   };
 }
 
@@ -75,8 +77,8 @@ const Factory = (initialState = {}) => {
       };
       return currentState;
     },
-    stateToForm: () => {
-      return stateToForm(currentState);
+    stateToForm: (enoParameters = 'default') => {
+      return stateToForm(currentState, enoParameters);
     },
   };
 };

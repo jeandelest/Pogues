@@ -255,3 +255,8 @@ export const QUESTIONNAIRE_TYPE = {
   Filtres: 'Filtres',
   Redirections: 'Redirections',
 };
+
+export const QUESTIONNAIRE_CONTEXT = {
+  household: 'household',
+  business: 'business',
+};

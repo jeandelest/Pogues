@@ -14,6 +14,7 @@ import searchResultById from 'reducers/search-result-by-id';
 import metadataByType from 'reducers/metadata-by-type';
 import errors from 'reducers/errors/errors';
 import general from 'reducers/general';
+import enoParameters from 'reducers/enoParameters';
 
 import integrityChecker from 'utils/integrity/integrity-checker';
 import checkers from 'utils/integrity/checkers';
@@ -35,6 +36,7 @@ export default integrityChecker(
     metadataByType,
     errors,
     general,
+    enoParameters,
   }),
   checkers,
 );

@@ -14,14 +14,28 @@ export const propTypes = {
   onSuccess: PropTypes.func.isRequired,
   stamp: PropTypes.string.isRequired,
   createQuestionnaire: PropTypes.func.isRequired,
+  createEnoParameters: PropTypes.func.isRequired,
   setErrors: PropTypes.func.isRequired,
 };
 
 // Utils
 
-function validateAndSubmit(action, validate, transformer, onSuccess, token) {
+function validateAndSubmit(
+  action,
+  validate,
+  transformer,
+  onSuccess,
+  token,
+  createParams,
+) {
   return function (values) {
     validate(values);
+
+    const params = {
+      idQuestionnaire: transformer.formToState(values).id,
+      context: values.contextQuestionnaire,
+    };
+    createParams(params, token);
 
     return action(transformer.formToState(values), token).then(result => {
       const {
@@ -41,6 +55,7 @@ function QuestionnaireNew({
   token,
   createQuestionnaire,
   setErrors,
+  createEnoParameters,
 }) {
   const validate = setErrorsAction => values =>
     validateQuestionnaireForm(values, setErrorsAction);
@@ -63,6 +78,7 @@ function QuestionnaireNew({
         questionnaireTransformer,
         onSuccess,
         token,
+        createEnoParameters,
       )}
     />
   );

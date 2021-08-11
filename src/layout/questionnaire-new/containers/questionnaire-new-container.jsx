@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { createQuestionnaire } from 'actions/questionnaire';
+import { createEnoParameters } from 'actions/enoParameters';
 import { setValidationErrors } from 'actions/errors';
 import QuestionnaireNew from '../components/questionnaire-new';
 import { getToken, getUser } from 'reducers/selectors';
@@ -25,6 +26,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   createQuestionnaire,
+  createEnoParameters,
   setErrors: setValidationErrors,
 };
 

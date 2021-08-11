@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { updateActiveQuestionnaire } from 'actions/app-state';
 import { updateComponent } from 'actions/component';
+import { updateEnoParameters } from 'actions/enoParameters';
 import QuestionnaireEdit from '../components/questionnaire-edit';
 
 // PropTypes and defaultProps
@@ -22,12 +23,14 @@ const mapStateToProps = state => {
     activeExternalVariablesById: state.appState.activeExternalVariablesById,
     activeCollectedVariablesById: state.appState.activeCollectedVariablesById,
     activeCodeListsById: state.appState.activeCodeListsById,
+    enoParameters: state.enoParameters,
   };
 };
 
 const mapDispatchToProps = {
   updateActiveQuestionnaire,
   updateComponent,
+  updateEnoParameters,
 };
 
 const QuestionnaireEditContainer = connect(
