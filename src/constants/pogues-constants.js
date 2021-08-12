@@ -9,6 +9,8 @@ export const COMPONENT_TYPE = {
   REDIRECTION: 'REDIRECTION',
   // used as a placeholder to place the generic input within the questionnaire
   GENERIC_INPUT: 'GENERIC_INPUT',
+  XPATH: 'XPATH',
+  VTL: 'VTL',
 };
 
 export const DATEFORMAT = [
@@ -254,4 +256,9 @@ export const QUESTION_END_CHILD = {
 export const QUESTIONNAIRE_TYPE = {
   Filtres: 'Filtres',
   Redirections: 'Redirections',
+};
+
+export const FORMULA_LANGUAGE = {
+  Xpath: 'Xpath',
+  Vtl: 'Vtl',
 };

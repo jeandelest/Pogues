@@ -9,7 +9,11 @@ import { WIDGET_QUESTIONNAIRE_NEW_EDIT } from 'constants/dom-constants';
 import ListCheckboxes from 'forms/controls/list-checkboxes';
 import GenericOption from 'forms/controls/generic-option';
 import ListRadios from 'forms/controls/list-radios';
-import { TargetMode, QUESTIONNAIRE_TYPE } from 'constants/pogues-constants';
+import {
+  TargetMode,
+  QUESTIONNAIRE_TYPE,
+  FORMULA_LANGUAGE,
+} from 'constants/pogues-constants';
 
 import { updateNameField } from 'utils/utils';
 
@@ -17,6 +21,7 @@ const { COMPONENT_CLASS, FOOTER, CANCEL, VALIDATE } =
   WIDGET_QUESTIONNAIRE_NEW_EDIT;
 
 const { Filtres, Redirections } = QUESTIONNAIRE_TYPE;
+const { Xpath, Vtl } = FORMULA_LANGUAGE;
 // Componet
 
 function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
@@ -59,6 +64,19 @@ function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
           </GenericOption>
           <GenericOption key={Filtres} value={Filtres}>
             {Dictionary.QFilter}
+          </GenericOption>
+        </Field>
+        <Field
+          name="formulaSpecified"
+          component={ListRadios}
+          label={Dictionary.formulaSpecified}
+          inline
+        >
+          <GenericOption key={Xpath} value={Xpath}>
+            {Dictionary.formulaXpath}
+          </GenericOption>
+          <GenericOption key={Vtl} value={Vtl}>
+            {Dictionary.formulaVtl}
           </GenericOption>
         </Field>
         <div className={FOOTER}>
