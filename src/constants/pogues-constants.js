@@ -259,6 +259,6 @@ export const QUESTIONNAIRE_TYPE = {
 };
 
 export const FORMULA_LANGUAGE = {
-  Xpath: 'Xpath',
-  Vtl: 'Vtl',
+  XPATH: 'XPATH',
+  VTL: 'VTL',
 };

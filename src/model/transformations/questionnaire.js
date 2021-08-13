@@ -20,10 +20,9 @@ import {
   FORMULA_LANGUAGE,
 } from 'constants/pogues-constants';
 
-const { QUESTIONNAIRE, SEQUENCE, FILTER, REDIRECTION, XPATH, VTL } =
-  COMPONENT_TYPE;
+const { QUESTIONNAIRE, SEQUENCE, FILTER, REDIRECTION } = COMPONENT_TYPE;
 const { Filtres, Redirections } = QUESTIONNAIRE_TYPE;
-const { Xpath, Vtl } = FORMULA_LANGUAGE;
+const { XPATH, VTL } = FORMULA_LANGUAGE;
 
 function generateComponentGroups(componentsStore, ComponentGroup) {
   const orderedComponents = getOrderedComponents(
@@ -99,7 +98,7 @@ export function remoteToState(remote, currentStores = {}) {
     dynamiqueSpecified:
       flowLogic && flowLogic === FILTER ? Filtres : Redirections,
     formulaSpecified:
-      formulasLanguage && formulasLanguage === VTL ? Vtl : Xpath,
+      formulasLanguage && formulasLanguage === VTL ? VTL : XPATH,
     ComponentGroup,
   };
 }
@@ -128,7 +127,7 @@ export function remoteToState1(remote) {
     dynamiqueSpecified:
       flowLogic && flowLogic === FILTER ? Filtres : Redirections,
     formulaSpecified:
-      formulasLanguage && formulasLanguage === VTL ? Vtl : Xpath,
+      formulasLanguage && formulasLanguage === VTL ? VTL : XPATH,
   };
 }
 
@@ -211,7 +210,7 @@ export function stateToRemote(state, stores) {
     agency: agency || 'fr.insee',
     TargetMode,
     flowLogic: dynamiqueSpecified === Redirections ? REDIRECTION : FILTER,
-    formulasLanguage: formulaSpecified === Vtl ? VTL : XPATH,
+    formulasLanguage: formulaSpecified === VTL ? VTL : XPATH,
   };
   const componentsRemote = Component.storeToRemote(
     componentsStore,

@@ -21,7 +21,7 @@ const { COMPONENT_CLASS, FOOTER, CANCEL, VALIDATE } =
   WIDGET_QUESTIONNAIRE_NEW_EDIT;
 
 const { Filtres, Redirections } = QUESTIONNAIRE_TYPE;
-const { Xpath, Vtl } = FORMULA_LANGUAGE;
+const { XPATH, VTL } = FORMULA_LANGUAGE;
 // Componet
 
 function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
@@ -72,10 +72,10 @@ function QuestionnaireNewEdit({ handleSubmit, submitting, form, onCancel }) {
           label={Dictionary.formulaSpecified}
           inline
         >
-          <GenericOption key={Xpath} value={Xpath}>
+          <GenericOption key={XPATH} value={XPATH}>
             {Dictionary.formulaXpath}
           </GenericOption>
-          <GenericOption key={Vtl} value={Vtl}>
+          <GenericOption key={VTL} value={VTL}>
             {Dictionary.formulaVtl}
           </GenericOption>
         </Field>
