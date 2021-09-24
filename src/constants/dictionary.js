@@ -1557,6 +1557,10 @@ const dictionary = {
     fr: '". Confirmez-vous votre demande ?',
     en: '". Are you sure ?',
   },
+  wipBannerComingSoon: {
+    fr: 'Ce composant de recherche sera disponible prochainement',
+    en: 'This search component will be available soon',
+  },
 };
 
 // Dynamic translations

@@ -200,3 +200,7 @@ export const ERRORS_INTEGRITY = {
 export const APP = {
   COMPONENT_ID: 'app',
 };
+
+export const WIDGET_WIP_BANNER = {
+  COMPONENT_CLASS: 'widget-wip-banner',
+};

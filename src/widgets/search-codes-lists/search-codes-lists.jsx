@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { StatisticalContextCriteria } from 'widgets/statistical-context-criteria';
 import { InputFilterWithCriteria } from 'widgets/input-filter-with-criteria';
 import { SearchResults } from 'widgets/search-results';
+import { WipBanner } from 'widgets/banner';
 import { WIDGET_SEARCH_CODES_LISTS } from 'constants/dom-constants';
 import {
   DEFAULT_FORM_NAME,
@@ -15,6 +16,7 @@ import Dictionary from 'utils/dictionary/dictionary';
 
 // @TODO: noop is used temporally
 import { noop } from 'utils/test/test-utils';
+import { getEnvVar } from 'utils/env';
 
 const { COMPONENT_CLASS, SEARCH_RESULTS_CLASS, SEARCH_CLASS } =
   WIDGET_SEARCH_CODES_LISTS;
@@ -61,8 +63,13 @@ function SearchCodesLists({ path }) {
       },
     ],
   };
+  const showSearch = getEnvVar('SHOw_SEARCH') === 'true';
   return (
     <div className={COMPONENT_CLASS}>
+      <WipBanner
+        bannerMessage={Dictionary.wipBannerComingSoon}
+        showBanner={!showSearch}
+      />
       <div className={SEARCH_CLASS}>
         <StatisticalContextCriteria {...propsStatisticaContextCriteria} />
         <InputFilterWithCriteria {...propsInputFilterWithCriteria} />
