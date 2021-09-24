@@ -1620,6 +1620,10 @@ const dictionary = {
     fr: 'Ouvrir',
     en: 'Open',
   },
+  wipBannerComingSoon: {
+    fr: 'Ce composant de recherche sera disponible prochainement',
+    en: 'This search component will be available soon',
+  },
 };
 
 // Dynamic translations
