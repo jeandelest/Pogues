@@ -1437,8 +1437,8 @@ const dictionary = {
     fr: 'Titre du questionnaire',
   },
   searchInputCodesListsLabel: {
-    en: 'Code list label',
-    fr: 'Libellé de la liste de code',
+    en: 'Code list label or description',
+    fr: 'Libellé ou description de la liste de code',
   },
   searchInputButton: {
     en: 'Search',
@@ -1468,6 +1468,10 @@ const dictionary = {
   searchResultTitle: {
     fr: 'Titre',
     en: 'Title',
+  },
+  searchResultDescription: {
+    fr: 'Description',
+    en: 'Description',
   },
   searchResultLabel: {
     fr: 'Libellé',

@@ -179,11 +179,11 @@ export const SEARCH_RESULTS_COLUMNS = {
     },
     {
       dictionary: 'searchResultLabel',
-      key: 'title',
+      key: 'label',
     },
     {
       dictionary: 'searchResultSerie',
-      key: 'subgroupId',
+      key: 'subGroupLabels',
     },
   ],
 };
