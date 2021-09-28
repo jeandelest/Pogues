@@ -1,4 +1,7 @@
 .widget-search-codes-lists {
+  em {
+    background: yellow;
+  }
   .widget-search-codes-lists__results {
     .widget-search-results__column:nth-child(1) {
       width: 6%;
