@@ -303,3 +303,17 @@ export const getSearchResults = async (
     }),
   }).then(res => res.json());
 };
+
+export const searchCodesLists = async (search, token) => {
+  const b = await getBaseURI();
+  return fetch(`${b}/${pathSearch}/items/${search}`, {
+    headers: getHeaders({ 'Content-Type': 'application/json' }, token),
+  }).then(res => res.json());
+};
+
+export const getCodesListById = async (id, token) => {
+  const b = await getBaseURI();
+  return fetch(`${b}/${pathMetadata}/code-list/${id}`, {
+    headers: getHeaders({ 'Content-Type': 'application/json' }, token),
+  }).then(res => res.json());
+};
