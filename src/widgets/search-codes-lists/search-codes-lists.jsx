@@ -31,11 +31,10 @@ function SearchCodesLists(props) {
   const [codesLists, setCodesLists] = useState([]);
   const [selectedCodesList, setSelectedCodesList] = useState(null);
   const [currentAction, setCurrentAction] = useState(null);
-  const [codesListDetail, setCodesListDetail] = useState(null);
 
   const { token, path, storeCodesLists } = props;
+
   useEffect(() => {
-    // TODO LOIC changer quand le back fera le proxy
     if (currentAction === SEARCH) {
       searchCodesLists(searchValue, token)
         .then(response => {
@@ -43,20 +42,20 @@ function SearchCodesLists(props) {
         })
         .finally(() => setCurrentAction(null));
     }
-    return () => console.log('useEffect');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAction]);
 
   useEffect(() => {
     if (currentAction === FETCH_DETAIL) {
       getCodesListById(selectedCodesList.id, token)
         .then(response => {
-          setCodesListDetail(response);
           storeCodesLists(response);
         })
         .finally(() => setCurrentAction(null));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentAction]);
-  console.log('codesListDetail', codesListDetail);
+
   const propsStatisticaContextCriteria = {
     formName: DEFAULT_FORM_NAME,
     path,
@@ -64,6 +63,7 @@ function SearchCodesLists(props) {
     showCampaigns: false,
     horizontal: true,
   };
+
   const propsSearchResults = {
     className: SEARCH_RESULTS_CLASS,
     noValuesMessage: Dictionary.codesListsNoResults,
@@ -83,11 +83,9 @@ function SearchCodesLists(props) {
         action: values => {
           setCurrentAction(FETCH_DETAIL);
           setSelectedCodesList(values);
-          console.log('values', values);
         },
         iconOnly: true,
         icon: codeList => {
-          console.log('codeList', codeList);
           return currentAction === FETCH_DETAIL &&
             codeList.id === selectedCodesList.id
             ? 'loader'
@@ -97,7 +95,6 @@ function SearchCodesLists(props) {
     ],
     values: codesLists,
   };
-  console.log('currentAction', currentAction);
 
   return (
     <div className={COMPONENT_CLASS}>
@@ -187,8 +184,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  console.log('path', ownProps.path);
-
   return {
     storeCodesLists(codesList) {
       const codes = codesList.Code.map(({ Label, Value }, index) => {
