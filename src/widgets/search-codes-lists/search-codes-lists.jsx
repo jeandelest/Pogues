@@ -98,6 +98,7 @@ function SearchCodesLists(props) {
     values: codesLists,
   };
   console.log('currentAction', currentAction);
+
   return (
     <div className={COMPONENT_CLASS}>
       <div className={SEARCH_CLASS}>
@@ -122,6 +123,7 @@ function SearchCodesLists(props) {
             type="button"
             className={WIDGET_INPUT_FILTER_WITH_CRITERIA.BUTTON_SEARCH_CLASS}
             onClick={() => setCurrentAction(SEARCH)}
+            disabled={!searchValue}
           >
             {Dictionary.searchInputButton}
           </button>
@@ -134,20 +136,39 @@ function SearchCodesLists(props) {
         ariaHideApp={false}
         shouldCloseOnOverlayClick={false}
       >
-        <div>{selectedCodesList?.description}</div>
-        <ul>
-          {selectedCodesList?.modalities.map((modality, index) => (
-            <li key={index}>{modality}</li>
-          ))}
-        </ul>
-        <button
-          onClick={() => {
-            setCurrentAction(null);
-            setSelectedCodesList(null);
-          }}
-        >
-          close
-        </button>
+        <div className="popup">
+          <div className="popup-header">
+            <div>
+              <h3>{Dictionary.codesListPreview}</h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setCurrentAction(null);
+                  setSelectedCodesList(null);
+                }}
+              >
+                <span>X</span>
+              </button>
+            </div>
+          </div>
+          <h4>{Dictionary.searchResultDescription}</h4>
+          <div>{selectedCodesList?.description}</div>
+          <h4>{Dictionary.modalities}</h4>
+          <ul>
+            {selectedCodesList?.modalities.map((modality, index) => (
+              <li key={index}>{modality}</li>
+            ))}
+          </ul>
+          <button
+            className="btn-yellow"
+            onClick={() => {
+              setCurrentAction(null);
+              setSelectedCodesList(null);
+            }}
+          >
+            {Dictionary.close}
+          </button>
+        </div>
       </ReactModal>
     </div>
   );

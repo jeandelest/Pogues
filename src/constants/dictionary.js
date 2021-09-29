@@ -550,6 +550,10 @@ const dictionary = {
     en: 'Description',
     fr: 'Description',
   },
+  noDescription: {
+    en: 'No description available',
+    fr: 'Pas de description disponible',
+  },
   expression: {
     en: 'Display condition',
     fr: "Condition d'affichage",
@@ -892,8 +896,8 @@ const dictionary = {
   },
 
   close: {
-    fr: 'fermer',
-    en: 'close',
+    fr: 'Fermer',
+    en: 'Close',
   },
   yes: {
     fr: 'Oui',
@@ -1627,6 +1631,14 @@ const dictionary = {
   wipBannerComingSoon: {
     fr: 'Ce composant de recherche sera disponible prochainement',
     en: 'This search component will be available soon',
+  },
+  codesListPreview: {
+    fr: 'Aperçu de la liste de codes',
+    en: 'Codes list preview',
+  },
+  modalities: {
+    fr: 'Modalités',
+    en: 'Modalities',
   },
 };
 
