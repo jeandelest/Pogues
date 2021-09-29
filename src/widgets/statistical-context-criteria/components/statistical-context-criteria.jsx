@@ -71,6 +71,7 @@ const StatisticalContextCriteria = props => {
         validate={required ? [requiredSelect] : []}
         label={Dictionary.serie}
         emptyOption={Dictionary.selectSerie}
+        disabled
       >
         {series.map(s => (
           <GenericOption key={s.value} value={s.value}>
