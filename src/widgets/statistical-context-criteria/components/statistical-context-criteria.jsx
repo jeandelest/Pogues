@@ -29,6 +29,7 @@ const StatisticalContextCriteria = props => {
     loadSeriesIfNeeded,
     loadOperationsIfNeeded,
     loadCampaignsIfNeeded,
+    disableSeriesChoice,
   } = props;
 
   const [selectedSerieState, setSelectedSerieState] = useState();
@@ -71,7 +72,7 @@ const StatisticalContextCriteria = props => {
         validate={required ? [requiredSelect] : []}
         label={Dictionary.serie}
         emptyOption={Dictionary.selectSerie}
-        disabled
+        disabled={disableSeriesChoice}
       >
         {series.map(s => (
           <GenericOption key={s.value} value={s.value}>

@@ -62,6 +62,7 @@ function SearchCodesLists(props) {
     showOperations: false,
     showCampaigns: false,
     horizontal: true,
+    disableSeriesChoice: true,
   };
 
   const propsSearchResults = {
