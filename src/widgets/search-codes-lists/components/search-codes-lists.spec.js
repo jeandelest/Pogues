@@ -48,22 +48,6 @@ describe('<SearchCodesLists />', () => {
     );
   });
 
-  test('Should render a InputFilterWithCriteria component with the corresponding props', () => {
-    const expectedProps = {
-      ...InputFilterWithCriteriaDefaultProps,
-      label: Dictionary.searchInputCodesListsLabel,
-      formName: DEFAULT_FORM_NAME,
-      path,
-      typeItem: TYPES_ITEMS.CODES_LIST,
-      criterias: SEARCH_CRITERIAS.CODES_LIST,
-    };
-    const wrapper = shallow(<SearchCodesLists path={path} />);
-
-    expect(wrapper.find(InputFilterWithCriteria).props()).toEqual(
-      expectedProps,
-    );
-  });
-
   test.skip('Should render a SearchResults component with the corresponding props', () => {
     const expectedProps = {
       label: Dictionary.searchInputCodesListsLabel,
