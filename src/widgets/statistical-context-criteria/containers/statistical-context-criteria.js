@@ -33,6 +33,7 @@ export const defaultProps = {
   multipleCampaign: false,
   required: false,
   horizontal: false,
+  disableSeriesChoice: true,
 };
 
 // Container
