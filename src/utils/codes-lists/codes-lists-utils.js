@@ -109,3 +109,37 @@ export const hasChild = (code, listCodes) =>
     if (c.parent === code.value) _ = true;
     return _;
   }, false);
+
+/**
+ * This method will check the position of an element in a codes list and return his depth
+ *
+ * @param {*} codesList
+ * @param {*} code
+ * @returns the depth of an element of a codes list
+ */
+export const getCodeDepth = (codesList, code) => {
+  if (!code.parent) return 1;
+  else {
+    return (
+      1 +
+      getCodeDepth(
+        codesList,
+        codesList.find(e => e.value === code.parent),
+      )
+    );
+  }
+};
+
+/**
+ * This method will return the position of an element of a codes list relatively to the other elements of the same level
+ *
+ * @param {*} codesList
+ * @param {*} code
+ * @returns the weight of an element of a codes list
+ */
+export const getCodeWeight = (codesList, code) => {
+  const elementsOnSameLevel = codesList.filter(
+    e => e.depth === code.depth && e.parent === code.parent,
+  );
+  return elementsOnSameLevel.findIndex(obj => obj.value === code.value) + 1;
+};

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 
 import { StatisticalContextCriteria } from 'widgets/statistical-context-criteria';
 import ReactModal from 'react-modal';
@@ -14,10 +13,7 @@ import {
 } from 'constants/pogues-constants';
 import Dictionary from 'utils/dictionary/dictionary';
 import { searchCodesLists, getCodesListById } from 'utils/remote-api';
-import { change } from 'redux-form';
-import { connect } from 'react-redux';
 import './search-codes-lists.scss';
-import { getToken } from 'reducers/selectors';
 
 const { COMPONENT_CLASS, SEARCH_RESULTS_CLASS, SEARCH_CLASS } =
   WIDGET_SEARCH_CODES_LISTS;
@@ -172,34 +168,4 @@ function SearchCodesLists(props) {
   );
 }
 
-SearchCodesLists.propTypes = {
-  path: PropTypes.string,
-};
-
-SearchCodesLists.defaultProps = {
-  path: '',
-};
-
-const mapStateToProps = state => ({
-  token: getToken(state),
-});
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    storeCodesLists(codesList) {
-      const codes = codesList.Code.map(({ Label, Value }, index) => {
-        return {
-          label: Label,
-          value: Value,
-          parent: '',
-          depth: 1,
-          weight: index + 1,
-        };
-      });
-      dispatch(change('component', `${ownProps.path}label`, codesList.Label));
-      dispatch(change('component', `${ownProps.path}codes`, codes));
-      dispatch(change('component', `${ownProps.path}panel`, 'NEW'));
-    },
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(SearchCodesLists);
+export default SearchCodesLists;
