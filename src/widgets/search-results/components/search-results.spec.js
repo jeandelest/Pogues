@@ -1,17 +1,13 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import SearchResult from './search-results';
+import SearchResults from './search-results';
 
 import { WIDGET_SEARCH_RESULTS } from 'constants/dom-constants';
 import { noop } from 'utils/test/test-utils';
 
-const {
-  HEADER_CLASS,
-  COLUMN_CLASS,
-  ROW_CLASS,
-  ROW_EMPTY_CLASS,
-} = WIDGET_SEARCH_RESULTS;
+const { HEADER_CLASS, COLUMN_CLASS, ROW_CLASS, ROW_EMPTY_CLASS } =
+  WIDGET_SEARCH_RESULTS;
 
 describe('<SearchResults /', () => {
   const columns = [
@@ -21,8 +17,8 @@ describe('<SearchResults /', () => {
   ];
   const noValuesMessage = 'This is a fake no values message';
   const actions = [
-    { dictionary: 'FAKE_COLUMN_01', action: noop },
-    { dictionary: 'FAKE_COLUMN_02', action: noop },
+    { dictionary: 'FAKE_COLUMN_01', action: noop, icon: 'glyphicon-eye-open' },
+    { dictionary: 'FAKE_COLUMN_02', action: noop, icon: 'glyphicon-eye-open' },
   ];
   const props = {
     id: 'FAKE_ID',
@@ -32,7 +28,7 @@ describe('<SearchResults /', () => {
   };
 
   test('Should render as many headers as elements in the prop "columns" and actions', () => {
-    const wrapper = shallow(<SearchResult {...props} />);
+    const wrapper = shallow(<SearchResults {...props} />);
 
     expect(wrapper.find(`.${HEADER_CLASS} .${COLUMN_CLASS}`)).toHaveLength(
       columns.length + 1,
@@ -61,13 +57,13 @@ describe('<SearchResults /', () => {
       ...props,
       values,
     };
-    const wrapper = shallow(<SearchResult {...customProps} />);
+    const wrapper = shallow(<SearchResults {...customProps} />);
 
     expect(wrapper.find(`.${ROW_CLASS}`)).toHaveLength(values.length + 1);
   });
 
   test('Should render an empty row with a "no values" message if the number of values is 0', () => {
-    const wrapper = shallow(<SearchResult {...props} />);
+    const wrapper = shallow(<SearchResults {...props} />);
 
     expect(wrapper.find(`.${ROW_CLASS}`)).toHaveLength(2);
     expect(wrapper.find(`.${ROW_EMPTY_CLASS}`).text()).toBe(noValuesMessage);
