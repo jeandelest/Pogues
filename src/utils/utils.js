@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import * as rules from 'forms/validation-rules';
 import Dictionary from 'utils/dictionary/dictionary';
 
@@ -49,8 +51,7 @@ export function nestedStoreToFlat(store = {}) {
   return storeToArray(joinedItems);
 }
 
-export const uuid = () =>
-  (+new Date() + Math.floor(Math.random() * 999999)).toString(36);
+export const uuid = () => uuidv4();
 
 export function nameFromLabel(label) {
   return label

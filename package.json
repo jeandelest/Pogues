@@ -77,6 +77,7 @@
     "restify-plugins": "1.6.0",
     "sass": "1.32.13",
     "synthetic-dom": "1.4.0",
+    "uuid": "^8.3.2",
     "vtl-2-0-antlr-tools-ts": "^0.1.8"
   },
   "devDependencies": {
