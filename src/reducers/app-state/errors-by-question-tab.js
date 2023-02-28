@@ -14,8 +14,8 @@ function getNumErrorsFromObject(item) {
       return accInner + getNumErrorsFromObject(item[key]);
     }, 0);
   } else if (_.isArray(item)) {
-    numErrors = Object.keys(item).reduce((accInner, key) => {
-      return accInner + getNumErrorsFromObject(item[key], accInner);
+    numErrors = item.reduce((accInner, key) => {
+      return accInner + getNumErrorsFromObject(item[key]);
     }, 0);
   } else if (_.isString(item)) {
     numErrors = 1;
