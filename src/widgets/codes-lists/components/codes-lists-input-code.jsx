@@ -65,16 +65,6 @@ function CodesListsInputCode({
     executeIfValid(addCode);
   };
 
-  const addCodeIfIsValid1 = () => {
-    executeIfValid(addCode1);
-  };
-
-  const addCode1 = () => {
-    firstField.focus();
-    push();
-    clear();
-  };
-
   const addCode = () => {
     firstField.focus();
     push();
@@ -147,7 +137,7 @@ function CodesListsInputCode({
             type="text"
             component={Input}
             label={Dictionary.precisionId}
-            onEnter={addCodeIfIsValid1}
+            onEnter={addCodeIfIsValid}
           />
           <Field
             className={CODE_INPUT_CODE_CLASS_PRECISION}
@@ -155,7 +145,7 @@ function CodesListsInputCode({
             type="text"
             component={RichEditorWithVariable}
             label={Dictionary.label}
-            onEnter={addCodeIfIsValid1}
+            onEnter={addCodeIfIsValid}
           />
           <Field
             className={CODE_INPUT_CODE_CLASS_PRECISION}
@@ -163,7 +153,7 @@ function CodesListsInputCode({
             type="number"
             component={Input}
             label={Dictionary.maxLength}
-            onEnter={addCodeIfIsValid1}
+            onEnter={addCodeIfIsValid}
           />
           <button
             className={`${CODE_INPUT_ACTIONS_CLASS}-cancel`}
@@ -184,7 +174,7 @@ function CodesListsInputCode({
               className={`${CODE_INPUT_ACTIONS_CLASS}-validate`}
               onClick={e => {
                 e.preventDefault();
-                addCodeIfIsValid1();
+                addCodeIfIsValid();
               }}
             >
               {Dictionary.validate}

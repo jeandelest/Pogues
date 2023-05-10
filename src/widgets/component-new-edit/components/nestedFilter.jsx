@@ -371,7 +371,7 @@ const NestedFilter = props => {
               value="new"
               onChange={e => handleChange(e)}
               checked={
-                newNestedFilter && newNestedFilter.typeFilter
+                newNestedFilter?.typeFilter
                   ? newNestedFilter.typeFilter === 'new'
                   : false
               }
@@ -388,7 +388,7 @@ const NestedFilter = props => {
               value="exist"
               onChange={e => handleChange(e)}
               checked={
-                newNestedFilter && newNestedFilter.typeFilter
+                newNestedFilter?.typeFilter
                   ? newNestedFilter.typeFilter === 'exist'
                   : false
               }
@@ -397,7 +397,7 @@ const NestedFilter = props => {
           </label>
         </div>
       </div>
-      {newNestedFilter && newNestedFilter.typeFilter === 'exist' ? (
+      {newNestedFilter?.typeFilter === 'exist' ? (
         <div className="ctrl-select">
           <label htmlFor="input-selectNestedFilter">
             {Dictionary.selectNestedFilter}
@@ -413,7 +413,7 @@ const NestedFilter = props => {
               </option>
               {getNestedFilters()}
             </select>
-            {error && error.selectFilter ? (
+            {error?.selectFilter ? (
               <span className="form-error">{Dictionary.mandatory}</span>
             ) : (
               false
@@ -432,12 +432,12 @@ const NestedFilter = props => {
                 onChange={e => handleChange(e)}
                 required
               />
-              {error && error.name ? (
+              {error?.name ? (
                 <span className="form-error">{Dictionary.mandatory}</span>
-              ) : error && error.nameValid ? (
-                <span className="form-error">{error.nameValid}</span>
               ) : (
-                false
+                error?.nameValid && (
+                  <span className="form-error">{error.nameValid}</span>
+                )
               )}
             </div>
           </div>
@@ -467,10 +467,8 @@ const NestedFilter = props => {
               type="text"
               label={Dictionary.condition}
             />
-            {error && error.filter ? (
+            {error?.filter && (
               <span className="form-error">{Dictionary.mandatory}</span>
-            ) : (
-              false
             )}
           </div>
           <div className="ctrl-select">
@@ -488,10 +486,8 @@ const NestedFilter = props => {
                 </option>
                 {optionsInitial()}
               </select>
-              {error && error.initialMember ? (
+              {error?.initialMember && (
                 <span className="form-error">{Dictionary.mandatory}</span>
-              ) : (
-                false
               )}
             </div>
           </div>
@@ -519,10 +515,8 @@ const NestedFilter = props => {
                 </option>
                 {getFinalOptions(componentsStore)}
               </select>
-              {error && error.finalMember ? (
+              {error?.finalMember && (
                 <span className="form-error">{Dictionary.mandatory}</span>
-              ) : (
-                false
               )}
             </div>
           </div>

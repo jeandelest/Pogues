@@ -1,7 +1,6 @@
 import React, { Children, cloneElement, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray } from 'redux-form';
-/* import isEqual from 'lodash.isequal'; */
 import cloneDeep from 'lodash.clonedeep';
 import ReactModal from 'react-modal';
 
@@ -103,11 +102,8 @@ const ListWithInputPanel = props => {
 
   const submit = () => {
     if (
-      currentValues.SINGLE_CHOICE &&
-      currentValues.SINGLE_CHOICE.CodesList &&
-      currentValues.SINGLE_CHOICE.CodesList['input-code'] &&
-      (currentValues.SINGLE_CHOICE.CodesList['input-code'].value ||
-        currentValues.SINGLE_CHOICE.CodesList['input-code'].label)
+      currentValues?.SINGLE_CHOICE?.CodesList['input-code']?.value ||
+      currentValues?.SINGLE_CHOICE?.CodesList['input-code']?.label
     ) {
       setShowPopup(true);
     } else {

@@ -39,9 +39,8 @@ function NavLoop({
     .map(element => {
       return (
         <button
-          key={element.nameLoop}
+          key={element.nameLoop || element.id}
           className="loopLists"
-          key={element.id}
           onClick={() => handleEditComponent(element.id)}
         >
           <span className="glyphicon glyphicon-menu-right" />
@@ -49,9 +48,7 @@ function NavLoop({
         </button>
       );
     });
-  const componentType =
-    componentsStore[editingComponentId] &&
-    componentsStore[editingComponentId].type;
+  const componentType = componentsStore[editingComponentId]?.type;
 
   const componentHeader = Dictionary[`componentEdit${componentType}`] || '';
   return (
