@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { fieldInputPropTypes, fieldMetaPropTypes } from 'redux-form';
 
@@ -7,9 +7,56 @@ import { CONTROL_INPUT } from 'constants/dom-constants';
 
 const { COMPONENT_CLASS } = CONTROL_INPUT;
 
-// PropTypes and defaultProps
+function Input({
+  className,
+  type,
+  label,
+  placeholder,
+  required,
+  disabled,
+  input: propsInput,
+  reference,
+  focusOnInit,
+  onEnter,
+  meta: { touched, error },
+  ...otherProps
+}) {
+  const [input, setInput] = useState(propsInput);
 
-export const propTypes = {
+  useEffect(() => {
+    if (focusOnInit && input.focus) input.focus();
+    if (reference) reference(input);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusOnInit, reference]);
+
+  const id = getControlId('input', propsInput.name);
+  return (
+    <div className={`${COMPONENT_CLASS} ${className}`}>
+      <label htmlFor={id}>
+        {label}
+        {required && <span className="ctrl-required">*</span>}
+      </label>
+      <div>
+        <input
+          {...otherProps}
+          {...propsInput}
+          type={type}
+          id={id}
+          placeholder={placeholder !== '' || label}
+          disabled={disabled}
+          ref={node => setInput(node)}
+          onKeyPress={event => {
+            if (event.charCode === 13 && onEnter) onEnter(event);
+          }}
+        />
+
+        {touched && error && <span className="form-error">{error}</span>}
+      </div>
+    </div>
+  );
+}
+
+Input.propTypes = {
   input: PropTypes.shape(fieldInputPropTypes).isRequired,
   meta: PropTypes.shape(fieldMetaPropTypes).isRequired,
   type: PropTypes.string.isRequired,
@@ -23,7 +70,7 @@ export const propTypes = {
   onEnter: PropTypes.func,
 };
 
-export const defaultProps = {
+Input.defaultProps = {
   label: '',
   placeholder: '',
   className: '',
@@ -33,63 +80,5 @@ export const defaultProps = {
   reference: undefined,
   onEnter: undefined,
 };
-
-class Input extends Component {
-  static propTypes = propTypes;
-
-  static defaultProps = defaultProps;
-
-  componentDidMount() {
-    if (this.props.focusOnInit) this.input.focus();
-    if (this.props.reference) this.props.reference(this.input);
-  }
-
-  render() {
-    const {
-      className,
-      type,
-      label,
-      placeholder,
-      required,
-      disabled,
-      input,
-      reference,
-      focusOnInit,
-      onEnter,
-      meta: { touched, error },
-      ...otherProps
-    } = this.props;
-    const id = getControlId('input', input.name);
-    return (
-      <div className={`${COMPONENT_CLASS} ${className}`}>
-        <label htmlFor={id}>
-          {label}
-          {required && <span className="ctrl-required">*</span>}
-        </label>
-
-        <div>
-          <input
-            {...otherProps}
-            {...input}
-            type={type}
-            id={id}
-            placeholder={placeholder !== '' || label}
-            disabled={disabled}
-            ref={node => {
-              this.input = node;
-            }}
-            onKeyPress={event => {
-              if (event.charCode === 13 && this.props.onEnter) {
-                this.props.onEnter(event);
-              }
-            }}
-          />
-
-          {touched && error && <span className="form-error">{error}</span>}
-        </div>
-      </div>
-    );
-  }
-}
 
 export default Input;

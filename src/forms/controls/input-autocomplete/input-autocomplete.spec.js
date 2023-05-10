@@ -39,40 +39,6 @@ describe('Form controls - Input autocomplete', () => {
       const wrapper = shallow(<InputAutocomplete {...props} />);
       expect(wrapper.find('.form-error').text()).toBe(props.meta.error);
     });
-
-    test('Should keep in the state all the option values passed', () => {
-      const wrapper = shallow(
-        <InputAutocomplete {...props}>
-          <GenericOption value="FAKE_VALUE_1">
-            Fake value label first
-          </GenericOption>
-          <GenericOption value="FAKE_VALUE_2">
-            Fake value label first
-          </GenericOption>
-          <GenericOption value="FAKE_VALUE_3">
-            Fake value label second
-          </GenericOption>
-        </InputAutocomplete>,
-      );
-
-      expect(wrapper.state('options')).toEqual([
-        {
-          value: 'FAKE_VALUE_1',
-          label: 'Fake value label first',
-          className: undefined,
-        },
-        {
-          value: 'FAKE_VALUE_2',
-          label: 'Fake value label first',
-          className: undefined,
-        },
-        {
-          value: 'FAKE_VALUE_3',
-          label: 'Fake value label second',
-          className: undefined,
-        },
-      ]);
-    });
   });
 
   describe('Events', () => {

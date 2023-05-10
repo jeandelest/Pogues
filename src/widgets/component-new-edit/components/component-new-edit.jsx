@@ -515,7 +515,7 @@ const ComponentNewEdit = props => {
                   ? Dictionary.Filter
                   : Dictionary.expression
               }
-              required={componentType !== LOOP ? 'required' : false}
+              required={componentType !== LOOP}
             />
             {componentsStore && (
               <>

@@ -39,6 +39,7 @@ function NavLoop({
     .map(element => {
       return (
         <button
+          key={element.nameLoop}
           className="loopLists"
           key={element.id}
           onClick={() => handleEditComponent(element.id)}

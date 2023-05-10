@@ -463,7 +463,7 @@ const NestedFilter = props => {
                 value: newNestedFilter.filter,
               }}
               meta={{ touched: false, error: undefined }}
-              required="true"
+              required
               type="text"
               label={Dictionary.condition}
             />

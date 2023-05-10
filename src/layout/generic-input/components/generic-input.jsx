@@ -133,12 +133,14 @@ function GenericInput(props) {
     [isQuestionnaireModified],
   );
 
-  const newComponentParent = typeNewComponent
-    ? placeholders[typeNewComponent].parent
-    : '';
-  const newComponentWeight = typeNewComponent
-    ? placeholders[typeNewComponent].weight
-    : 0;
+  const newComponentParent =
+    typeNewComponent && typeNewComponent !== FILTER && typeNewComponent !== LOOP
+      ? placeholders[typeNewComponent].parent
+      : '';
+  const newComponentWeight =
+    typeNewComponent && typeNewComponent !== FILTER && typeNewComponent !== LOOP
+      ? placeholders[typeNewComponent].weight
+      : 0;
 
   return (
     <div

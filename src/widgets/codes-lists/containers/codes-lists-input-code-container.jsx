@@ -18,6 +18,7 @@ const propTypes = {
 
 export const mapStateToProps = (state, { path, formName }) => {
   const selector = formValueSelector(formName);
+  const componentSelector = formValueSelector('component');
 
   return {
     currentValue: selector(state, `${path}value`),
@@ -25,6 +26,7 @@ export const mapStateToProps = (state, { path, formName }) => {
     currentPrecisionid: selector(state, `${path}precisionid`),
     currentPrecisionlabel: selector(state, `${path}precisionlabel`),
     currentPrecisionsize: selector(state, `${path}precisionsize`),
+    Question: componentSelector(state, 'name'),
   };
 };
 

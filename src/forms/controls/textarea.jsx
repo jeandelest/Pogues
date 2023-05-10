@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { fieldInputPropTypes, fieldMetaPropTypes } from 'redux-form';
 
@@ -7,9 +7,44 @@ import { CONTROL_TEXTAREA } from 'constants/dom-constants';
 
 const { COMPONENT_CLASS } = CONTROL_TEXTAREA;
 
-// PropTypes and defaultProps
+function Textarea({
+  label,
+  required,
+  disabled,
+  focusOnInit,
+  input: propsInput,
+  meta: { touched, error },
+}) {
+  const [input, setInput] = useState(propsInput);
 
-export const propTypes = {
+  useEffect(() => {
+    if (focusOnInit && input.focus) input.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusOnInit]);
+
+  const id = getControlId('textarea', propsInput.name);
+
+  return (
+    <div className={COMPONENT_CLASS}>
+      <label htmlFor={id}>
+        {label}
+        {required && <span className="ctrl-required">*</span>}
+      </label>
+      <div>
+        <textarea
+          {...propsInput}
+          id={id}
+          placeholder={label}
+          disabled={disabled}
+          ref={node => setInput(node)}
+        />
+        {touched && error && <span className="form-error">{error}</span>}
+      </div>
+    </div>
+  );
+}
+
+Textarea.propTypes = {
   input: PropTypes.shape(fieldInputPropTypes).isRequired,
   meta: PropTypes.shape(fieldMetaPropTypes).isRequired,
   label: PropTypes.string.isRequired,
@@ -18,55 +53,10 @@ export const propTypes = {
   focusOnInit: PropTypes.bool,
 };
 
-export const defaultProps = {
+Textarea.defaultProps = {
   required: false,
   disabled: false,
   focusOnInit: false,
 };
-
-// Control
-
-class Textarea extends Component {
-  static propTypes = propTypes;
-
-  static defaultProps = defaultProps;
-
-  componentDidMount() {
-    if (this.props.focusOnInit) this.input.focus();
-  }
-
-  render() {
-    const {
-      label,
-      required,
-      disabled,
-      input,
-      meta: { touched, error },
-    } = this.props;
-    const id = getControlId('textarea', input.name);
-
-    return (
-      <div className={COMPONENT_CLASS}>
-        <label htmlFor={id}>
-          {label}
-          {required && <span className="ctrl-required">*</span>}
-        </label>
-        <div>
-          <textarea
-            {...input}
-            id={id}
-            placeholder={label}
-            disabled={disabled}
-            ref={node => {
-              this.input = node;
-            }}
-          />
-
-          {touched && error && <span className="form-error">{error}</span>}
-        </div>
-      </div>
-    );
-  }
-}
 
 export default Textarea;
