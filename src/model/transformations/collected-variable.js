@@ -169,7 +169,7 @@ function getQuestionFromSubSequence(componentsStore, id) {
   const SubSequenceQuestions = [];
   if (componentsStore[id].children) {
     componentsStore[id].children.forEach(child => {
-      if (componentsStore[child] && componentsStore[child].type === QUESTION) {
+      if (componentsStore[child]?.type === QUESTION) {
         SubSequenceQuestions.push(componentsStore[child]);
       }
     });
@@ -253,10 +253,7 @@ function getCollectedScope(questionsLoop, id, componentsStore) {
   let isfound = {};
   Object.keys(questionsLoop).forEach(key => {
     questionsLoop[key].forEach(element => {
-      if (
-        element.collectedVariables &&
-        element.collectedVariables.find(collected => collected === id)
-      ) {
+      if (element.collectedVariables?.find(collected => collected === id)) {
         isfound = {
           loop: componentsStore[key],
           component: element,
@@ -336,8 +333,7 @@ export function storeToRemote(store, componentsStore) {
     if (collectedScop.component) {
       if (
         collectedScop.component.type === QUESTION &&
-        collectedScop.loop &&
-        collectedScop.loop.basedOn
+        collectedScop.loop?.basedOn
       ) {
         model.Scope = collectedScop.loop.basedOn;
       } else if (

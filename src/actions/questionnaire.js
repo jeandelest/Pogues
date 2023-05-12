@@ -299,20 +299,23 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
       mergedExternalVariable;
   };
 
-  const manageComponentOnMerge = (
-    mergedComponent,
-    QuestionnaireId,
-    mergedComponentByQuestionnaire,
-    mergedCollectedVariables,
-    mergedCodeListByQuestionnaire,
-    addedWeight,
-  ) => {
+  const manageExistingName = mergedComponent => {
     const findName = Object.values(activeComponentsById).find(
       active => active.name === mergedComponent.name,
     );
     if (findName) {
-      mergedComponent.name = `${mergedComponent.name}_2`;
+      const duplicationCounter =
+        Object.values(activeComponentsById).filter(active =>
+          active.name.StartsWith(`${mergedComponent.name}_`),
+        ).length + 2;
+      mergedComponent.name = `${mergedComponent.name}_${duplicationCounter}`;
     }
+  };
+
+  const manageExistingId = (
+    mergedComponentByQuestionnaire,
+    mergedComponent,
+  ) => {
     const findId = Object.values(activeComponentsById).find(
       active => active.id === mergedComponent.id,
     );
@@ -332,6 +335,18 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
         }
       });
     }
+  };
+
+  const manageComponentOnMerge = (
+    mergedComponent,
+    QuestionnaireId,
+    mergedComponentByQuestionnaire,
+    mergedCollectedVariables,
+    mergedCodeListByQuestionnaire,
+    addedWeight,
+  ) => {
+    manageExistingName(mergedComponent);
+    manageExistingId(mergedComponentByQuestionnaire, mergedComponent);
     const collectedVariables = {};
     if (mergedComponent.type === SEQUENCE) {
       mergedComponent.weight += addedWeight;
@@ -365,7 +380,8 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
           },
         },
       });
-    } else {
+    }
+    if (mergedComponent.type !== SEQUENCE) {
       if (mergedComponent.type === QUESTION) {
         mergedComponent.collectedVariables =
           mergedComponent.collectedVariables.map(variable => {
