@@ -238,6 +238,98 @@ export const duplicateQuestionnaire = (idQuestionnaire, token) => dispatch => {
   });
 };
 
+const manageDuplicateCollectedVariable = (
+  collectedVariableByQuestion,
+  mergedCollectedVariable,
+) => {
+  Object.values(collectedVariableByQuestion).forEach(element => {
+    const find = Object.values(element).find(
+      varib => varib.name === mergedCollectedVariable.name,
+    );
+    if (find) {
+      mergedCollectedVariable.name = `${mergedCollectedVariable.name}_2`;
+    }
+  });
+};
+
+const manageDuplicateCodeList = (activeCodeListsById, mergedCodeList) => {
+  const find = Object.values(activeCodeListsById).find(
+    element => element.label === mergedCodeList.label,
+  );
+  if (find && mergedCodeList.id !== find.id) {
+    mergedCodeList.label = `${mergedCodeList.label}_2`;
+  }
+};
+
+const manageDuplicateCalculatedVariable = (
+  activeCalculatedVariablesById,
+  mergedCalculatedVariable,
+) => {
+  const find = Object.values(activeCalculatedVariablesById).find(
+    element => element.name === mergedCalculatedVariable.name,
+  );
+  if (find) {
+    mergedCalculatedVariable.name = `${mergedCalculatedVariable.name}_2`;
+    mergedCalculatedVariable.id = uuid();
+  }
+  activeCalculatedVariablesById[mergedCalculatedVariable.id] =
+    mergedCalculatedVariable;
+};
+
+const manageDuplicateExternalVariable = (
+  activeExternalVariablesById,
+  mergedExternalVariable,
+) => {
+  const find = Object.values(activeExternalVariablesById).find(
+    element => element.name === mergedExternalVariable.name,
+  );
+  if (find) {
+    mergedExternalVariable.name = `${mergedExternalVariable.name}_2`;
+    mergedExternalVariable.id = uuid();
+  }
+  activeExternalVariablesById[mergedExternalVariable.id] =
+    mergedExternalVariable;
+};
+
+const manageExistingName = (activeComponentsById, mergedComponent) => {
+  const findName = Object.values(activeComponentsById).find(
+    active => active.name === mergedComponent.name,
+  );
+  if (findName) {
+    const duplicationCounter =
+      Object.values(activeComponentsById).filter(active =>
+        active.name.StartsWith(`${mergedComponent.name}_`),
+      ).length + 2;
+    mergedComponent.name = `${mergedComponent.name}_${duplicationCounter}`;
+  }
+};
+
+const manageExistingId = (
+  activeComponentsById,
+  mergedComponentByQuestionnaire,
+  mergedComponent,
+) => {
+  const findId = Object.values(activeComponentsById).find(
+    active => active.id === mergedComponent.id,
+  );
+  if (findId) {
+    mergedComponent.id = uuid();
+    Object.values(mergedComponentByQuestionnaire).forEach(element => {
+      if (element.parent === findId.id) {
+        element.parent = mergedComponent.id;
+      }
+      if (
+        element.children &&
+        element.children.length > 0 &&
+        element.children.includes(findId.id)
+      ) {
+        const index = element.children.indexOf(findId.id);
+        element.children[index] = mergedComponent.id;
+      }
+    });
+  }
+};
+
 /**
  * Method used when we click on merge question to merge 2 questions
  *
@@ -258,85 +350,6 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
     payload: idMerge,
   });
 
-  const manageDuplicateCollectedVariable = mergedCollectedVariable => {
-    Object.values(collectedVariableByQuestion).forEach(element => {
-      const find = Object.values(element).find(
-        varib => varib.name === mergedCollectedVariable.name,
-      );
-      if (find) {
-        mergedCollectedVariable.name = `${mergedCollectedVariable.name}_2`;
-      }
-    });
-  };
-  const manageDuplicateCodeList = mergedCodeList => {
-    const find = Object.values(activeCodeListsById).find(
-      element => element.label === mergedCodeList.label,
-    );
-    if (find && mergedCodeList.id !== find.id) {
-      mergedCodeList.label = `${mergedCodeList.label}_2`;
-    }
-  };
-  const manageDuplicateCalculatedVariable = mergedCalculatedVariable => {
-    const find = Object.values(activeCalculatedVariablesById).find(
-      element => element.name === mergedCalculatedVariable.name,
-    );
-    if (find) {
-      mergedCalculatedVariable.name = `${mergedCalculatedVariable.name}_2`;
-      mergedCalculatedVariable.id = uuid();
-    }
-    activeCalculatedVariablesById[mergedCalculatedVariable.id] =
-      mergedCalculatedVariable;
-  };
-  const manageDuplicateExternalVariable = mergedExternalVariable => {
-    const find = Object.values(activeExternalVariablesById).find(
-      element => element.name === mergedExternalVariable.name,
-    );
-    if (find) {
-      mergedExternalVariable.name = `${mergedExternalVariable.name}_2`;
-      mergedExternalVariable.id = uuid();
-    }
-    activeExternalVariablesById[mergedExternalVariable.id] =
-      mergedExternalVariable;
-  };
-
-  const manageExistingName = mergedComponent => {
-    const findName = Object.values(activeComponentsById).find(
-      active => active.name === mergedComponent.name,
-    );
-    if (findName) {
-      const duplicationCounter =
-        Object.values(activeComponentsById).filter(active =>
-          active.name.StartsWith(`${mergedComponent.name}_`),
-        ).length + 2;
-      mergedComponent.name = `${mergedComponent.name}_${duplicationCounter}`;
-    }
-  };
-
-  const manageExistingId = (
-    mergedComponentByQuestionnaire,
-    mergedComponent,
-  ) => {
-    const findId = Object.values(activeComponentsById).find(
-      active => active.id === mergedComponent.id,
-    );
-    if (findId) {
-      mergedComponent.id = uuid();
-      Object.values(mergedComponentByQuestionnaire).forEach(element => {
-        if (element.parent === findId.id) {
-          element.parent = mergedComponent.id;
-        }
-        if (
-          element.children &&
-          element.children.length > 0 &&
-          element.children.includes(findId.id)
-        ) {
-          const index = element.children.indexOf(findId.id);
-          element.children[index] = mergedComponent.id;
-        }
-      });
-    }
-  };
-
   const manageComponentOnMerge = (
     mergedComponent,
     QuestionnaireId,
@@ -345,8 +358,12 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
     mergedCodeListByQuestionnaire,
     addedWeight,
   ) => {
-    manageExistingName(mergedComponent);
-    manageExistingId(mergedComponentByQuestionnaire, mergedComponent);
+    manageExistingName(activeComponentsById, mergedComponent);
+    manageExistingId(
+      activeComponentsById,
+      mergedComponentByQuestionnaire,
+      mergedComponent,
+    );
     const collectedVariables = {};
     if (mergedComponent.type === SEQUENCE) {
       mergedComponent.weight += addedWeight;
@@ -442,16 +459,19 @@ export const mergeQuestionnaires = (idMerge, token) => (dispatch, getState) => {
       mergedQuestionnaire.componentByQuestionnaire[mergedQuestionnaireId];
     const QuestionnaireId = activeQuestionnaire.id;
     Object.values(mergedCollectedVariables).forEach(variable =>
-      manageDuplicateCollectedVariable(variable),
+      manageDuplicateCollectedVariable(collectedVariableByQuestion, variable),
     );
     Object.values(mergedCodeListByQuestionnaire).forEach(codelist =>
-      manageDuplicateCodeList(codelist),
+      manageDuplicateCodeList(activeCodeListsById, codelist),
     );
     Object.values(mergedCalculatedVariableByQuestionnaire).forEach(variable =>
-      manageDuplicateCalculatedVariable(variable),
+      manageDuplicateCalculatedVariable(
+        activeCalculatedVariablesById,
+        variable,
+      ),
     );
     Object.values(mergedExternalVariableByQuestionnaire).forEach(variable =>
-      manageDuplicateExternalVariable(variable),
+      manageDuplicateExternalVariable(activeExternalVariablesById, variable),
     );
     Object.values(mergedComponentByQuestionnaire)
       .filter(

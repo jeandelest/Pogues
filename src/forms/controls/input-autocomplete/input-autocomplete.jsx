@@ -71,31 +71,40 @@ const InputAutocomplete = props => {
           indexActiveSuggestion > 0 ? indexActiveSuggestion - 1 : 0,
         );
       }
-    } else if (event.key === 'ArrowDown') {
+    }
+    if (event.key === 'ArrowDown') {
       setIndexActiveSuggestion(
         indexActiveSuggestion === suggestions.length - 1
           ? suggestions.length - 1
           : indexActiveSuggestion + 1,
       );
-    } else if (event.key === 'Enter') {
+    }
+    if (event.key === 'Enter') {
       updateSelectedOption(suggestions, input.onChange, indexActiveSuggestion);
-    } else if (inputSearchValue.length === 0) {
-      setSuggestions([]);
-      setIndexActiveSuggestion(undefined);
-    } else {
-      const flags = caseSensitive ? 'g' : 'gi';
-      const regEx = new RegExp(inputSearchValue, flags);
-      setSuggestions(
-        inputSearchValue === ''
-          ? []
-          : options
-              .filter(
-                o => getOptionLabel(o.label, o.value).search(regEx) !== -1,
-              )
-              .splice(0, numSuggestionsShown),
-      );
-      setIndexActiveSuggestion(0);
-      setInputSearch(inputSearchValue);
+    }
+    if (
+      event.key !== 'ArrowUp' &&
+      event.key !== 'ArrowDown' &&
+      event.key !== 'Enter'
+    ) {
+      if (inputSearchValue.length === 0) {
+        setSuggestions([]);
+        setIndexActiveSuggestion(undefined);
+      } else {
+        const flags = caseSensitive ? 'g' : 'gi';
+        const regEx = new RegExp(inputSearchValue, flags);
+        setSuggestions(
+          inputSearchValue === ''
+            ? []
+            : options
+                .filter(
+                  o => getOptionLabel(o.label, o.value).search(regEx) !== -1,
+                )
+                .splice(0, numSuggestionsShown),
+        );
+        setIndexActiveSuggestion(0);
+        setInputSearch(inputSearchValue);
+      }
     }
   };
 
