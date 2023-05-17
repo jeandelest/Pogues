@@ -1,6 +1,6 @@
 import merge from 'lodash.merge';
 import cloneDeep from 'lodash.clonedeep';
-import defaultTypageForm from './typage';
+import { defaultTypageForm } from './typage';
 
 export const defaultState = {};
 

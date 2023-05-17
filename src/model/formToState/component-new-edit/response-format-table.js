@@ -15,7 +15,7 @@ import {
   DEFAULT_CODES_LIST_SELECTOR_PATH,
   UI_BEHAVIOUR,
 } from 'constants/pogues-constants';
-import defaultTypageForm from './typage';
+import { defaultTypageForm } from './typage';
 
 const { PRIMARY, SECONDARY, MEASURE, LIST_MEASURE } = DIMENSION_TYPE;
 const { LIST, CODES_LIST } = DIMENSION_FORMATS;
