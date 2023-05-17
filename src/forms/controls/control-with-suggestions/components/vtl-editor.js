@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { AntlrEditor } from '@eurostat/vtl-editor';
 import * as tools from 'vtl-2-0-antlr-tools-ts';
 import { getSuggestions } from './vtl-suggestions';
@@ -32,23 +31,29 @@ const VTLEditor = ({
 
   const { value, onChange, name: id } = input;
 
-  const handleErrors = e => {
-    setErrors(e);
-    if (setDisableValidation) {
-      if (e.length > 0) setDisableValidation(true);
-      else setDisableValidation(false);
-    }
-  };
-
-  const localOnChange = e => {
-    onChange(e);
-    if (!e) {
+  const handleErrors = useCallback(
+    e => {
+      setErrors(e);
       if (setDisableValidation) {
-        setDisableValidation(false);
+        if (e.length > 0) setDisableValidation(true);
+        else setDisableValidation(false);
       }
-      setErrors([]);
-    }
-  };
+    },
+    [setDisableValidation],
+  );
+
+  const localOnChange = useCallback(
+    e => {
+      onChange(e);
+      if (!e) {
+        if (setDisableValidation) {
+          setDisableValidation(false);
+        }
+        setErrors([]);
+      }
+    },
+    [onChange, setDisableValidation],
+  );
 
   return (
     <div className={COMPONENT_CLASS}>

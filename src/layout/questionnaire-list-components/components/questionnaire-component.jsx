@@ -51,6 +51,11 @@ const QuestionnaireComponent = props => {
     visualizeActiveQuestionnaire,
     componentFiltersInitial,
     componentFiltersFinal,
+    setSelectedComponentId,
+    setEditingComponentId,
+    actions,
+    duplicateComponentAndVariables,
+    removeComponent,
   } = props;
 
   const [showComponentModal, setShowComponentModal] = useState(false);
@@ -68,33 +73,37 @@ const QuestionnaireComponent = props => {
   }, [selected, ensureSelected]);
 
   const handleSelectComponent = () => {
-    props.setSelectedComponentId(component.id);
+    setSelectedComponentId(component.id);
   };
 
   const handleEditComponent = () => {
-    props.setEditingComponentId(component.id);
-    props.actions.handleOpenComponentDetail();
+    setEditingComponentId(component.id);
+    actions.handleOpenComponentDetail();
   };
   const handleEditFilterComponent = id => {
-    props.setEditingComponentId(id);
+    setEditingComponentId(id);
     handleOpenComponentDetail();
   };
 
-  const handleCloseComponentDetail = () => {
-    setShowComponentModal(false);
-  };
+  const handleCloseComponentDetail = useCallback(
+    () => setShowComponentModal(false),
+    [],
+  );
 
   const handleDuplicateComponent = () => {
-    props.duplicateComponentAndVariables(component.id);
+    duplicateComponentAndVariables(component.id);
   };
 
   const handleDeleteComponent = () => {
-    props.removeComponent(component.id);
+    removeComponent(component.id);
   };
-  const handleDeleteComponent1 = id => {
-    props.removeComponent(id);
-    setShowComponentModal(false);
-  };
+  const handleDeleteComponent1 = useCallback(
+    id => {
+      removeComponent(id);
+      setShowComponentModal(false);
+    },
+    [removeComponent],
+  );
   const handleOpenComponentDetail = () => {
     setShowComponentModal(true);
   };

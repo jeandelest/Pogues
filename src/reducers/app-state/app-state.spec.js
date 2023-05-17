@@ -1,7 +1,6 @@
 import actionsHandlers, {
   startLoadingVisualization,
   loadingVisualizationSuccess,
-  loadingVisualizationFailure,
 } from './app-state';
 
 import {
@@ -82,7 +81,7 @@ describe('loadingVisualizationSuccess', () => {
 
 describe('loadingVisualizationFailure', () => {
   test('when called directly', () => {
-    const result = loadingVisualizationFailure({
+    const result = loadingVisualizationSuccess({
       ...state,
       isLoadingVisualization: true,
     });

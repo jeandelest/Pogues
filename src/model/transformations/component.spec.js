@@ -403,8 +403,8 @@ describe('component tranformations', () => {
       };
       expect(
         getResponseCoordinate(
-          variableResponseMapping,
           variableResponseAttribute,
+          variableResponseMapping,
         ),
       ).toEqual(output);
     });

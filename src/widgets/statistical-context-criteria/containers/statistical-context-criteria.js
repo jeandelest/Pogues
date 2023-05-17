@@ -37,7 +37,6 @@ export const defaultProps = {
 
 // Container
 
-// @TODO: Tests
 export const mapStateToProps = (
   state,
   { showCampaigns, showOperations, formName, path },
@@ -58,9 +57,9 @@ export const mapStateToProps = (
       selectedSerie === TCM.id
         ? [{ id: TCM.id, value: TCM.value, label: TCM.label }]
         : filterStoreByProp(
-            state.metadataByType.operations,
             'serie',
             selectedSerie,
+            state.metadataByType.operations,
           );
 
     // Show or not the list of campaigns
@@ -69,9 +68,9 @@ export const mapStateToProps = (
         selectedOperation === TCM.id
           ? [{ id: TCM.id, value: TCM.value, label: TCM.label }]
           : filterStoreByProp(
-              state.metadataByType.campaigns,
               'operation',
               selectedOperation,
+              state.metadataByType.campaigns,
             );
     }
   }

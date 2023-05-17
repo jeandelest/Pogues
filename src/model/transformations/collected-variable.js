@@ -13,6 +13,13 @@ const { QUESTION, SEQUENCE, SUBSEQUENCE, LOOP } = COMPONENT_TYPE;
 const { TABLE, MULTIPLE_CHOICE } = QUESTION_TYPE_ENUM;
 const { LIST } = DIMENSION_FORMATS;
 
+const assignDurations = (format, varFormat, datatype, value, var1, var2) => {
+  if (format === varFormat) {
+    datatype[var1] = value[0] === 0 ? '' : value[0];
+    datatype[var2] = value[1] === 0 ? '' : value[1];
+  }
+};
+
 export function remoteToStore(
   remote = [],
   responsesByVariable,
@@ -29,13 +36,15 @@ export function remoteToStore(
       if (find) {
         if (find.type === MULTIPLE_CHOICE) {
           variable.z = parseInt(find.position, 10) + 1;
-        } else if (find.type === TABLE) {
+        }
+        if (find.type === TABLE) {
           const code = Object.values(
             codesListsStore[find.codelistid].codes,
           ).find(cod => cod.value === find.position);
           variable.z = code.weight;
           variable.mesureLevel = find.level;
-        } else {
+        }
+        if (find.type !== MULTIPLE_CHOICE && find.type !== TABLE) {
           const code = Object.values(
             codesListsStore[find.codelistid].codes,
           ).find(cod => cod.value === find.position);
@@ -72,54 +81,64 @@ export function remoteToStore(
     if (decimals !== undefined) datatype.decimals = decimals;
     if (unit !== undefined) datatype.unit = unit;
     if (format !== undefined) datatype.format = format;
-    if (typeName === DATATYPE_NAME.DURATION) {
-      if (datatype.minimum !== undefined) {
-        const strminimum = datatype.minimum;
-        const matches_minimum = strminimum.match(/\d+/g);
-        if (format === 'PTnHnM') {
-          datatype.mihours = matches_minimum[0] === 0 ? '' : matches_minimum[0];
-          datatype.miminutes =
-            matches_minimum[1] === 0 ? '' : matches_minimum[1];
-        }
-        if (format === 'PnYnM') {
-          datatype.miyears = matches_minimum[0] === 0 ? '' : matches_minimum[0];
-          datatype.mimonths =
-            matches_minimum[1] === 0 ? '' : matches_minimum[1];
-        }
-        if (format === 'HH:CH') {
-          datatype.mihundhours =
-            matches_minimum[0][0] === 0
-              ? matches_minimum[0].slice(1)
-              : matches_minimum[0];
-          datatype.mihundredths =
-            matches_minimum[1][0] === 0
-              ? matches_minimum[1].slice(1)
-              : matches_minimum[1];
-        }
+    if (typeName === DATATYPE_NAME.DURATION && datatype.minimum !== undefined) {
+      const strminimum = datatype.minimum;
+      const matches_minimum = strminimum.match(/\d+/g);
+      assignDurations(
+        format,
+        'PTnHnM',
+        datatype,
+        matches_minimum,
+        'mihours',
+        'miminutes',
+      );
+      assignDurations(
+        format,
+        'PnYnM',
+        datatype,
+        matches_minimum,
+        'miyears',
+        'mimonths',
+      );
+      if (format === 'HH:CH') {
+        datatype.mihundhours =
+          matches_minimum[0][0] === 0
+            ? matches_minimum[0].slice(1)
+            : matches_minimum[0];
+        datatype.mihundredths =
+          matches_minimum[1][0] === 0
+            ? matches_minimum[1].slice(1)
+            : matches_minimum[1];
       }
-      if (datatype.maximum !== undefined) {
-        const strmaximum = datatype.maximum;
-        const matches_maximum = strmaximum.match(/\d+/g);
-        if (format === 'PTnHnM') {
-          datatype.mahours = matches_maximum[0] === 0 ? '' : matches_maximum[0];
-          datatype.maminutes =
-            matches_maximum[1] === 0 ? '' : matches_maximum[1];
-        }
-        if (format === 'PnYnM') {
-          datatype.mayears = matches_maximum[0] === 0 ? '' : matches_maximum[0];
-          datatype.mamonths =
-            matches_maximum[1] === 0 ? '' : matches_maximum[1];
-        }
-        if (format === 'HH:CH') {
-          datatype.mahundhours =
-            matches_maximum[0][0] === 0
-              ? matches_maximum[0].slice(1)
-              : matches_maximum[0];
-          datatype.mahundredths =
-            matches_maximum[1][0] === 0
-              ? matches_maximum[1].slice(1)
-              : matches_maximum[1];
-        }
+    }
+    if (typeName === DATATYPE_NAME.DURATION && datatype.maximum !== undefined) {
+      const strmaximum = datatype.maximum;
+      const matches_maximum = strmaximum.match(/\d+/g);
+      assignDurations(
+        format,
+        'PTnHnM',
+        datatype,
+        matches_maximum,
+        'mahours',
+        'maminutes',
+      );
+      assignDurations(
+        format,
+        'PnYnM',
+        datatype,
+        matches_maximum,
+        'mayears',
+        'mamonths',
+      );
+      if (format === 'HH:CH') {
+        datatype.mahundhours =
+          matches_maximum[0][0] === 0
+            ? matches_maximum[0].slice(1)
+            : matches_maximum[0];
+        datatype.mahundredths =
+          matches_maximum[1][0] === 0
+            ? matches_maximum[1].slice(1)
+            : matches_maximum[1];
       }
     }
     const remote = {

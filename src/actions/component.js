@@ -392,8 +392,8 @@ export const duplicateComponentAndVariables =
       state.appState.collectedVariableByQuestion[idComponent];
     const update = duplicateComponentAndVars(
       activeComponentsById,
-      collectedVariables,
       idComponent,
+      collectedVariables,
     );
     dispatch({
       type: DUPLICATE_COMPONENT,

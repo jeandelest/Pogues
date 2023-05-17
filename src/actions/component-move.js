@@ -11,7 +11,6 @@ import {
   moveQuestionToSubSequence,
   moveQuestionAndSubSequenceToSequence,
 } from './component-insert';
-import sortBy from 'lodash.sortby';
 
 export function dummyFunction() {
   return 'Hello world';
@@ -80,44 +79,50 @@ export function getWeightAndParentId(
  * @param {object} activesComponents The list of components currently displayed
  */
 function attachQuestionToPreviousSubSequence(activesComponents) {
-  const moves = {
-    ...activesComponents,
-  };
-  const sequences = Object.keys(activesComponents).filter(key =>
-    isSequence(moves[key]),
-  );
-
-  sequences.forEach(sequence => {
-    const children = sortBy(toComponents(moves[sequence].children, moves), [
-      'weight',
-    ]);
-    let idSubSequenceSibling;
-    for (let i = 0; i < children.length; i += 1) {
-      if (isSubSequence(children[i])) {
-        idSubSequenceSibling = children[i].id;
-      }
-      if (isQuestion(children[i]) && idSubSequenceSibling) {
-        moves[children[i].id] = {
-          ...moves[children[i].id],
-          parent: idSubSequenceSibling,
-          weight: moves[idSubSequenceSibling].children.length,
-        };
-        moves[idSubSequenceSibling] = {
-          ...moves[idSubSequenceSibling],
-          children: [...moves[idSubSequenceSibling].children, children[i].id],
-        };
-        moves[children[i].parent] = {
-          ...moves[children[i].parent],
-          children: moves[children[i].parent].children.filter(
-            id => id !== children[i].id,
-          ),
-        };
-      }
-    }
-    idSubSequenceSibling = undefined;
-  });
-
-  return moves;
+  const moves = { ...activesComponents };
+  return Object.keys(activesComponents)
+    .filter(key => isSequence(moves[key]))
+    .reduce((seqacc, currentSequence) => {
+      const moving = toComponents(moves[currentSequence].children, moves)
+        .sort((a, b) => a.weight - b.weight)
+        .reduce(
+          (acc, child) => {
+            if (isSubSequence(child))
+              return { moved: acc.moved, subSequenceSibling: child.id };
+            if (isQuestion(child) && acc.subSequenceSibling)
+              return {
+                moved: {
+                  ...acc.moved,
+                  [child.id]: {
+                    ...acc.moved[child.id],
+                    parent: acc.subSequenceSibling,
+                    weight: acc.moved[acc.subSequenceSibling].children.length,
+                  },
+                  [acc.subSequenceSibling]: {
+                    ...acc.moved[acc.subSequenceSibling],
+                    children: [
+                      ...acc.moved[acc.subSequenceSibling].children,
+                      child.id,
+                    ],
+                  },
+                  [child.parent]: {
+                    ...acc.moved[child.parent],
+                    children: acc.moved[child.parent].children.filter(
+                      id => id !== child.id,
+                    ),
+                  },
+                },
+                subSequenceSibling: acc.subSequenceSibling,
+              };
+            return acc;
+          },
+          {
+            moved: seqacc,
+            subSequenceSibling: undefined,
+          },
+        );
+      return moving.moved;
+    }, activesComponents);
 }
 
 /**

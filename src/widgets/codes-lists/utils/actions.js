@@ -9,11 +9,7 @@ export function disableMoveUpButton(allCodes, { parent, value }) {
       return 0;
     });
 
-  if (children[0].value === value) {
-    return true;
-  }
-
-  return false;
+  return children[0].value === value;
 }
 
 export function disableMoveDownButton(allCodes, { parent, value }) {
@@ -25,11 +21,7 @@ export function disableMoveDownButton(allCodes, { parent, value }) {
       return 0;
     });
 
-  if (children[children.length - 1].value === value) {
-    return true;
-  }
-
-  return false;
+  return children[children.length - 1].value === value;
 }
 
 export function disableMoveLeftButton({ parent }) {

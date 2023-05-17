@@ -136,9 +136,7 @@ const QuestionnaireList = props => {
     setFilter(value);
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
+  const handleClosePopup = useCallback(() => setShowPopup(false), []);
 
   const handleOpenPopup = (id, label) => {
     setShowPopup(true);

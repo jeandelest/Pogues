@@ -8,7 +8,7 @@ import CodesListsInputCodeContainer from '../containers/codes-lists-input-code-c
 import CodesListsActions from './codes-lists-actions';
 import UploadCSV from './upload-csv';
 
-import { ACTIONS } from '../constants';
+import { CODELISTS_ACTIONS } from 'constants/pogues-constants';
 import { getNewCodeWeight, resetListCodes } from '../utils/utils';
 import { getDisabledActions } from '../utils/actions';
 import { moveUp, moveDown, moveLeft, moveRight } from '../utils/movement';
@@ -257,7 +257,7 @@ function CodesListsCodes(props) {
               disabledActions={getDisabledActions(
                 allCodes,
                 code,
-                ACTIONS,
+                CODELISTS_ACTIONS,
                 Type,
               )}
               actions={actions}

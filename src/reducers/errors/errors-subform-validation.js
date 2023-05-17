@@ -30,10 +30,9 @@ export function setSubformValidationErrors(state, { errors }) {
 }
 
 export function removeSubformValidationErrors(state, paths) {
-  return paths.reduce((acc, p) => {
-    const { [p]: remove, ...others } = acc;
-    return others;
-  }, state);
+  return Object.fromEntries(
+    Object.entries(state).filter(([key]) => !paths.includes(key)),
+  );
 }
 
 export function clearSubformValidationErrors() {

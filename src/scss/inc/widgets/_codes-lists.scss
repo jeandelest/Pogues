@@ -14,14 +14,6 @@
       .widget-codes-lists__codes__input {
         @include make-row();
 
-        .widget-codes-lists__codes__input-code {
-          @include make-xs-column(12);
-        }
-
-        .widget-codes-lists__codes__input-code-precision {
-          @include make-xs-column(12);
-        }
-
         .widget-codes-lists__codes__input-code-precision {
           @include make-xs-column(3);
           label + div,

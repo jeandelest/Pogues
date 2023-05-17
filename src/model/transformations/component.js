@@ -36,8 +36,8 @@ const sortByWeight = store => (keyA, keyB) => {
 };
 
 export const getResponseCoordinate = (
-  variablesMapping = [],
   variablesAttribute,
+  variablesMapping = [],
 ) =>
   variablesMapping.reduce((acc, m) => {
     const axis = m.MappingTarget.split(' ');
@@ -192,8 +192,8 @@ function remoteToVariableResponseNested(children = [], acc = {}) {
       ? responseStructure.Attribute
       : undefined;
     const coordinatesByResponse = getResponseCoordinate(
-      variableResponseMapping,
       variableResponseAttribute,
+      variableResponseMapping,
     );
 
     acc = {
@@ -304,9 +304,9 @@ function remoteToStoreNested(
   children,
   parent,
   componentGroup,
-  codesListsStore = {},
   iterations,
   filters,
+  codesListsStore = {},
   acc = {},
 ) {
   let weight = 0;
@@ -322,9 +322,9 @@ function remoteToStoreNested(
         child.Child,
         child.id,
         componentGroup,
-        codesListsStore,
         iterations,
         filters,
+        codesListsStore,
         acc,
       );
     return acc;
@@ -339,6 +339,33 @@ function remoteToStoreNested(
   return acc1;
 }
 
+function getCollectedVariablesById(
+  collectedVariablesStore,
+  collectedVariables,
+) {
+  const collectedvariablequestion = [];
+  Object.values(collectedVariablesStore).forEach(collec => {
+    if (collectedVariables !== undefined) {
+      collectedVariables.forEach(variables => {
+        if (collec.id === variables) {
+          collectedvariablequestion.push(collec);
+        }
+      });
+    }
+  });
+  return collectedvariablequestion;
+}
+
+function getFlowcontrol(FlowControl) {
+  const flowcontrolefinal = [];
+  FlowControl.forEach(flowcon => {
+    if (flowcon.flowControlType === undefined) {
+      flowcontrolefinal.push(flowcon);
+    }
+  });
+  return flowcontrolefinal;
+}
+
 function getClarificationresponseSingleChoiseQuestion(
   collectedVariablesStore,
   collectedVariables,
@@ -350,22 +377,11 @@ function getClarificationresponseSingleChoiseQuestion(
   flowControl,
 ) {
   const ClarificationQuestion = [];
-  const collectedvariablequestion = [];
-  const flowcontrolefinal = [];
-  Object.values(collectedVariablesStore).forEach(collec => {
-    if (collectedVariables !== undefined) {
-      collectedVariables.forEach(variables => {
-        if (collec.id === variables) {
-          collectedvariablequestion.push(collec);
-        }
-      });
-    }
-  });
-  FlowControl.forEach(flowcon => {
-    if (flowcon.flowControlType === undefined) {
-      flowcontrolefinal.push(flowcon);
-    }
-  });
+  const collectedvariablequestion = getCollectedVariablesById(
+    collectedVariablesStore,
+    collectedVariables,
+  );
+  const flowcontrolefinal = getFlowcontrol(FlowControl);
   collectedvariablequestion.forEach(collected => {
     const code = Object.values(
       codesListsStore[responseFormat.SINGLE_CHOICE.CodesList.id].codes,
@@ -430,22 +446,12 @@ function getClarificationResponseMultipleChoiceQuestion(
   flowControl,
 ) {
   const ClarificationQuestion = [];
-  const collectedvariablequestion = [];
-  const flowcontrolefinal = [];
-  Object.values(collectedVariablesStore).forEach(collec => {
-    if (collectedVariables !== undefined) {
-      collectedVariables.forEach(variables => {
-        if (collec.id === variables) {
-          collectedvariablequestion.push(collec);
-        }
-      });
-    }
-  });
-  FlowControl.forEach(flowcon => {
-    if (flowcon.flowControlType === undefined) {
-      flowcontrolefinal.push(flowcon);
-    }
-  });
+  const collectedvariablequestion = getCollectedVariablesById(
+    collectedVariablesStore,
+    collectedVariables,
+  );
+
+  const flowcontrolefinal = getFlowcontrol(FlowControl);
   collectedvariablequestion.forEach(collected => {
     if (responseFormat.MULTIPLE_CHOICE.PRIMARY.CodesList) {
       const code = Object.values(
@@ -516,24 +522,11 @@ function getClarificationResponseTableQuestion(
   flowControl,
 ) {
   const ClarificationQuestion = [];
-  const collectedvariablequestion = [];
-  const flowcontrolefinal = [];
-
-  Object.values(collectedVariablesStore).forEach(collec => {
-    if (collectedVariables !== undefined) {
-      collectedVariables.forEach(variables => {
-        if (collec.id === variables) {
-          collectedvariablequestion.push(collec);
-        }
-      });
-    }
-  });
-  FlowControl.forEach(flowcon => {
-    if (flowcon.flowControlType === undefined) {
-      flowcontrolefinal.push(flowcon);
-    }
-  });
-
+  const collectedvariablequestion = getCollectedVariablesById(
+    collectedVariablesStore,
+    collectedVariables,
+  );
+  const flowcontrolefinal = getFlowcontrol(FlowControl);
   if (responseFormat.TABLE.LIST_MEASURE) {
     responseFormat.TABLE.LIST_MEASURE.forEach(mesure => {
       if (mesure.SINGLE_CHOICE?.CodesList.id) {
@@ -733,9 +726,9 @@ function storeToRemoteNested(
       remote.Child = childrenToRemote(
         children,
         store,
-        collectedVariablesStore,
         codesListsStore,
         dynamiqueSpecified,
+        collectedVariablesStore,
         depth,
       );
     }
@@ -746,9 +739,9 @@ function storeToRemoteNested(
 function childrenToRemote(
   children,
   store,
-  collectedVariablesStore = {},
   codesListsStore,
   dynamiqueSpecified,
+  collectedVariablesStore = {},
   depth = 0,
 ) {
   return children.sort(sortByWeight(store)).map(key => {
@@ -776,9 +769,9 @@ export function remoteToStore(
       remote.Child,
       questionnaireId,
       remote.ComponentGroup,
-      codesListsStore,
       iterations,
       filters,
+      codesListsStore,
     ),
     [questionnaireId]: remoteToState(remote, []),
   };

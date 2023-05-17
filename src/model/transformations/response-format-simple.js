@@ -149,14 +149,14 @@ export function stateToRemote(state, collectedVariables) {
     }
     if (dataType.format === 'HH:CH') {
       if (mihundhours || mihundredths) {
-        durationDataType.minimum = `${
-          mihundhours ? `0${mihundhours}`.slice(-2) : '00'
-        }:${mihundredths ? `0${mihundredths}`.slice(-2) : '00'}`;
+        durationDataType.minimum = `${`00${mihundhours}`.slice(
+          -2,
+        )}:${`00${mihundredths}`.slice(-2)}`;
       }
       if (mahundhours || mahundredths) {
-        durationDataType.maximum = `${
-          mahundhours ? `0${mahundhours}`.slice(-2) : '00'
-        }:${mahundredths ? `0${mahundredths}`.slice(-2) : '00'}`;
+        durationDataType.maximum = `${`00${mahundhours}`.slice(
+          -2,
+        )}:${`0${mahundredths}`.slice(-2)}`;
       }
     }
 

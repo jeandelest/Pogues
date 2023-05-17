@@ -1,4 +1,4 @@
-import React, { Children, cloneElement, useState } from 'react';
+import React, { Children, cloneElement, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FieldArray } from 'redux-form';
 import cloneDeep from 'lodash.clonedeep';
@@ -60,6 +60,9 @@ const ListWithInputPanel = props => {
     children,
     canRemove,
     canDuplicate,
+    validateForm,
+    clearSubformValidationErrors,
+    disableValidation,
   } = props;
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(undefined);
@@ -81,7 +84,7 @@ const ListWithInputPanel = props => {
   } */
 
   const clearAllErrors = () => {
-    props.clearSubformValidationErrors();
+    clearSubformValidationErrors();
   };
 
   const removeErrorIntegrityIfExists = values => {
@@ -91,13 +94,11 @@ const ListWithInputPanel = props => {
     }
   };
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
+  const handleClosePopup = useCallback(() => setShowPopup(false), []);
 
   const validate = values => {
     clearAllErrors();
-    return props.validateForm(values, { selectedItemIndex, showPopup });
+    return validateForm(values, { selectedItemIndex, showPopup });
   };
 
   const submit = () => {
@@ -107,7 +108,9 @@ const ListWithInputPanel = props => {
     ) {
       setShowPopup(true);
     } else {
-      const { [name]: items, ...values } = currentValues;
+      const values = Object.fromEntries(
+        Object.entries(currentValues).filter(([key]) => key !== name),
+      );
       const path = getCurrentSelectorPath(selectorPath);
       const canValidate = selectedItemIndex !== undefined || canAddNew;
 
@@ -138,12 +141,13 @@ const ListWithInputPanel = props => {
   };
 
   const duplicate = () => {
-    const { [name]: items, ...values } = currentValues;
-    values.id = null;
+    const newValues = Object.fromEntries(
+      Object.entries(currentValues).filter(([key]) => key !== name),
+    );
     const path = getCurrentSelectorPath(selectorPath);
 
     if (validate(formValues)) {
-      arrayPush(formName, `${path}${name}`, values);
+      arrayPush(formName, `${path}${name}`, { ...newValues, id: null });
       reset();
     }
   };
@@ -239,7 +243,7 @@ const ListWithInputPanel = props => {
                 event.preventDefault();
                 submit();
               }}
-              disabled={props.disableValidation}
+              disabled={disableValidation}
             >
               {Dictionary.validate}
             </button>

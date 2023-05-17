@@ -143,13 +143,6 @@ export function loadingVisualizationSuccess(state) {
   };
 }
 
-export function loadingVisualizationFailure(state) {
-  return {
-    ...state,
-    isLoadingVisualization: false,
-  };
-}
-
 export function setQuestionModifiedAndResetSelectedComponent(state) {
   return {
     ...setSelectedComponentId(
@@ -182,11 +175,10 @@ actionHandlers[UPDATE_COMPONENT_ORDER] = setQuestionModified;
 actionHandlers[MOVE_COMPONENT] = setQuestionModified;
 actionHandlers[START_LOADING_VISUALIZATION] = startLoadingVisualization;
 actionHandlers[LOADING_VISUALIZATION_SUCCESS] = loadingVisualizationSuccess;
-actionHandlers[LOADING_VISUALIZATION_FAILURE] = loadingVisualizationFailure;
+actionHandlers[LOADING_VISUALIZATION_FAILURE] = loadingVisualizationSuccess; // the same action as for success !!
 actionHandlers[DELETE_APPSTATE] = deleteAppState;
 actionHandlers[CREATE_QUESTIONNAIRE_REF] = setActiveExternalQuestionnaires;
 
-// @TODO: Add the combine functionality to the generic createActionHandler method
 export default function (state = defaultState, action) {
   if (!action) return state;
   const { type, payload, meta } = action;

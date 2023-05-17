@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import CSVReader from 'react-csv-reader';
 import { WIDGET_COMPONENT_NEW_EDIT } from 'constants/dom-constants';
 import Dictionary from 'utils/dictionary/dictionary';
@@ -18,7 +18,7 @@ const UploadCSV = props => {
     transformHeader: header => header.toLowerCase().replace(/\W/g, '_'),
     encoding: 'utf-8',
   };
-  const handleForce = data => {
+  const handleForce = useCallback(data => {
     setDataFile(data.length);
     setErrorFile(false);
     setCodesFile(data);
@@ -38,7 +38,7 @@ const UploadCSV = props => {
     } else {
       setErrorFile(true);
     }
-  };
+  }, []);
 
   const validation = () => {
     if (!errorFile) {
@@ -57,14 +57,13 @@ const UploadCSV = props => {
           noDrag
         />
         <p>
-          {errorFile ? (
+          {errorFile && (
             <span style={{ color: 'red' }}>{Dictionary.invalidFile} </span>
-          ) : dataFile ? (
+          )}
+          {!errorFile && dataFile && (
             <span style={{ color: 'black' }}>
               {dataFile} {Dictionary.codeNumber}{' '}
             </span>
-          ) : (
-            false
           )}
         </p>
         <div className={FOOTERLOOP}>

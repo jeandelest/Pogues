@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { formValueSelector, formPropTypes, Field } from 'redux-form';
 import ReactModal from 'react-modal';
@@ -92,15 +92,15 @@ const ComponentNewEdit = props => {
   const [filterId, setFilterId] = useState('');
   const buttonRef = useRef(null);
 
-  const handleCloseNestedFilter = () => {
+  const handleCloseNestedFilter = useCallback(() => {
     setShowNewNestedFilter(false);
     setFilterId('');
-  };
+  }, []);
 
-  const handleClosePopup = () => {
+  const handleClosePopup = useCallback(() => {
     setShowPopup(false);
     setIntegerVariable(false);
-  };
+  }, []);
 
   const handleValidate = () => {
     setShowPopup(false);
@@ -145,20 +145,26 @@ const ComponentNewEdit = props => {
     }
   };
 
-  const handleDeleteNestedFilter = index => {
-    let filters = [...filterImbriquers];
-    filters = filters.filter(filt => filt !== index);
-    setFilterImbriquers(filters);
-    setFilterId('');
-    handleCloseNestedFilter();
-  };
+  const handleDeleteNestedFilter = useCallback(
+    index => {
+      let filters = [...filterImbriquers];
+      filters = filters.filter(filt => filt !== index);
+      setFilterImbriquers(filters);
+      setFilterId('');
+      handleCloseNestedFilter();
+    },
+    [filterImbriquers, handleCloseNestedFilter],
+  );
 
-  const handleSubmitImbriquer = value => {
-    if (!filterImbriquers.includes(value) && value) {
-      setFilterImbriquers([...filterImbriquers, value]);
-    }
-    handleCloseNestedFilter();
-  };
+  const handleSubmitImbriquer = useCallback(
+    value => {
+      if (!filterImbriquers.includes(value) && value) {
+        setFilterImbriquers([...filterImbriquers, value]);
+      }
+      handleCloseNestedFilter();
+    },
+    [filterImbriquers, handleCloseNestedFilter],
+  );
 
   useEffect(() => {
     clearSubformValidationErrors();

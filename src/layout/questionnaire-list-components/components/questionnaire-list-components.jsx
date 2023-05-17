@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactModal from 'react-modal';
 import PropTypes from 'prop-types';
 import { DragDropContext } from 'react-dnd';
@@ -56,31 +56,36 @@ const QuestionnaireListComponents = props => {
     setShowQuestionnaireModal(true);
   };
 
-  const handleCloseQuestionnaireDetail = () => {
-    setShowQuestionnaireModal(false);
-  };
+  const handleCloseQuestionnaireDetail = useCallback(
+    () => setShowQuestionnaireModal(false),
+    [],
+  );
 
-  const handleOpenComponentDetail = () => {
-    setShowComponentModal(true);
-  };
+  const handleOpenComponentDetail = useCallback(
+    () => setShowComponentModal(true),
+    [],
+  );
 
-  const handleCloseComponentDetail = () => {
-    setShowComponentModal(false);
-  };
+  const handleCloseComponentDetail = useCallback(
+    () => setShowComponentModal(false),
+    [],
+  );
 
-  const handleOpenRemoveQuestionnaireDialog = () => {
-    setShowRemoveQuestionnaireDialog(true);
-  };
+  const handleOpenRemoveQuestionnaireDialog = useCallback(
+    () => setShowRemoveQuestionnaireDialog(true),
+    [],
+  );
 
-  const handleCloseRemoveQuestionnaireDialog = () => {
-    setShowRemoveQuestionnaireDialog(false);
-  };
+  const handleCloseRemoveQuestionnaireDialog = useCallback(
+    () => setShowRemoveQuestionnaireDialog(false),
+    [],
+  );
 
-  const handleQuestionnaireDelete = () => {
+  const handleQuestionnaireDelete = useCallback(() => {
     props.removeQuestionnaire(props.questionnaire.id, token).then(() => {
       props.navigate('/');
     });
-  };
+  }, [props, token]);
 
   const componentFilterConditionInitial = id => {
     const filters = Object.values(props.componentsStore).filter(

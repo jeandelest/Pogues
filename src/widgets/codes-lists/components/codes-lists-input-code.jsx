@@ -33,10 +33,13 @@ function CodesListsInputCode({
   const [firstField, setFirstField] = useState(null);
   const [errorsToShow, setErrorsToShow] = useState([]);
 
-  const executeIfValid = action => {
-    setErrorsToShow(meta.error || []);
-    if (errorsToShow.length === 0) action();
-  };
+  const executeIfValid = useCallback(
+    action => {
+      setErrorsToShow(meta.error || []);
+      if (errorsToShow.length === 0) action();
+    },
+    [errorsToShow.length, meta.error],
+  );
 
   const initInputCode = useCallback(
     code => {
@@ -61,15 +64,15 @@ function CodesListsInputCode({
     [Question, change, formName, path, precisionShow],
   );
 
-  const addCodeIfIsValid = () => {
-    executeIfValid(addCode);
-  };
-
-  const addCode = () => {
+  const addCode = useCallback(() => {
     firstField.focus();
     push();
     clear();
-  };
+  }, [clear, firstField, push]);
+
+  const addCodeIfIsValid = useCallback(() => {
+    executeIfValid(addCode);
+  }, [addCode, executeIfValid]);
 
   useEffect(() => {
     initInputCode(code);

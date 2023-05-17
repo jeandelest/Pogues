@@ -11,53 +11,20 @@ import {
   DIMENSION_TYPE,
   DIMENSION_FORMATS,
   QUESTION_TYPE_ENUM,
-  DATATYPE_NAME,
   DATATYPE_VIS_HINT,
   DEFAULT_CODES_LIST_SELECTOR_PATH,
   UI_BEHAVIOUR,
 } from 'constants/pogues-constants';
+import defaultTypageForm from './typage';
 
 const { PRIMARY, SECONDARY, MEASURE, LIST_MEASURE } = DIMENSION_TYPE;
 const { LIST, CODES_LIST } = DIMENSION_FORMATS;
 const { SIMPLE, SINGLE_CHOICE } = QUESTION_TYPE_ENUM;
-const { DATE, NUMERIC, TEXT, BOOLEAN, DURATION } = DATATYPE_NAME;
 const { RADIO } = DATATYPE_VIS_HINT;
 
 export const defaultMeasureSimpleState = {
   mandatory: undefined,
-  type: TEXT,
-  [TEXT]: {
-    maxLength: 249,
-    pattern: '',
-  },
-  [NUMERIC]: {
-    maximum: '',
-    minimum: '',
-    decimals: '',
-  },
-  [DATE]: {
-    maximum: '',
-    minimum: '',
-    format: '',
-  },
-  [BOOLEAN]: {},
-  [DURATION]: {
-    minimum: '',
-    maximum: '',
-    mihours: '',
-    miminutes: '',
-    mihundhours: '',
-    mihundredths: '',
-    miyears: '',
-    mimonths: '',
-    mahours: '',
-    maminutes: '',
-    mahundhours: '',
-    mahundredths: '',
-    mayears: '',
-    mamonths: '',
-    format: '',
-  },
+  ...defaultTypageForm,
 };
 
 export const defaultMeasureState = {

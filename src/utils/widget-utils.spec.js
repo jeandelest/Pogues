@@ -62,8 +62,8 @@ describe('Widget utils', () => {
       },
     ];
 
-    expect(filterStoreByProp(undefined, 'parent', 'FAKE_02')).toEqual([]);
-    expect(filterStoreByProp(store, 'parent', 'FAKE_02')).toEqual(
+    expect(filterStoreByProp('parent', 'FAKE_02', undefined)).toEqual([]);
+    expect(filterStoreByProp('parent', 'FAKE_02', store)).toEqual(
       expectedResult,
     );
   });

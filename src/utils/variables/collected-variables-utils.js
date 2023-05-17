@@ -14,6 +14,58 @@ const { PRIMARY, SECONDARY, MEASURE, LIST_MEASURE } = DIMENSION_TYPE;
 const { CODES_LIST } = DIMENSION_FORMATS;
 const { TEXT, BOOLEAN } = DATATYPE_NAME;
 
+/**
+ * This method will recursively sort an array of code.
+ * A code have a depth, a weight and maybe a parent.
+ * We will first sort codes with the depth=1, and recurively for each code,
+ * sort its direct children.
+ */
+function sortCodes(codes = [], depth = 1, parent = '') {
+  const filtered = codes
+    .filter(code => code.depth === depth && code.parent === parent)
+    .sort((code1, code2) => {
+      const weight1 = code1.weight;
+      const weight2 = code2.weight;
+      if (weight1 < weight2) return -1;
+      if (weight1 > weight2) return 1;
+      return 0;
+    });
+  if (filtered.length === 0) {
+    return [];
+  }
+  return filtered
+    .map(code => [code, ...sortCodes(codes, depth + 1, code.value)])
+    .reduce((acc, res) => [...acc, ...res], []);
+}
+
+function getReponsesValues(measure) {
+  let reponseFormatValues = {};
+
+  if (measure.type === SIMPLE) {
+    reponseFormatValues = {
+      codeListReference: '',
+      codeListReferenceLabel: '',
+      type: measure[SIMPLE].type,
+      BOOLEAN: measure[SIMPLE].BOOLEAN,
+      DATE: measure[SIMPLE].DATE,
+      NUMERIC: measure[SIMPLE].NUMERIC,
+      DURATION: measure[SIMPLE].DURATION,
+      TEXT: measure[SIMPLE].TEXT,
+    };
+  } else if (measure.type === SINGLE_CHOICE) {
+    reponseFormatValues = {
+      codeListReference: measure[SINGLE_CHOICE].CodesList.id,
+      codeListReferenceLabel: measure[SINGLE_CHOICE].CodesList.label,
+      type: TEXT,
+      [TEXT]: {
+        maxLength: 1,
+        pattern: '',
+      },
+    };
+  }
+  return reponseFormatValues;
+}
+
 export function sortByYAndX(store) {
   return (id1, id2) => {
     let c1 = id1;
@@ -50,31 +102,6 @@ export function getCollectedVariablesMultiple(
   form,
   codesListStore,
 ) {
-  /**
-   * This method will recursively sort an array of code.
-   * A code have a depth, a weight and maybe a parent.
-   * We will first sort codes with the depth=1, and recurively for each code,
-   * sort its direct children.
-   */
-  function sortCodes(codes = [], depth = 1, parent = '') {
-    const filtered = codes.filter(
-      code => code.depth === depth && code.parent === parent,
-    );
-    if (filtered.length === 0) {
-      return [];
-    }
-    return filtered
-      .sort((code1, code2) => {
-        const weight1 = code1.weight;
-        const weight2 = code2.weight;
-        if (weight1 < weight2) return -1;
-        if (weight1 > weight2) return 1;
-        return 0;
-      })
-      .map(code => [code, ...sortCodes(codes, depth + 1, code.value)])
-      .reduce((acc, res) => [...acc, ...res], []);
-  }
-
   const {
     [PRIMARY]: {
       [DEFAULT_CODES_LIST_SELECTOR_PATH]: { codes, id },
@@ -171,59 +198,6 @@ export function getCollectedVariablesSingle(questionName, form) {
 }
 
 export function getCollectedVariablesTable(questionName, form, codesListStore) {
-  /**
-   * This method will recursively sort an array of code.
-   * A code have a depth, a weight and maybe a parent.
-   * We will first sort codes with the depth=1, and recurively for each code,
-   * sort its direct children.
-   */
-
-  function sortCodes(codes = [], depth = 1, parent = '') {
-    const filtered = codes.filter(
-      code => code.depth === depth && code.parent === parent,
-    );
-    if (filtered.length === 0) {
-      return [];
-    }
-    return filtered
-      .sort((code1, code2) => {
-        const weight1 = code1.weight;
-        const weight2 = code2.weight;
-        if (weight1 < weight2) return -1;
-        if (weight1 > weight2) return 1;
-        return 0;
-      })
-      .map(code => [code, ...sortCodes(codes, depth + 1, code.value)])
-      .reduce((acc, res) => [...acc, ...res], []);
-  }
-
-  function getReponsesValues(measure) {
-    let reponseFormatValues = {};
-
-    if (measure.type === SIMPLE) {
-      reponseFormatValues = {
-        codeListReference: '',
-        codeListReferenceLabel: '',
-        type: measure[SIMPLE].type,
-        BOOLEAN: measure[SIMPLE].BOOLEAN,
-        DATE: measure[SIMPLE].DATE,
-        NUMERIC: measure[SIMPLE].NUMERIC,
-        DURATION: measure[SIMPLE].DURATION,
-        TEXT: measure[SIMPLE].TEXT,
-      };
-    } else if (measure.type === SINGLE_CHOICE) {
-      reponseFormatValues = {
-        codeListReference: measure[SINGLE_CHOICE].CodesList.id,
-        codeListReferenceLabel: measure[SINGLE_CHOICE].CodesList.label,
-        type: TEXT,
-        [TEXT]: {
-          maxLength: 1,
-          pattern: '',
-        },
-      };
-    }
-    return reponseFormatValues;
-  }
   const collectedVariables = [];
   let codesListState;
   let codesStore;

@@ -1,49 +1,12 @@
 import merge from 'lodash.merge';
 import cloneDeep from 'lodash.clonedeep';
-
-import { DATATYPE_NAME } from 'constants/pogues-constants';
-
-const { DATE, NUMERIC, TEXT, BOOLEAN, DURATION } = DATATYPE_NAME;
+import defaultTypageForm from './typage';
 
 export const defaultState = {};
 
 export const defaultForm = {
   mandatory: false,
-  type: TEXT,
-  [TEXT]: {
-    maxLength: 249,
-    pattern: '',
-  },
-  [NUMERIC]: {
-    minimum: '',
-    maximum: '',
-    decimals: '',
-    unit: '',
-  },
-  [DATE]: {
-    minimum: '',
-    maximum: '',
-    format: '',
-  },
-  [BOOLEAN]: {},
-
-  [DURATION]: {
-    minimum: '',
-    maximum: '',
-    mihours: '',
-    miminutes: '',
-    mihundhours: '',
-    mihundredths: '',
-    miyears: '',
-    mimonths: '',
-    mahours: '',
-    maminutes: '',
-    mahundhours: '',
-    mahundredths: '',
-    mayears: '',
-    mamonths: '',
-    format: '',
-  },
+  ...defaultTypageForm,
 };
 
 export function formToState(form) {

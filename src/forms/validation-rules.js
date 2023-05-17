@@ -158,19 +158,38 @@ export function validCodesList(codesList) {
   return errors;
 }
 
+function checkIfCodesListTheSame(expected, values) {
+  if (!expected[0]) {
+    return true;
+  }
+  return (
+    expected.filter(e => e !== undefined && e !== '' && !values.includes(e))
+      .length === 0
+  );
+}
+
+function objectCompare(object1, object2) {
+  let equal = true;
+  if (object2) {
+    Object.keys(object1).forEach(p => {
+      if (object1[p] === '' && object2[p] !== undefined && object2[p] !== '') {
+        equal = false;
+      } else if (object1[p] !== '' && object2[p] === undefined) {
+        equal = false;
+      } else if (object1[p] !== '' && object2[p] !== undefined) {
+        if (object1[p] !== object2[p]) {
+          equal = false;
+        }
+      }
+    });
+  }
+  return equal;
+}
+
 export function validCollectedVariables(
   value,
   { form, stores: { codesListsStore } },
 ) {
-  function checkIfCodesListTheSame(expected, values) {
-    if (!expected[0]) {
-      return true;
-    }
-    return (
-      expected.filter(e => e !== undefined && e !== '' && !values.includes(e))
-        .length === 0
-    );
-  }
   // @TODO: Improve this validation testing the coordinates of the variables
   const {
     name: nameComponent,
@@ -200,28 +219,6 @@ export function validCollectedVariables(
    * For a SINGLE_CHOICE question with a codelist, the codeListReference should be the same
    * It solves this issue : https://trello.com/c/bZo4vAei/397-255-questionnaire-non-r%C3%A9cup%C3%A9r%C3%A9-par-lapplication
    */
-
-  function objectCompare(object1, object2) {
-    let equal = true;
-    if (object2) {
-      Object.keys(object1).forEach(p => {
-        if (
-          object1[p] === '' &&
-          object2[p] !== undefined &&
-          object2[p] !== ''
-        ) {
-          equal = false;
-        } else if (object1[p] !== '' && object2[p] === undefined) {
-          equal = false;
-        } else if (object1[p] !== '' && object2[p] !== undefined) {
-          if (object1[p] !== object2[p]) {
-            equal = false;
-          }
-        }
-      });
-    }
-    return equal;
-  }
 
   let codeListPrecision = false;
   if (

@@ -528,8 +528,8 @@ describe('duplicateComponentAndVars', () => {
   const idComponent = 'jkwdir4v';
   const output = component.duplicateComponentAndVars(
     activesComponents,
-    collectedVariables,
     idComponent,
+    collectedVariables,
   );
 
   const newId = Object.keys(output.activeComponentsById).find(

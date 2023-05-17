@@ -98,14 +98,14 @@ export function questionnaireRemoteToStores(remote, currentStores = {}) {
 export function questionnaireListRemoteToStores(questionnairesList) {
   const questionnaireById = [];
 
-  for (let i = 0; i < questionnairesList.length; i += 1) {
+  questionnairesList.forEach(quest => {
     let questionnaireState;
     try {
-      questionnaireState = Questionnaire.remoteToStore1(questionnairesList[i]);
+      questionnaireState = Questionnaire.remoteToStore1(quest);
     } catch (e) {
       //
     }
     if (questionnaireState) questionnaireById.push(questionnaireState);
-  }
+  });
   return questionnaireById;
 }

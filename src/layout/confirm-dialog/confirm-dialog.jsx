@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import ReactModal from 'react-modal';
 import PropTypes from 'prop-types';
 import Dictionary from 'utils/dictionary/dictionary';
@@ -27,11 +27,14 @@ const ConfirmDialog = props => {
     props.confirm();
   };
 
-  const handleCancel = event => {
-    event.stopPropagation();
-    props.closePopup();
-    setShowConfirmModal(false);
-  };
+  const handleCancel = useCallback(
+    event => {
+      event.stopPropagation();
+      props.closePopup();
+      setShowConfirmModal(false);
+    },
+    [props],
+  );
 
   return (
     <ReactModal

@@ -24,16 +24,7 @@ const { TEXT } = DATATYPE_NAME;
 // HELPERS
 
 function getDimensionsByType(type, dimensions) {
-  let dimension;
-
-  for (let i = 0; i < dimensions.length; i += 1) {
-    if (dimensions[i].dimensionType === type) {
-      dimension = dimensions[i];
-      break;
-    }
-  }
-
-  return dimension;
+  return dimensions.find(dim => dim.dimensionType === type);
 }
 
 function getDimensionsMeasures(dimensions) {
@@ -371,27 +362,32 @@ export function stateToRemote(
     [LIST_MEASURE]: listMeasuresState,
   } = state;
 
-  const {
-    type,
-    [type]: { type: typePrimaryCodesList, ...primaryTypeState },
-    ...totalLabelPrimaryState
-  } = primaryState;
+  const primaryStateType = primaryState.type;
+  const primaryStateDimension = Object.entries(primaryState).reduce(
+    (acc, [key, value]) => {
+      if (key === 'type') return { ...acc, type: PRIMARY };
+      if (key === primaryStateType) {
+        return {
+          ...acc,
+          ...Object.fromEntries(
+            Object.entries(primaryState[primaryStateType]).filter(
+              ([key]) => key !== 'type',
+            ),
+          ),
+        };
+      }
+      return { ...acc, [key]: value };
+    },
+    {},
+  );
   const dimensionsModel = [];
   let responsesState = [];
 
   // Primary and secondary dimension
-  dimensionsModel.push(
-    Dimension.stateToRemote({
-      type: PRIMARY,
-      ...primaryTypeState,
-      ...totalLabelPrimaryState,
-    }),
-  );
+  dimensionsModel.push(Dimension.stateToRemote(primaryStateDimension));
   if (secondaryState) {
-    const { type: typeSecondaryCodesList, ...secondaryTypeState } =
-      secondaryState;
     dimensionsModel.push(
-      Dimension.stateToRemote({ type: SECONDARY, ...secondaryTypeState }),
+      Dimension.stateToRemote({ ...secondaryState, type: SECONDARY }),
     );
   }
   // Measures dimensions
@@ -401,15 +397,15 @@ export function stateToRemote(
     );
     responsesState = [stateToResponseState(measureState)];
   } else {
-    for (let i = 0; i < listMeasuresState.length; i += 1) {
+    listMeasuresState.forEach(measure => {
       dimensionsModel.push(
         Dimension.stateToRemote({
           type: MEASURE,
-          label: listMeasuresState[i].label,
+          label: measure.label,
         }),
       );
-      responsesState.push(stateToResponseState(listMeasuresState[i]));
-    }
+      responsesState.push(stateToResponseState(measure));
+    });
   }
 
   // Responses

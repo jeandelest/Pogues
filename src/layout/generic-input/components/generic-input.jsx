@@ -102,16 +102,16 @@ function GenericInput(props) {
     setTypeNewComponent(componentType);
   };
 
-  const handleCloseNewComponent = () => {
+  const handleCloseNewComponent = useCallback(() => {
     setShowNewComponentModal(false);
     setShowNewUnsavedModal(false);
     setTypeNewComponent('');
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setShowNewUnsavedModal(false);
     setShowNewLoopModal(false);
-  };
+  }, []);
 
   const saveQuestionnaire = () => {
     if (!isLoopsValid) {

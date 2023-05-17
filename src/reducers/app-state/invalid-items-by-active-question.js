@@ -12,8 +12,9 @@ export function setInvalidItems(state, { invalidItems }) {
 }
 
 export function removeInvalidItem(state, { invalidItemIdToRemove }) {
-  const { [invalidItemIdToRemove]: remove, ...newInvalidItemsState } = state;
-  return newInvalidItemsState;
+  return Object.fromEntries(
+    Object.entries(state).filter(([key]) => key !== invalidItemIdToRemove),
+  );
 }
 
 export function addListInvalidItem(state, invalidItems) {

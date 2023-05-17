@@ -29,7 +29,9 @@ export function decoreFormField(Field) {
   );
 }
 
-export const noop = () => {};
+export const noop = () => {
+  // This is intentional
+};
 
 export const fakeFieldInput = {
   name: 'FAKE_NAME',

@@ -207,8 +207,6 @@ export function getNewSubsequencePlaceholder(components, activeComponent) {
         );
         weight = getWeight(components, heavyChildrenId);
       }
-    } else {
-      weight = 0;
     }
   }
 
@@ -250,8 +248,6 @@ export function getNewQuestionPlaceholder(components, activeComponent) {
 
     if (activeComponent.type === QUESTION) {
       weight = activeComponent.weight + 1;
-    } else {
-      weight = 0;
     }
   } else {
     heavySequenceId = getHeavyComponentIdByTypeFromGroupIds(
