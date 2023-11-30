@@ -15,14 +15,8 @@ export function questionnaireRemoteToStores(remote, currentStores = {}) {
     CodeLists: { CodeList: codesLists },
     Variables: { Variable: variables },
   } = remote;
-  let iterations = [];
-  if (remote.Iterations && remote.Iterations.Iteration) {
-    iterations = remote.Iterations.Iteration;
-  }
-  let filters = [];
-  if (remote.FlowControl) {
-    filters = remote.FlowControl;
-  }
+  const iterations = remote.Iterations?.Iteration || [];
+  const filters = remote.FlowControl || [];
   const calculatedVariables = variables.filter(v => v.type === CALCULATED);
   const externalVariables = variables.filter(v => v.type === EXTERNAL);
   const collectedVariables = variables.filter(v => v.type === COLLECTED);

@@ -85,26 +85,31 @@ const InputAutocomplete = props => {
     if (
       event.key !== 'ArrowUp' &&
       event.key !== 'ArrowDown' &&
-      event.key !== 'Enter'
+      event.key !== 'Enter' &&
+      inputSearchValue.length === 0
     ) {
-      if (inputSearchValue.length === 0) {
-        setSuggestions([]);
-        setIndexActiveSuggestion(undefined);
-      } else {
-        const flags = caseSensitive ? 'g' : 'gi';
-        const regEx = new RegExp(inputSearchValue, flags);
-        setSuggestions(
-          inputSearchValue === ''
-            ? []
-            : options
-                .filter(
-                  o => getOptionLabel(o.label, o.value).search(regEx) !== -1,
-                )
-                .splice(0, numSuggestionsShown),
-        );
-        setIndexActiveSuggestion(0);
-        setInputSearch(inputSearchValue);
-      }
+      setSuggestions([]);
+      setIndexActiveSuggestion(undefined);
+    }
+    if (
+      event.key !== 'ArrowUp' &&
+      event.key !== 'ArrowDown' &&
+      event.key !== 'Enter' &&
+      inputSearchValue.length !== 0
+    ) {
+      const flags = caseSensitive ? 'g' : 'gi';
+      const regEx = new RegExp(inputSearchValue, flags);
+      setSuggestions(
+        inputSearchValue === ''
+          ? []
+          : options
+              .filter(
+                o => getOptionLabel(o.label, o.value).search(regEx) !== -1,
+              )
+              .splice(0, numSuggestionsShown),
+      );
+      setIndexActiveSuggestion(0);
+      setInputSearch(inputSearchValue);
     }
   };
 
