@@ -287,7 +287,7 @@ function remoteToState(remote, componentGroup, codesListsStore) {
       CollectedVariable.remoteToComponentState(responseFinal);
   }
   const cGroupIndex = componentGroup.findIndex(
-    group => group.MemberReference && group.MemberReference.indexOf(id) >= 0,
+    group => group.MemberReference?.indexOf(id) >= 0,
   );
   const cGroup = componentGroup[cGroupIndex];
   state.pageBreak =
