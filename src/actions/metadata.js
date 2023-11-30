@@ -266,7 +266,10 @@ export const loadExternalQuestionnairesLoops =
       const externalQuestionnairesMetadata = [
         {
           id: idExternalQuestionnaire,
-          loops: externalQuestionnaire.Iterations?.Iteration || [],
+          loops: [
+            ...externalQuestionnaireQuestionLoops,
+            ...externalQuestionnaireLoops,
+          ],
         },
       ];
       return dispatch(
