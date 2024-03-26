@@ -21,20 +21,24 @@ const { INNER, ALERT, LIST } = ERRORS_INTEGRITY;
 
 const { LOOP, FILTER, NESTEDFILTRE } = COMPONENT_TYPE;
 
-const QuestionnaireListComponents = props => {
-  const {
-    token,
-    questionnaire,
-    componentsStore,
-    editingComponentId,
-    errorsIntegrity,
-    setSelectedComponentId,
-    activeCalculatedVariables,
-    calculatedVariables,
-    removeQuestionnaire,
-    navigate,
-  } = props;
-
+const QuestionnaireListComponents = ({
+  token,
+  questionnaire,
+  componentsStore,
+  editingComponentId,
+  errorsIntegrity,
+  setSelectedComponentId,
+  activeCalculatedVariables,
+  calculatedVariables,
+  removeQuestionnaire,
+  navigate,
+  selectedComponentId,
+  setEditingComponentId,
+  duplicateComponentAndVariables,
+  dragComponent,
+  removeComponent,
+  removeQuestionnaireRef,
+}) => {
   const publicEnemyBaseUri = getEnvVar('PUBLIC_ENEMY_URL');
 
   useEffect(() => {
@@ -57,8 +61,6 @@ const QuestionnaireListComponents = props => {
     }
   }, [activeCalculatedVariables, calculatedVariables, questionnaire]);
 
-  const handleOpenComponentDetail = () => setShowComponentModal(true);
-
   const componentFilterConditionInitial = id => {
     return Object.values(componentsStore).filter(
       component => component.type === FILTER && component.initialMember === id,
@@ -70,48 +72,46 @@ const QuestionnaireListComponents = props => {
     );
   };
 
-  const renderComponentsByParent = (parent, props, actions) => {
-    return getSortedChildren(props.componentsStore, parent).map(key => {
-      if (props.componentsStore[key].id !== 'idendquest') {
-        const subTree = renderComponentsByParent(key, props, actions);
-        const component = props.componentsStore[key];
-        if (
+  const renderComponentsByParent = parent => {
+    return getSortedChildren(componentsStore, parent)
+      .filter(key => {
+        const component = componentsStore[key];
+        return (
           component.type !== LOOP &&
           component.type !== FILTER &&
-          component.type !== NESTEDFILTRE
-        ) {
-          return (
-            <QuestionnaireComponent
-              token={props.token}
-              key={component.id}
-              selected={props.selectedComponentId === key}
-              component={component}
-              setSelectedComponentId={props.setSelectedComponentId}
-              setEditingComponentId={props.setEditingComponentId}
-              duplicateComponentAndVariables={
-                props.duplicateComponentAndVariables
-              }
-              moveComponent={props.dragComponent}
-              removeComponent={props.removeComponent}
-              removeQuestionnaireRef={props.removeQuestionnaireRef}
-              integrityErrorsByType={props.errorsIntegrity[key]}
-              parentType={props.componentsStore[component.parent].type}
-              actions={actions}
-              componentFiltersInitial={componentFilterConditionInitial(
-                props.componentsStore[key].id,
-              )}
-              componentFiltersFinal={componentFilterConditionFinal(
-                props.componentsStore[key].id,
-              )}
-            >
-              {subTree}
-            </QuestionnaireComponent>
-          );
-        }
-        return null;
-      }
-      return null;
-    }, {});
+          component.type !== NESTEDFILTRE &&
+          component.id !== 'idendquest'
+        );
+      })
+      .map(key => {
+        const subTree = renderComponentsByParent(key);
+        const component = componentsStore[key];
+        return (
+          <QuestionnaireComponent
+            token={token}
+            key={component.id}
+            selected={selectedComponentId === key}
+            component={component}
+            setSelectedComponentId={setSelectedComponentId}
+            setEditingComponentId={setEditingComponentId}
+            duplicateComponentAndVariables={duplicateComponentAndVariables}
+            moveComponent={dragComponent}
+            removeComponent={removeComponent}
+            removeQuestionnaireRef={removeQuestionnaireRef}
+            integrityErrorsByType={errorsIntegrity[key]}
+            parentType={componentsStore[component.parent].type}
+            actions={{
+              handleOpenComponentDetail: () => setShowComponentModal(true),
+            }}
+            componentFiltersInitial={componentFilterConditionInitial(
+              component.id,
+            )}
+            componentFiltersFinal={componentFilterConditionFinal(component.id)}
+          >
+            {subTree}
+          </QuestionnaireComponent>
+        );
+      }, {});
   };
 
   const componentType = componentsStore[editingComponentId]?.type;
@@ -199,79 +199,80 @@ const QuestionnaireListComponents = props => {
           {/* Questionnaire components */}
 
           <div id="questionnaire-items">
-            {renderComponentsByParent(questionnaire.id, props, {
-              handleOpenComponentDetail: handleOpenComponentDetail,
-            })}
+            {renderComponentsByParent(questionnaire.id)}
           </div>
 
           {/* Questionnaire edit */}
+          {showQuestionnaireModal && (
+            <ReactModal
+              ariaHideApp={false}
+              shouldCloseOnOverlayClick={false}
+              isOpen={showQuestionnaireModal}
+              onRequestClose={() => setShowQuestionnaireModal(false)}
+              contentLabel={Dictionary.questionnaireDetail}
+            >
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>{Dictionary.questionnaireDetail}</h3>
 
-          <ReactModal
-            ariaHideApp={false}
-            shouldCloseOnOverlayClick={false}
-            isOpen={showQuestionnaireModal}
-            onRequestClose={() => setShowQuestionnaireModal(false)}
-            contentLabel={Dictionary.questionnaireDetail}
-          >
-            <div className="popup">
-              <div className="popup-header">
-                <h3>{Dictionary.questionnaireDetail}</h3>
-
-                <button
-                  type="button"
-                  onClick={() => setShowQuestionnaireModal(false)}
-                >
-                  <span>X</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowQuestionnaireModal(false)}
+                  >
+                    <span>X</span>
+                  </button>
+                </div>
+                <div className="popup-body">
+                  <QuestionnaireEdit
+                    onCancel={() => setShowQuestionnaireModal(false)}
+                    onSuccess={() => setShowQuestionnaireModal(false)}
+                  />
+                </div>
               </div>
-              <div className="popup-body">
-                <QuestionnaireEdit
-                  onCancel={() => setShowQuestionnaireModal(false)}
-                  onSuccess={() => setShowQuestionnaireModal(false)}
-                />
-              </div>
-            </div>
-          </ReactModal>
+            </ReactModal>
+          )}
 
           {/* Component edit */}
-
-          <ReactModal
-            ariaHideApp={false}
-            shouldCloseOnOverlayClick={false}
-            isOpen={showComponentModal}
-            onRequestClose={() => setShowComponentModal(false)}
-            contentLabel={componentHeader}
-          >
-            <div className="popup">
-              <div className="popup-header">
-                <h3>{componentHeader}</h3>
-                <button
-                  type="button"
-                  onClick={() => setShowComponentModal(false)}
-                >
-                  <span>X</span>
-                </button>
+          {showComponentModal && (
+            <ReactModal
+              ariaHideApp={false}
+              shouldCloseOnOverlayClick={false}
+              isOpen={showComponentModal}
+              onRequestClose={() => setShowComponentModal(false)}
+              contentLabel={componentHeader}
+            >
+              <div className="popup">
+                <div className="popup-header">
+                  <h3>{componentHeader}</h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowComponentModal(false)}
+                  >
+                    <span>X</span>
+                  </button>
+                </div>
+                <div className="popup-body">
+                  <ComponentEdit
+                    onCancel={() => setShowComponentModal(false)}
+                    onSuccess={() => setShowComponentModal(false)}
+                  />
+                </div>
               </div>
-              <div className="popup-body">
-                <ComponentEdit
-                  onCancel={() => setShowComponentModal(false)}
-                  onSuccess={() => setShowComponentModal(false)}
-                />
-              </div>
-            </div>
-          </ReactModal>
+            </ReactModal>
+          )}
 
           {/* Remove dialog */}
-
-          <ConfirmDialog
-            showConfirmModal={showRemoveQuestionnaireDialog}
-            confirm={() =>
-              removeQuestionnaire(questionnaire.id, token).then(() =>
-                navigate('/'),
-              )
-            }
-            closePopup={() => setShowRemoveQuestionnaireDialog(false)}
-          />
+          {showRemoveQuestionnaireDialog && (
+            <ConfirmDialog
+              showConfirmModal={showRemoveQuestionnaireDialog}
+              confirm={() =>
+                removeQuestionnaire(questionnaire.id, token).then(() =>
+                  navigate('/'),
+                )
+              }
+              closePopup={() => setShowRemoveQuestionnaireDialog(false)}
+            />
+          )}
         </div>
       )}
     </div>
