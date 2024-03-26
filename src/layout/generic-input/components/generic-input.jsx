@@ -245,68 +245,78 @@ function GenericInput(props) {
           <span className="glyphicon glyphicon-share-alt" />
         </button>
       </div>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showNewComponentModal}
-        onRequestClose={handleCloseNewComponent}
-        contentLabel={
-          typeNewComponent ? Dictionary[`componentNew${typeNewComponent}`] : ''
-        }
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>
-              {typeNewComponent
-                ? Dictionary[`componentNew${typeNewComponent}`]
-                : ''}
-            </h3>
-            <button type="button" onClick={handleCloseNewComponent}>
-              <span>X</span>
-            </button>
+      {showNewComponentModal && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showNewComponentModal}
+          onRequestClose={handleCloseNewComponent}
+          contentLabel={
+            typeNewComponent
+              ? Dictionary[`componentNew${typeNewComponent}`]
+              : ''
+          }
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>
+                {typeNewComponent
+                  ? Dictionary[`componentNew${typeNewComponent}`]
+                  : ''}
+              </h3>
+              <button type="button" onClick={handleCloseNewComponent}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              <ComponentNew
+                parentId={newComponentParent}
+                weight={newComponentWeight}
+                type={typeNewComponent}
+                onCancel={handleCloseNewComponent}
+                onSuccess={handleCloseNewComponent}
+              />
+            </div>
           </div>
-          <div className="popup-body">
-            <ComponentNew
-              parentId={newComponentParent}
-              weight={newComponentWeight}
-              type={typeNewComponent}
-              onCancel={handleCloseNewComponent}
-              onSuccess={handleCloseNewComponent}
-            />
-          </div>
-        </div>
-      </ReactModal>
-      <ReactModal
-        isOpen={showNewUnsavedModal}
-        ariaHideApp={false}
-        className="custom-modal"
-      >
-        <p>{Dictionary.notSaved}</p>
-        <button onClick={handleCloseModal} className="modal-button">
-          {Dictionary.close}
-        </button>
-      </ReactModal>
-      <ReactModal
-        isOpen={showVisualizationErrorPopup !== ''}
-        ariaHideApp={false}
-        className="custom-modal"
-      >
-        <p>{Dictionary.visualizationError}</p>
-        <p className="api-error-message">{showVisualizationErrorPopup}</p>
-        <button onClick={removeVisualizationError} className="modal-button">
-          {Dictionary.close}
-        </button>
-      </ReactModal>
-      <ReactModal
-        isOpen={showNewLoopModal}
-        ariaHideApp={false}
-        className="custom-modal"
-      >
-        <p>{Dictionary.loopNotSaved}</p>
-        <button onClick={handleCloseModal} className="modal-button">
-          {Dictionary.close}
-        </button>
-      </ReactModal>
+        </ReactModal>
+      )}
+      {showNewUnsavedModal && (
+        <ReactModal
+          isOpen={showNewUnsavedModal}
+          ariaHideApp={false}
+          className="custom-modal"
+        >
+          <p>{Dictionary.notSaved}</p>
+          <button onClick={handleCloseModal} className="modal-button">
+            {Dictionary.close}
+          </button>
+        </ReactModal>
+      )}
+      {showVisualizationErrorPopup !== '' && (
+        <ReactModal
+          isOpen={showVisualizationErrorPopup !== ''}
+          ariaHideApp={false}
+          className="custom-modal"
+        >
+          <p>{Dictionary.visualizationError}</p>
+          <p className="api-error-message">{showVisualizationErrorPopup}</p>
+          <button onClick={removeVisualizationError} className="modal-button">
+            {Dictionary.close}
+          </button>
+        </ReactModal>
+      )}
+      {showNewLoopModal && (
+        <ReactModal
+          isOpen={showNewLoopModal}
+          ariaHideApp={false}
+          className="custom-modal"
+        >
+          <p>{Dictionary.loopNotSaved}</p>
+          <button onClick={handleCloseModal} className="modal-button">
+            {Dictionary.close}
+          </button>
+        </ReactModal>
+      )}
     </div>
   );
 }

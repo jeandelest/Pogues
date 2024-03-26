@@ -264,23 +264,25 @@ const ListWithInputPanel = ({
           </div>
         </div>
       </div>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showPopup}
-        onRequestClose={handleClosePopup}
-        contentLabel="Alert Save"
-      >
-        <div className="popup-notSaved">
-          <div className="popup-header">
-            <h3>{Dictionary.saveLowerTitle}</h3>
-            <button type="button" onClick={handleClosePopup}>
-              <span>X</span>
-            </button>
+      {showPopup && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showPopup}
+          onRequestClose={handleClosePopup}
+          contentLabel="Alert Save"
+        >
+          <div className="popup-notSaved">
+            <div className="popup-header">
+              <h3>{Dictionary.saveLowerTitle}</h3>
+              <button type="button" onClick={handleClosePopup}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">{Dictionary.saveLower}</div>
           </div>
-          <div className="popup-body">{Dictionary.saveLower}</div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 };

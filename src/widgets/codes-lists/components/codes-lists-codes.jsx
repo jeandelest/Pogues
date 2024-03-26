@@ -328,24 +328,29 @@ function CodesListsCodes(props) {
         {/* Input code without a parent code */}
         {showInputCode && !editing && renderInputCode()}
       </div>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showUploadCode}
-        onRequestClose={closeUpload}
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>{Dictionary.uploadCode}</h3>
-            <button type="button" onClick={closeUpload}>
-              <span>X</span>
-            </button>
+      {showUploadCode && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showUploadCode}
+          onRequestClose={closeUpload}
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>{Dictionary.uploadCode}</h3>
+              <button type="button" onClick={closeUpload}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              <UploadCSV
+                closeUpload={closeUpload}
+                getFileCodes={getFileCodes}
+              />
+            </div>
           </div>
-          <div className="popup-body">
-            <UploadCSV closeUpload={closeUpload} getFileCodes={getFileCodes} />
-          </div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 }

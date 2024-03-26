@@ -253,29 +253,31 @@ const QuestionnaireComponent = props => {
           {dropZone}
           {children}
         </div>
-        <ReactModal
-          ariaHideApp={false}
-          shouldCloseOnOverlayClick={false}
-          isOpen={showComponentModal}
-          onRequestClose={handleCloseComponentDetail}
-          contentLabel={componentHeader}
-        >
-          <div className="popup">
-            <div className="popup-header">
-              <h3>{componentHeader}</h3>
-              <button type="button" onClick={handleCloseComponentDetail}>
-                <span>X</span>
-              </button>
+        {showComponentModal && (
+          <ReactModal
+            ariaHideApp={false}
+            shouldCloseOnOverlayClick={false}
+            isOpen={showComponentModal}
+            onRequestClose={handleCloseComponentDetail}
+            contentLabel={componentHeader}
+          >
+            <div className="popup">
+              <div className="popup-header">
+                <h3>{componentHeader}</h3>
+                <button type="button" onClick={handleCloseComponentDetail}>
+                  <span>X</span>
+                </button>
+              </div>
+              <div className="popup-body">
+                <ComponentEdit
+                  onCancel={handleCloseComponentDetail}
+                  onSuccess={handleCloseComponentDetail}
+                  deleteComponent={id => handleDeleteComponent1(id)}
+                />
+              </div>
             </div>
-            <div className="popup-body">
-              <ComponentEdit
-                onCancel={handleCloseComponentDetail}
-                onSuccess={handleCloseComponentDetail}
-                deleteComponent={id => handleDeleteComponent1(id)}
-              />
-            </div>
-          </div>
-        </ReactModal>
+          </ReactModal>
+        )}
       </div>,
     ),
   );

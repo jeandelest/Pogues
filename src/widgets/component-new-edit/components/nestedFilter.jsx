@@ -491,40 +491,42 @@ const NestedFilter = props => {
           </button>
         )}
       </div>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showNewNestedFilter}
-        onRequestClose={handleCloseNestedFilter}
-        contentLabel="FILTRE IMBRIQUE"
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>
-              {indexImbriquer
-                ? Dictionary.editFiltreImbriquer
-                : Dictionary.filtreImbriquer}
-            </h3>
-            <button type="button" onClick={handleCloseNestedFilter}>
-              <span>X</span>
-            </button>
+      {showNewNestedFilter && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showNewNestedFilter}
+          onRequestClose={handleCloseNestedFilter}
+          contentLabel="FILTRE IMBRIQUE"
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>
+                {indexImbriquer
+                  ? Dictionary.editFiltreImbriquer
+                  : Dictionary.filtreImbriquer}
+              </h3>
+              <button type="button" onClick={handleCloseNestedFilter}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              <NestedFilter
+                filterId={indexImbriquer}
+                componentsStore={componentsStore}
+                createComponent={props.createComponent}
+                setSelectedComponentId={props.setSelectedComponentId}
+                handleSubmitImbriquer={value => handleSubmitImbriquer1(value)}
+                handleCloseNestedFilter1={() => handleCloseNestedFilter()}
+                componentType={NESTEDFILTRE}
+                handleDeleteNestedFilter={handleDeleteNested}
+                updateComponent={updateComponent}
+                initialMemberFilter={newNestedFilter.initialMember}
+              />
+            </div>
           </div>
-          <div className="popup-body">
-            <NestedFilter
-              filterId={indexImbriquer}
-              componentsStore={componentsStore}
-              createComponent={props.createComponent}
-              setSelectedComponentId={props.setSelectedComponentId}
-              handleSubmitImbriquer={value => handleSubmitImbriquer1(value)}
-              handleCloseNestedFilter1={() => handleCloseNestedFilter()}
-              componentType={NESTEDFILTRE}
-              handleDeleteNestedFilter={handleDeleteNested}
-              updateComponent={updateComponent}
-              initialMemberFilter={newNestedFilter.initialMember}
-            />
-          </div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 };

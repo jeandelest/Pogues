@@ -54,29 +54,31 @@ function NavLoop({
   return (
     <div>
       <ul>{options}</ul>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showComponentModal}
-        onRequestClose={handleCloseComponentDetail}
-        contentLabel={componentHeader}
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>{componentHeader}</h3>
-            <button type="button" onClick={handleCloseComponentDetail}>
-              <span>X</span>
-            </button>
+      {showComponentModal && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showComponentModal}
+          onRequestClose={handleCloseComponentDetail}
+          contentLabel={componentHeader}
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>{componentHeader}</h3>
+              <button type="button" onClick={handleCloseComponentDetail}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              <ComponentEdit
+                onCancel={handleCloseComponentDetail}
+                onSuccess={handleCloseComponentDetail}
+                deleteComponent={handleDeleteComponent}
+              />
+            </div>
           </div>
-          <div className="popup-body">
-            <ComponentEdit
-              onCancel={handleCloseComponentDetail}
-              onSuccess={handleCloseComponentDetail}
-              deleteComponent={handleDeleteComponent}
-            />
-          </div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 }

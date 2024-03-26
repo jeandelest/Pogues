@@ -243,32 +243,34 @@ const QuestionnaireList = props => {
           </div>
         )}
       </div>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showPopup}
-        onRequestClose={handleClosePopup}
-        contentLabel="Alert Save"
-        className="popup-duplication"
-      >
-        <div className="popup-header">
-          <h3>{Dictionary.dupliquate}</h3>
-          <button type="button" onClick={handleClosePopup}>
-            <span>X</span>
-          </button>
-        </div>
-        <div className="popup-body">{`${Dictionary.duplicateQuestion}${questionLabel}${Dictionary.duplicateQuestionConfirmation}`}</div>
-        <button
-          className="popup-yes"
-          type="button"
-          onClick={() => handleSubmit()}
+      {showPopup && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showPopup}
+          onRequestClose={handleClosePopup}
+          contentLabel="Alert Save"
+          className="popup-duplication"
         >
-          {Dictionary.yes}
-        </button>
-        <button className="popup-no" type="button" onClick={handleClosePopup}>
-          {Dictionary.no}
-        </button>
-      </ReactModal>
+          <div className="popup-header">
+            <h3>{Dictionary.dupliquate}</h3>
+            <button type="button" onClick={handleClosePopup}>
+              <span>X</span>
+            </button>
+          </div>
+          <div className="popup-body">{`${Dictionary.duplicateQuestion}${questionLabel}${Dictionary.duplicateQuestionConfirmation}`}</div>
+          <button
+            className="popup-yes"
+            type="button"
+            onClick={() => handleSubmit()}
+          >
+            {Dictionary.yes}
+          </button>
+          <button className="popup-no" type="button" onClick={handleClosePopup}>
+            {Dictionary.no}
+          </button>
+        </ReactModal>
+      )}
     </div>
   );
 };

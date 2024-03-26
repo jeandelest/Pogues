@@ -611,74 +611,78 @@ const ComponentNewEdit = props => {
           )}
         </div>
       </form>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showNewNestedFilter}
-        onRequestClose={handleCloseNestedFilter}
-        contentLabel="FILTRE IMBRIQUE"
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>
-              {filterId
-                ? Dictionary.editFiltreImbriquer
-                : Dictionary.filtreImbriquer}
-            </h3>
-            <button type="button" onClick={handleCloseNestedFilter}>
-              <span>X</span>
-            </button>
-          </div>
-          <div className="popup-body">
-            <NestedFilter
-              filterId={filterId}
-              componentsStore={componentsStore}
-              handleSubmitImbriquer={value => handleSubmitImbriquer(value)}
-              handleCloseNestedFilter1={handleCloseNestedFilter}
-              componentType={NESTEDFILTRE}
-              handleDeleteNestedFilter={handleDeleteNestedFilter}
-              updateComponent={updateComponent}
-              initialMemberFilter={InitialMember}
-            />
-          </div>
-        </div>
-      </ReactModal>
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showPopup}
-        onRequestClose={handleClosePopup}
-        contentLabel="Alert Save"
-      >
-        <div className="popup-notSaved">
-          <div className="popup-header">
-            <h3>{Dictionary.saveLowerTitle}</h3>
-            <button type="button" onClick={handleClosePopup}>
-              <span>X</span>
-            </button>
-          </div>
-          <div className="popup-body">
-            {' '}
-            {integerVariable ? Dictionary.IsNotLetter : Dictionary.saveLower}
-            <div className="popup-notSaved-footer">
-              <button
-                className="popup-notSaved-footer-cancel"
-                type="button"
-                onClick={handleClosePopup}
-              >
-                {Dictionary.back}
-              </button>
-              <button
-                className="popup-notSaved-footer-validate"
-                onClick={handleValidate}
-                type="button"
-              >
-                {Dictionary.validateEtat}
+      {showNewNestedFilter && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showNewNestedFilter}
+          onRequestClose={handleCloseNestedFilter}
+          contentLabel="FILTRE IMBRIQUE"
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>
+                {filterId
+                  ? Dictionary.editFiltreImbriquer
+                  : Dictionary.filtreImbriquer}
+              </h3>
+              <button type="button" onClick={handleCloseNestedFilter}>
+                <span>X</span>
               </button>
             </div>
+            <div className="popup-body">
+              <NestedFilter
+                filterId={filterId}
+                componentsStore={componentsStore}
+                handleSubmitImbriquer={value => handleSubmitImbriquer(value)}
+                handleCloseNestedFilter1={handleCloseNestedFilter}
+                componentType={NESTEDFILTRE}
+                handleDeleteNestedFilter={handleDeleteNestedFilter}
+                updateComponent={updateComponent}
+                initialMemberFilter={InitialMember}
+              />
+            </div>
           </div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
+      {showPopup && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showPopup}
+          onRequestClose={handleClosePopup}
+          contentLabel="Alert Save"
+        >
+          <div className="popup-notSaved">
+            <div className="popup-header">
+              <h3>{Dictionary.saveLowerTitle}</h3>
+              <button type="button" onClick={handleClosePopup}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              {' '}
+              {integerVariable ? Dictionary.IsNotLetter : Dictionary.saveLower}
+              <div className="popup-notSaved-footer">
+                <button
+                  className="popup-notSaved-footer-cancel"
+                  type="button"
+                  onClick={handleClosePopup}
+                >
+                  {Dictionary.back}
+                </button>
+                <button
+                  className="popup-notSaved-footer-validate"
+                  onClick={handleValidate}
+                  type="button"
+                >
+                  {Dictionary.validateEtat}
+                </button>
+              </div>
+            </div>
+          </div>
+        </ReactModal>
+      )}
     </div>
   );
 };

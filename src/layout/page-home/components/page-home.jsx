@@ -68,29 +68,30 @@ const PageHome = ({ history, deleteAppState }) => {
       </div>
 
       {/* Create questionnaire modal */}
-
-      <ReactModal
-        ariaHideApp={false}
-        shouldCloseOnOverlayClick={false}
-        isOpen={showModal}
-        onRequestClose={handleCloseModal}
-        contentLabel={Dictionary.newEmptyQuestionnaire}
-      >
-        <div className="popup">
-          <div className="popup-header">
-            <h3>{Dictionary.newEmptyQuestionnaire}</h3>
-            <button type="button" onClick={handleCloseModal}>
-              <span>X</span>
-            </button>
+      {showModal && (
+        <ReactModal
+          ariaHideApp={false}
+          shouldCloseOnOverlayClick={false}
+          isOpen={showModal}
+          onRequestClose={handleCloseModal}
+          contentLabel={Dictionary.newEmptyQuestionnaire}
+        >
+          <div className="popup">
+            <div className="popup-header">
+              <h3>{Dictionary.newEmptyQuestionnaire}</h3>
+              <button type="button" onClick={handleCloseModal}>
+                <span>X</span>
+              </button>
+            </div>
+            <div className="popup-body">
+              <QuestionnaireNew
+                onCancel={handleCloseModal}
+                onSuccess={handleQuestionnaryCreated}
+              />
+            </div>
           </div>
-          <div className="popup-body">
-            <QuestionnaireNew
-              onCancel={handleCloseModal}
-              onSuccess={handleQuestionnaryCreated}
-            />
-          </div>
-        </div>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 };

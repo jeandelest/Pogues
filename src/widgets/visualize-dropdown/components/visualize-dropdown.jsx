@@ -143,23 +143,25 @@ function VisualizeDropdown({
           })}
         </ul>
       )}
-      <ReactModal
-        isOpen={
-          allowDuplicateVariablesModal && hasQuestionnaireDuplicateVariables
-        }
-        className="custom-modal"
-        ariaHideApp={false}
-      >
-        <p>{Dictionary.duplicateVariablesComment}</p>
-        <Link to={`/questionnaire/${questionnaire?.id}/duplicate-variables`}>
-          <button className="modal-button">
-            {Dictionary.showErrorDuplicateVariables}
+      {allowDuplicateVariablesModal && hasQuestionnaireDuplicateVariables && (
+        <ReactModal
+          isOpen={
+            allowDuplicateVariablesModal && hasQuestionnaireDuplicateVariables
+          }
+          className="custom-modal"
+          ariaHideApp={false}
+        >
+          <p>{Dictionary.duplicateVariablesComment}</p>
+          <Link to={`/questionnaire/${questionnaire?.id}/duplicate-variables`}>
+            <button className="modal-button">
+              {Dictionary.showErrorDuplicateVariables}
+            </button>
+          </Link>
+          <button className="modal-button" onClick={handleCloseModal}>
+            {Dictionary.close}
           </button>
-        </Link>
-        <button className="modal-button" onClick={handleCloseModal}>
-          {Dictionary.close}
-        </button>
-      </ReactModal>
+        </ReactModal>
+      )}
     </div>
   );
 }
