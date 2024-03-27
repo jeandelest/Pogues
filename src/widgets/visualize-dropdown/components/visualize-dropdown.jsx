@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import classSet from 'react-classset';
-import { Link } from 'react-router-dom';
 import ReactModal from 'react-modal';
-import Dictionary from 'utils/dictionary/dictionary';
-import { hasDuplicateVariables } from 'utils/variables/variables-utils';
+import { Link } from 'react-router-dom';
+import Dictionary from '../../../utils/dictionary/dictionary';
+import { useAuth } from '../../../utils/oidc/useAuth';
+import { hasDuplicateVariables } from '../../../utils/variables/variables-utils';
 
 /**
  * Component used in the actions toolbar and on each
@@ -14,7 +15,7 @@ import { hasDuplicateVariables } from 'utils/variables/variables-utils';
  */
 function VisualizeDropdown({
   componentId,
-  token,
+  authType,
   disabled,
   top,
   visualizeActiveQuestionnaire,
@@ -24,6 +25,7 @@ function VisualizeDropdown({
   questionnaire,
   externalQuestionnairesVariables,
 }) {
+  const { oidc } = useAuth(authType);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [
     hasQuestionnaireDuplicateVariables,
@@ -71,6 +73,7 @@ function VisualizeDropdown({
    */
   const visualize = (event, type) => {
     event.preventDefault();
+    const token = oidc.getTokens().accessToken;
     visualizeActiveQuestionnaire(type, componentId, token);
     setDropdownOpen(false);
   };
@@ -82,6 +85,11 @@ function VisualizeDropdown({
     {
       actionType: 'stromae-v2',
       actionLabel: Dictionary.VISUALIZE_WEB_STROMAE_V2,
+    },
+    {
+      actionType: 'stromae-v3',
+      actionLabel: Dictionary.VISUALIZE_WEB_STROMAE_V3,
+      tag: 'beta',
     },
     { actionType: 'queen-capi', actionLabel: Dictionary.VISUALIZE_QUEEN_CAPI },
     { actionType: 'queen-cati', actionLabel: Dictionary.VISUALIZE_QUEEN_CATI },
@@ -127,6 +135,11 @@ function VisualizeDropdown({
               <li key={link.actionLabel}>
                 <a href="#" onClick={e => visualize(e, link.actionType)}>
                   {link.actionLabel}
+                  {link.tag && (
+                    <span className="link-tag">
+                      <i>{link.tag}</i>
+                    </span>
+                  )}
                 </a>
               </li>
             );
@@ -166,7 +179,7 @@ VisualizeDropdown.propTypes = {
   collectedVariableByQuestion: PropTypes.object,
   questionnaire: PropTypes.object,
   externalQuestionnairesVariables: PropTypes.object,
-  token: PropTypes.string,
+  authType: PropTypes.string,
 };
 VisualizeDropdown.defaultProps = {
   visualizeActiveQuestionnaire: undefined,
@@ -178,7 +191,7 @@ VisualizeDropdown.defaultProps = {
   collectedVariableByQuestion: {},
   questionnaire: {},
   externalQuestionnairesVariables: {},
-  token: undefined,
+  authType: undefined,
 };
 
 export default VisualizeDropdown;

@@ -1,32 +1,32 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { DragSource, DropTarget } from 'react-dnd';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ClassSet from 'react-classset';
+import { DragSource, DropTarget } from 'react-dnd';
+import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 
 import DropZone from './drop-zone/drop-zone';
 
-import { QUESTIONNAIRE_COMPONENT } from 'constants/dom-constants';
-import { COMPONENT_TYPE } from 'constants/pogues-constants';
+import { QUESTIONNAIRE_COMPONENT } from '../../../constants/dom-constants';
+import { COMPONENT_TYPE } from '../../../constants/pogues-constants';
 
-import { VisualizeDropdown } from 'widgets/visualize-dropdown';
-import { markdownVtlToString } from 'forms/controls/rich-textarea';
-import { ComponentEdit } from 'layout/component-edit';
 import ReactModal from 'react-modal';
+import { markdownVtlToString } from '../../../forms/controls/rich-textarea';
+import { VisualizeDropdown } from '../../../widgets/visualize-dropdown';
+import { ComponentEdit } from '../../component-edit';
 
 import {
   PropType,
-  componentSource,
   cardTarget,
   collect,
-} from 'utils/component/component-dragndrop';
+  componentSource,
+} from '../../../utils/component/component-dragndrop';
 import {
-  getDragnDropLevel,
   calculateMargin,
-} from 'utils/component/component-dragndrop-utils';
-import Dictionary from 'utils/dictionary/dictionary';
-import { getIntegrityErrors } from 'utils/integrity/utils';
+  getDragnDropLevel,
+} from '../../../utils/component/component-dragndrop-utils';
+import Dictionary from '../../../utils/dictionary/dictionary';
+import { getIntegrityErrors } from '../../../utils/integrity/utils';
 
 const { COMPONENT_CLASS } = QUESTIONNAIRE_COMPONENT;
 const { QUESTION, SEQUENCE, SUBSEQUENCE, FILTER, EXTERNAL_ELEMENT } =
@@ -36,7 +36,6 @@ const scrollToRef = ref => window.scrollTo(0, ref.current.offsetTop);
 
 const QuestionnaireComponent = props => {
   const {
-    token,
     component,
     connectDragSource,
     integrityErrorsByType,
@@ -56,6 +55,7 @@ const QuestionnaireComponent = props => {
     duplicateComponentAndVariables,
     removeComponent,
     removeQuestionnaireRef,
+    authType,
   } = props;
 
   const [showComponentModal, setShowComponentModal] = useState(false);
@@ -232,7 +232,7 @@ const QuestionnaireComponent = props => {
                       visualizeActiveQuestionnaire={
                         visualizeActiveQuestionnaire
                       }
-                      token={token}
+                      authType={authType}
                     />
                     <button
                       className="btn-yellow"
@@ -315,6 +315,7 @@ QuestionnaireComponent.propTypes = {
   actions: PropTypes.shape({
     handleOpenComponentDetail: PropTypes.func.isRequired,
   }).isRequired,
+  authType: PropTypes.string,
 };
 
 QuestionnaireComponent.defaultProps = {
@@ -322,6 +323,7 @@ QuestionnaireComponent.defaultProps = {
   draggedItem: {},
   integrityErrorsByType: {},
   canDrop: true,
+  authType: '',
 };
 
 export default compose(

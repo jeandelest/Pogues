@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import Header from 'layout/header/header';
-import Footer from 'layout/footer/footer';
+import Header from '../../header/header';
+import Footer from '../../footer/footer';
+import { useAuth } from '../../../utils/oidc/useAuth';
+import '../../../scss/pogues.scss';
 
-import 'scss/pogues.scss';
-
-import { APP } from 'constants/dom-constants';
+import { APP } from '../../../constants/dom-constants';
 
 const { COMPONENT_ID } = APP;
 
-// Component
-const App = ({ children, loadUnitsIfNeeded, token }) => {
+const App = ({ children, loadUnitsIfNeeded, authType }) => {
+  const { oidc } = useAuth(authType);
+  const token = oidc.getTokens().accessToken;
+
   useEffect(() => {
     loadUnitsIfNeeded(token);
   }, [token, loadUnitsIfNeeded]);
@@ -24,16 +26,15 @@ const App = ({ children, loadUnitsIfNeeded, token }) => {
     </div>
   );
 };
-// Prop types and default props
 
 App.propTypes = {
-  token: PropTypes.string,
+  authType: PropTypes.string,
   children: PropTypes.object.isRequired,
   loadUnitsIfNeeded: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
-  token: '',
+  authType: '',
 };
 
 export default App;

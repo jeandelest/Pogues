@@ -2,13 +2,14 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactModal from 'react-modal';
 import NavigationPrompt from 'react-router-navigation-prompt';
-import { COMPONENT_TYPE } from 'constants/pogues-constants';
-import { GENERIC_INPUT } from 'constants/dom-constants';
-import Dictionary from 'utils/dictionary/dictionary';
-import { VisualizeDropdown } from 'widgets/visualize-dropdown';
-import { ExternalQuestionnaireDropdown } from 'widgets/external-questionnaire-dropdown';
-import { ComponentNew } from 'layout/component-new';
-import Loader from 'layout/loader';
+import { COMPONENT_TYPE } from '../../../constants/pogues-constants';
+import { GENERIC_INPUT } from '../../../constants/dom-constants';
+import Dictionary from '../../../utils/dictionary/dictionary';
+import { VisualizeDropdown } from '../../../widgets/visualize-dropdown';
+import { ExternalQuestionnaireDropdown } from '../../../widgets/external-questionnaire-dropdown';
+import { ComponentNew } from '../../component-new';
+import Loader from '../../loader';
+import { useAuth } from '../../../utils/oidc/useAuth';
 
 const { QUESTION, SEQUENCE, SUBSEQUENCE, LOOP, FILTER, EXTERNAL_ELEMENT } =
   COMPONENT_TYPE;
@@ -26,10 +27,10 @@ export const propTypes = {
   isQuestionnaireModified: PropTypes.bool,
   isQuestionnaireValid: PropTypes.bool.isRequired,
   isLoopsValid: PropTypes.bool.isRequired,
-  token: PropTypes.string,
+  authType: PropTypes.string,
   selectedComponent: PropTypes.object,
   removeVisualizationError: PropTypes.func,
-  showVisualizationErrorPopup: PropTypes.func,
+  showVisualizationErrorPopup: PropTypes.string,
 };
 
 export const defaultProps = {
@@ -38,10 +39,10 @@ export const defaultProps = {
   isQuestionnaireHaveError: false,
   isQuestionnaireModified: false,
   visualizeActiveQuestionnaire: undefined,
-  token: undefined,
+  authType: undefined,
   selectedComponent: undefined,
   removeVisualizationError: undefined,
-  showVisualizationErrorPopup: undefined,
+  showVisualizationErrorPopup: '',
 };
 
 // Components
@@ -81,7 +82,7 @@ function GenericInput(props) {
     isQuestionnaireValid,
     isQuestionnaireHaveError,
     placeholders,
-    token,
+    authType,
     selectedComponent,
     removeVisualizationError,
     saveActiveQuestionnaire,
@@ -89,6 +90,8 @@ function GenericInput(props) {
     visualizeActiveQuestionnaire,
   } = props;
 
+  const { oidc } = useAuth(authType);
+  const token = oidc.getTokens().accessToken;
   const [showNewComponentModal, setShowNewComponentModal] = useState(false);
   const [showNewUnsavedModal, setShowNewUnsavedModal] = useState(false);
   const [showNewLoopModal, setShowNewLoopModal] = useState(false);
@@ -171,7 +174,8 @@ function GenericInput(props) {
           id="add-question"
           className="btn-white"
           disabled={
-            placeholders[QUESTION].parent === ('' || 'idendquest') ||
+            placeholders[QUESTION].parent === '' ||
+            placeholders[QUESTION].parent === 'idendquest' ||
             (selectedComponent && selectedComponent.type === EXTERNAL_ELEMENT)
           }
           onClick={() => handleOpenNewComponent(QUESTION)}
@@ -183,7 +187,8 @@ function GenericInput(props) {
           id="add-subsequence"
           className="btn-white"
           disabled={
-            placeholders[SUBSEQUENCE].parent === ('' || 'idendquest') ||
+            placeholders[SUBSEQUENCE].parent === '' ||
+            placeholders[SUBSEQUENCE].parent === 'idendquest' ||
             (selectedComponent && selectedComponent.type === EXTERNAL_ELEMENT)
           }
           onClick={() => handleOpenNewComponent(SUBSEQUENCE)}
@@ -221,6 +226,7 @@ function GenericInput(props) {
           </button>
         )}
         <ExternalQuestionnaireDropdown
+          questionnaireId={activeQuestionnaire.id}
           disabled={
             selectedComponent &&
             selectedComponent.type !== SEQUENCE &&
@@ -241,7 +247,7 @@ function GenericInput(props) {
           top
           disabled={!isQuestionnaireValid}
           visualizeActiveQuestionnaire={visualizeActiveQuestionnaire}
-          token={token}
+          authType={authType}
           questionnaireId={activeQuestionnaire.id}
         />
         <button className="btn-yellow disabled" id="publish">
@@ -291,11 +297,12 @@ function GenericInput(props) {
         </button>
       </ReactModal>
       <ReactModal
-        isOpen={showVisualizationErrorPopup}
+        isOpen={showVisualizationErrorPopup !== ''}
         ariaHideApp={false}
         className="custom-modal"
       >
         <p>{Dictionary.visualizationError}</p>
+        <p className="api-error-message">{showVisualizationErrorPopup}</p>
         <button onClick={removeVisualizationError} className="modal-button">
           {Dictionary.close}
         </button>

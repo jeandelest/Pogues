@@ -5,16 +5,15 @@ import GenericInput from '../components/generic-input';
 import {
   saveActiveQuestionnaire,
   visualizeActiveQuestionnaire,
-} from 'actions/app-state';
-import { removeVisualizationError } from 'actions/errors';
+} from '../../../actions/app-state';
+import { removeVisualizationError } from '../../../actions/errors';
 import {
   getNewSequencePlaceholder,
   getNewSubsequencePlaceholder,
   getNewQuestionPlaceholder,
   getNewLoopPlaceholder,
-} from 'utils/component/generic-input-utils';
-import { COMPONENT_TYPE } from 'constants/pogues-constants';
-import { getToken } from 'reducers/selectors';
+} from '../../../utils/component/generic-input-utils';
+import { COMPONENT_TYPE } from '../../../constants/pogues-constants';
 
 const { QUESTION, SEQUENCE, SUBSEQUENCE, LOOP, FILTER } = COMPONENT_TYPE;
 
@@ -111,7 +110,7 @@ const mapStateToProps = state => {
       externalQuestionnairesLoops,
     ),
     activeQuestionnaire: activeQuestionnaire,
-    token: getToken(state),
+    authType: state.authType,
     showVisualizationErrorPopup:
       state.errors.errorsVisualization.showErrorVisualizationPopup,
     isLoadingVisualization: state.appState.isLoadingVisualization,

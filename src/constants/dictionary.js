@@ -1,4 +1,4 @@
-import { COMPONENT_TYPE, CODELISTS_ACTIONS } from 'constants/pogues-constants';
+import { COMPONENT_TYPE, CODELISTS_ACTIONS } from './pogues-constants';
 
 const { QUESTION, SEQUENCE, SUBSEQUENCE, LOOP, FILTER } = COMPONENT_TYPE;
 const {
@@ -899,8 +899,8 @@ const dictionary = {
     fr: "Votre questionnaire comporte au moins une boucle, le dernier changement opéré peut générer des incohérences (ajout ou changement d'ordre d'une séquence ou sous-séquence, modification d'une question au sein d'une boucle), merci de consulter les boucles concernées de votre questionnaire, les modifier si nécessaire et les revalider.",
   },
   visualizationError: {
-    en: 'An error occurred while visualizing the questionnaire',
-    fr: 'Une erreur a été rencontrée lors de la visualisation du questionnaire',
+    en: 'An error occurred while visualizing the questionnaire:',
+    fr: 'Une erreur a été rencontrée lors de la visualisation du questionnaire :',
   },
   close: {
     fr: 'Fermer',
@@ -1565,6 +1565,10 @@ const dictionary = {
   VISUALIZE_WEB_STROMAE_V2: {
     fr: 'Web V2',
     en: 'Web V2',
+  },
+  VISUALIZE_WEB_STROMAE_V3: {
+    fr: 'Web V3',
+    en: 'Web V3',
   },
   VISUALIZE_QUEEN_CAPI: {
     fr: 'Enquêteur face à face',

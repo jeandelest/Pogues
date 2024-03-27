@@ -5,16 +5,15 @@ import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import QuestionnaireComponent from './questionnaire-component';
-import { COMPONENT_TYPE } from 'constants/pogues-constants';
-
-import { ComponentEdit } from 'layout/component-edit';
-import { ConfirmDialog } from 'layout/confirm-dialog';
-import { QuestionnaireEdit } from 'layout/questionnaire-edit';
-import { ErrorsIntegrity as ErrorsIntegrityPanel } from 'layout/errors-integrity';
-
-import Dictionary from 'utils/dictionary/dictionary';
-import { getSortedChildren } from 'utils/component/component-utils';
-import { ERRORS_INTEGRITY } from 'constants/dom-constants';
+import { COMPONENT_TYPE } from '../../../constants/pogues-constants';
+import { ComponentEdit } from '../../component-edit';
+import { ConfirmDialog } from '../../confirm-dialog';
+import { QuestionnaireEdit } from '../../questionnaire-edit';
+import { ErrorsIntegrity as ErrorsIntegrityPanel } from '../../errors-integrity';
+import Dictionary from '../../../utils/dictionary/dictionary';
+import { getSortedChildren } from '../../../utils/component/component-utils';
+import { ERRORS_INTEGRITY } from '../../../constants/dom-constants';
+import { useAuth } from '../../../utils/oidc/useAuth';
 
 const { INNER, ALERT, LIST } = ERRORS_INTEGRITY;
 
@@ -22,7 +21,7 @@ const { LOOP, FILTER, NESTEDFILTRE } = COMPONENT_TYPE;
 
 const QuestionnaireListComponents = props => {
   const {
-    token,
+    authType,
     questionnaire,
     componentsStore,
     editingComponentId,
@@ -30,7 +29,12 @@ const QuestionnaireListComponents = props => {
     setSelectedComponentId,
     activeCalculatedVariables,
     calculatedVariables,
+    removeQuestionnaire,
+    navigate,
   } = props;
+
+  const { oidc } = useAuth(authType);
+  const token = oidc.getTokens().accessToken;
 
   useEffect(() => {
     setSelectedComponentId('');
@@ -77,8 +81,8 @@ const QuestionnaireListComponents = props => {
   };
 
   const handleQuestionnaireDelete = () => {
-    props.removeQuestionnaire(props.questionnaire.id, token).then(() => {
-      props.navigate('/');
+    removeQuestionnaire(questionnaire.id, token).then(() => {
+      navigate('/');
     });
   };
 
@@ -89,7 +93,7 @@ const QuestionnaireListComponents = props => {
     return filters;
   };
   const componentFilterConditionFinal = id => {
-    const filters = Object.values(props.componentsStore).filter(
+    const filters = Object.values(componentsStore).filter(
       component => component.type === FILTER && component.finalMember === id,
     );
     return filters;
@@ -107,7 +111,7 @@ const QuestionnaireListComponents = props => {
         ) {
           return (
             <QuestionnaireComponent
-              token={props.token}
+              authType={authType}
               key={component.id}
               selected={props.selectedComponentId === key}
               component={component}
@@ -287,7 +291,7 @@ const QuestionnaireListComponents = props => {
 
 // Prop types and default Props
 QuestionnaireListComponents.propTypes = {
-  token: PropTypes.string,
+  authType: PropTypes.string,
   questionnaire: PropTypes.object.isRequired,
   componentsStore: PropTypes.object,
   errorsIntegrity: PropTypes.object,
@@ -309,7 +313,7 @@ QuestionnaireListComponents.propTypes = {
 };
 
 QuestionnaireListComponents.defaultProps = {
-  token: '',
+  authType: '',
   componentsStore: {},
   errorsIntegrity: {},
   activeCalculatedVariables: {},

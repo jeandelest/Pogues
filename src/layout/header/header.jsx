@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import logo from 'layout/header/logo-insee.png';
-import UserConnectionContainer from 'layout/user/user-connection-container';
-import Dictionary from 'utils/dictionary/dictionary';
+import Dictionary from '../../utils/dictionary/dictionary';
+import { poguesFrontVersion } from '../../utils/version';
+import UserConnectionContainer from '../user/user-connection-container';
+import logo from './logo-insee.png';
 
 function Header() {
   return (
@@ -18,7 +19,17 @@ function Header() {
               Pogues
             </Link>
           </h2>
-          <h6>{Dictionary.headerSubtitle}</h6>
+          <h6>
+            {Dictionary.headerSubtitle}
+            <span className="pogues-version">
+              <a
+                href={`https://github.com/InseeFr/Pogues/releases/tag/${poguesFrontVersion}`}
+                target="blank"
+              >
+                {poguesFrontVersion}
+              </a>
+            </span>
+          </h6>
         </div>
         <div className="header-help">
           <a

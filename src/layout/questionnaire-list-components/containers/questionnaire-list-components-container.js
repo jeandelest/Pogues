@@ -7,15 +7,14 @@ import {
   dragComponent,
   removeComponent,
   duplicateComponentAndVariables,
-} from 'actions/component';
-import { removeQuestionnaireRef } from 'actions/external-questionnaire';
+} from '../../../actions/component';
+import { removeQuestionnaireRef } from '../../../actions/external-questionnaire';
 import {
   setSelectedComponentId,
   setEditingComponentId,
   visualizeActiveQuestionnaire,
-} from 'actions/app-state';
-import { removeQuestionnaire } from 'actions/questionnaire';
-import { getToken } from 'reducers/selectors';
+} from '../../../actions/app-state';
+import { removeQuestionnaire } from '../../../actions/questionnaire';
 
 // Prop types and default props
 
@@ -26,7 +25,7 @@ const propTypes = {
 // Container
 
 const mapStateToProps = state => ({
-  token: getToken(state),
+  authType: state.authType,
   questionnaire: state.appState.activeQuestionnaire,
   componentsStore: state.appState.activeComponentsById,
   selectedComponentId: state.appState.selectedComponentId,

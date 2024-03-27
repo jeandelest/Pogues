@@ -3,20 +3,19 @@ import PropTypes from 'prop-types';
 
 import PageQuestionnaire from '../components/page-questionnaire';
 
-import { COMPONENT_TYPE } from 'constants/pogues-constants';
-import { loadQuestionnaire } from 'actions/questionnaire';
+import { COMPONENT_TYPE } from '../../../constants/pogues-constants';
+import { loadQuestionnaire } from '../../../actions/questionnaire';
 import {
   loadCampaignsIfNeeded,
   loadExternalQuestionnairesIfNeeded,
-} from 'actions/metadata';
+} from '../../../actions/metadata';
 import {
   setActiveQuestionnaire,
   setActiveComponents,
   setActiveCodeLists,
   setActiveVariables,
   loadStatisticalContext,
-} from 'actions/app-state';
-import { getToken } from 'reducers/selectors';
+} from '../../../actions/app-state';
 
 const { QUESTION } = COMPONENT_TYPE;
 
@@ -67,7 +66,7 @@ const mapStateToProps = (
   },
 ) => ({
   id,
-  token: getToken(state),
+  authType: state.authType,
   appState: state.appState,
   questionnaire: state.questionnaireById[id],
   activeQuestionnaire: state.appState.activeQuestionnaire,
