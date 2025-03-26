@@ -7,6 +7,7 @@ declare global {
 type EnvKeys =
   | 'ACTIVE_NAMESPACES'
   | 'API_URL'
+  | 'CUSTOMIZE_URL'
   | 'DEFAULT_USER_ID'
   | 'DEFAULT_USER_NAME'
   | 'DEFAULT_USER_STAMP'
@@ -15,8 +16,7 @@ type EnvKeys =
   | 'OIDC_CLIENT_ID'
   | 'OIDC_ENABLED'
   | 'OIDC_ISSUER'
-  | 'TROMBI_URL'
-  | 'PUBLIC_ENEMY_URL';
+  | 'TROMBI_URL';
 
 /** Retrieve env var from custom window variable or from VITE otherwise. */
 export function getEnvVar(key: EnvKeys): string | undefined {
