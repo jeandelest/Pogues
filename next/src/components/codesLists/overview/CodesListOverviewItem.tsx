@@ -130,7 +130,9 @@ export default function CodesListOverviewItem({
         />
       </div>
       <div
-        className={`grid overflow-hidden ${isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'} transition-all`}
+        hidden={!isExpanded}
+        className={`grid overflow-hidden grid-rows-[1fr] transition-all`}
+        id={`codes-list-content-${codesList.id}`}
       >
         <div className="overflow-hidden space-y-3">
           <div className="pt-3">
@@ -169,7 +171,11 @@ export default function CodesListOverviewItem({
         </div>
       </div>
       <div className="text-center absolute bottom-0 left-1/2">
-        <ExpandButton isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+        <ExpandButton
+          isExpanded={isExpanded}
+          setIsExpanded={setIsExpanded}
+          ariaControls={`codes-list-content-${codesList.id}`}
+        />
       </div>
     </div>
   );
@@ -178,14 +184,27 @@ export default function CodesListOverviewItem({
 interface ExpandButtonProps {
   isExpanded: boolean;
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  ariaControls: string;
 }
 
 function ExpandButton({
   isExpanded,
   setIsExpanded,
+  ariaControls,
 }: Readonly<ExpandButtonProps>) {
+  const { t } = useTranslation();
   return (
-    <button className="cursor-pointer" onClick={() => setIsExpanded((v) => !v)}>
+    <button
+      className="cursor-pointer"
+      onClick={() => setIsExpanded((v) => !v)}
+      aria-expanded={isExpanded}
+      aria-controls={ariaControls}
+      aria-label={
+        isExpanded
+          ? t('codesList.overview.collapse')
+          : t('codesList.overview.expand')
+      }
+    >
       {isExpanded ? <ArrowUpIcon /> : <ArrowDownIcon />}
     </button>
   );
