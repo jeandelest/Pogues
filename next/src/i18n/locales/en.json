@@ -23,6 +23,7 @@
     "send": "Send",
     "title": "Title",
     "start": "Start",
+    "clearInput": "Clear input",
     "unsavedModification": "You didn't save your changes. Are you sure you want to leave?"
   },
   "error": {
@@ -89,7 +90,8 @@
       "title": "Code Lists",
       "usedByQuestion": "Used by question:",
       "usedByQuestion_other": "Used by questions:",
-      "notUsedByQuestions": "Not used by any questions."
+      "notUsedByQuestions": "Not used by any questions.",
+      "search": "Search for a code list"
     },
     "create": {
       "success": "The code list has been created",
@@ -127,5 +129,12 @@
       "mustProvideTitle": "You must provide a title",
       "mustProvideTarget": "You must select at least one target mode"
     }
+  },
+  "filter": {
+    "active": "Active filters: {{count}}",
+    "clearFilters": "Clear filters",
+    "clear": "Clear",
+    "search": "Label",
+    "stamp": "Stamp"
   }
 }

@@ -1,12 +1,13 @@
-import { useState } from 'react';
-
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import ButtonLink from '@/components/ui/ButtonLink';
 import ContentHeader from '@/components/ui/ContentHeader';
 import ContentMain from '@/components/ui/ContentMain';
+import FilterList from '@/components/ui/FilterList';
 import Input from '@/components/ui/Input';
+import { useFilters } from '@/hooks/useFilter';
+import { FilterEnum } from '@/models/filter';
 import { Questionnaire } from '@/models/questionnaires';
 import { Stamp } from '@/models/stamps';
 
@@ -26,16 +27,37 @@ export default function Questionnaires({
   questionnaires = [],
 }: Readonly<QuestionnairesProps>) {
   const { t } = useTranslation();
-  const [filter, setFilter] = useState<string>('');
   const navigate = useNavigate();
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const stampFromUrl = searchParams.get('stamp') || '';
+
+  const { filters, updateFilterContent, getFilterContent } = useFilters([
+    {
+      filterType: FilterEnum.Stamp,
+      filterContent: stampFromUrl,
+      clearFilterFunction: () => {
+        updateFilterContent(FilterEnum.Stamp, '');
+        navigate({ to: '/questionnaires' });
+      },
+    },
+    {
+      filterType: FilterEnum.Search,
+      filterContent: '',
+      clearFilterFunction: () => updateFilterContent(FilterEnum.Search, ''),
+    },
+  ]);
 
   /** Change page based on stamp chosen from the selector. */
   function handleStampSelection(stamp: string) {
+    updateFilterContent(FilterEnum.Stamp, stamp);
     navigate({
       to: '/questionnaires',
       search: { stamp },
     });
   }
+
+  const searchFilterContent = getFilterContent(FilterEnum.Search);
 
   return (
     <div>
@@ -60,17 +82,24 @@ export default function Questionnaires({
             <Input
               label={t('questionnaires.search')}
               placeholder={t('questionnaires.search')}
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+              value={searchFilterContent}
+              onChange={(e) =>
+                updateFilterContent(FilterEnum.Search, e.target.value)
+              }
+              onClear={() => updateFilterContent(FilterEnum.Search, '')}
+              showClearButton={searchFilterContent.length > 0}
             />
           </div>
         </div>
+        <FilterList filters={filters} />
         {questionnaires ? (
           <TableQuestionnaires
             questionnaires={questionnaires.filter((q) => {
               return (
-                q.title.toLowerCase().includes(filter.toLowerCase()) ||
-                q.id.toLowerCase().includes(filter.toLowerCase())
+                q.title
+                  .toLowerCase()
+                  .includes(searchFilterContent.toLowerCase()) ||
+                q.id.toLowerCase().includes(searchFilterContent.toLowerCase())
               );
             })}
           />

@@ -23,6 +23,7 @@
     "send": "Envoyer",
     "title": "Titre",
     "start": "Commencer",
+    "clearInput": "Effacer la recherche",
     "unsavedModification": "Vous n'avez pas enregistré vos modifications. Êtes-vous sûr de vouloir quitter ?"
   },
   "error": {
@@ -89,7 +90,8 @@
       "title": "Listes de codes",
       "usedByQuestion": "Utilisé dans la question :",
       "usedByQuestion_other": "Utilisé dans les questions :",
-      "notUsedByQuestions": "Utilisé par aucune question."
+      "notUsedByQuestions": "Utilisé par aucune question.",
+      "search": "Rechercher une liste de codes"
     },
     "create": {
       "success": "La liste de codes a été créée",
@@ -127,5 +129,12 @@
       "mustProvideTitle": "Vous devez renseigner un titre",
       "mustProvideTarget": "Vous devez sélectionner au moins un mode de collecte"
     }
+  },
+  "filter": {
+    "active": "Filtres actifs: {{count}}",
+    "clearFilters": "Supprimer les filtres",
+    "clear": "Suprimer le filtre",
+    "search": "Label",
+    "stamp": "Timbre"
   }
 }
