@@ -73,6 +73,12 @@ describe('component tranformations', () => {
                 id: 'm5qy1yf9',
                 questionType: 'SINGLE_CHOICE',
                 type: 'QuestionType',
+                codeFilters: [
+                  {
+                    codeValue: 'v1',
+                    conditionFilter: '$AGE$ > 18',
+                  },
+                ],
               },
             ],
             Control: [],
@@ -239,6 +245,12 @@ describe('component tranformations', () => {
               },
             },
           },
+          codeFilters: [
+            {
+              codeValue: 'v1',
+              conditionFilter: '$AGE$ > 18',
+            },
+          ],
           responsesClarification: undefined,
           type: 'QUESTION',
           weight: 1,

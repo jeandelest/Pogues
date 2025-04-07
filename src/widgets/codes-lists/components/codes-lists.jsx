@@ -36,10 +36,15 @@ export const defaultProps = {
   currentId: '',
   codesListsStore: {},
   currentCodesListsStore: {},
-  allowPrecision: true,
+  allowPrecision: false,
   allowFilter: false,
 };
 
+/**
+ * Allow to select a code list and display the related code list informations
+ * (including precision and/or filter if `allowPrecision` and/or `allowFilter`
+ * is `true`).
+ */
 const CodesLists = ({
   selectorPath,
   selectorPathParent,
@@ -51,7 +56,7 @@ const CodesLists = ({
   clearSearchResult,
   change,
   arrayRemoveAll,
-  allowPrecision = true,
+  allowPrecision = false,
   allowFilter = false,
 }) => {
   const refDiv = useRef(null);
@@ -66,6 +71,7 @@ const CodesLists = ({
     if (currentIdState !== currentId && currentId === '') {
       change(formName, `${path}id`, '');
       change(formName, `${path}label`, '');
+      change(formName, 'codeFilters', []);
       arrayRemoveAll(formName, `${path}codes`);
       setCurrentIdState(currentId);
     }
@@ -85,6 +91,7 @@ const CodesLists = ({
         `${path}codes`,
         Object.keys(codesStore).map((key) => codesStore[key]),
       );
+      change(formName, 'codeFilters', []);
       setCurrentIdState(currentId);
     }
   }, [currentId, change, codesListsStore, currentIdState, formName, path]);

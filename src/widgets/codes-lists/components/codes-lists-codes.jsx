@@ -12,9 +12,10 @@ import {
   fieldArrayMeta,
 } from '../../../utils/proptypes-utils';
 import { getIndexItemsByAttrs } from '../../../utils/widget-utils';
-import CodesListsInputCodeContainer from '../containers/codes-lists-input-code-container';
+import FilterInputContainer from '../containers/filter-input-container';
+import PrecisionInputContainer from '../containers/precision-input-container';
 import FilterAction from './FilterAction';
-import SpecifyAction from './SpecifyAction';
+import PrecisionAction from './PrecisionAction';
 
 const { CODES_CLASS, LIST_CLASS } = WIDGET_CODES_LISTS;
 
@@ -32,8 +33,8 @@ function CodesListsCodes(props) {
     fields: { getAll, push, remove, get },
     allowPrecision,
     allowFilter,
+    codeFilters = [],
   } = props;
-
   const [activeCodeIndex, setActiveCodeIndex] = useState(undefined);
   const [showPrecision, setShowPrecision] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -76,7 +77,14 @@ function CodesListsCodes(props) {
     remove(activeCodeIndex);
     push(values);
     clearInputCode();
-  }, [activeCodeIndex, clearInputCode, get, push, remove]);
+  }, [
+    activeCodeIndex,
+    clearInputCode,
+    collectedVariablesIds,
+    get,
+    push,
+    remove,
+  ]);
 
   const pushCode = useCallback(() => {
     let values;
@@ -105,11 +113,11 @@ function CodesListsCodes(props) {
     remove,
   ]);
 
-  function renderInputCode() {
+  function renderPrecisionInput() {
     const code = get(activeCodeIndex);
 
     return (
-      <CodesListsInputCodeContainer
+      <PrecisionInputContainer
         meta={meta}
         close={() => {
           clearInputCode();
@@ -129,15 +137,34 @@ function CodesListsCodes(props) {
     );
   }
 
+  function renderFilterInput() {
+    const code = get(activeCodeIndex);
+
+    return (
+      <FilterInputContainer
+        change={change}
+        close={() => {
+          clearInputCode();
+          setActiveCodeIndex(undefined);
+          setShowFilter(false);
+        }}
+        code={code}
+        formName={formName}
+      />
+    );
+  }
+
   function renderCode(code) {
     const allCodes = getAll() || [];
     const indexCode = getIndexItemsByAttrs({ value: code.value }, allCodes);
     const actions = {
       updatePrecision: () => {
         setShowPrecision(true);
+        setShowFilter(false);
         setActiveCodeIndex(indexCode);
       },
       updateFilter: () => {
+        setShowPrecision(false);
         setShowFilter(true);
         setActiveCodeIndex(indexCode);
       },
@@ -159,6 +186,14 @@ function CodesListsCodes(props) {
       }
     }
 
+    let conditionFilter = '';
+    for (const codeFilter of codeFilters) {
+      if (codeFilter.codeValue === code.value) {
+        conditionFilter = codeFilter.conditionFilter;
+        break;
+      }
+    }
+
     return (
       <React.Fragment key={code.value}>
         <tr className="*:py-2">
@@ -175,16 +210,19 @@ function CodesListsCodes(props) {
             </td>
           )}
           {/* Code Actions */}
-          {allowFilter ? (
-            <td className="py-2">
-              <FilterAction updateFilter={actions.updateFilter} />
-            </td>
-          ) : null}
           {allowPrecision ? (
             <td className="py-2">
-              <SpecifyAction
+              <PrecisionAction
                 updatePrecision={actions.updatePrecision}
                 precisionLabel={precisionLabel}
+              />
+            </td>
+          ) : null}
+          {allowFilter ? (
+            <td className="py-2">
+              <FilterAction
+                updateFilter={actions.updateFilter}
+                conditionFilter={conditionFilter}
               />
             </td>
           ) : null}
@@ -193,7 +231,7 @@ function CodesListsCodes(props) {
         {showFilter && activeCodeIndex === indexCode && (
           <tr>
             <td colSpan="6" className="py-2">
-              {renderInputCode()}
+              {renderFilterInput()}
             </td>
           </tr>
         )}
@@ -201,7 +239,7 @@ function CodesListsCodes(props) {
         {showPrecision && activeCodeIndex === indexCode && (
           <tr>
             <td colSpan="6" className="py-2">
-              {renderInputCode()}
+              {renderPrecisionInput()}
             </td>
           </tr>
         )}
@@ -228,13 +266,13 @@ function CodesListsCodes(props) {
       <table className={`${LIST_CLASS} table-auto w-full`}>
         <thead>
           <tr className="border-b border-b-[#e0e0e0]">
-            <th className="py-2">{Dictionary.level}</th>
-            <th className="py-2">{Dictionary.code}</th>
-            <th className="py-2">{Dictionary.label}</th>
-            {allowFilter ? <th className="py-2">{Dictionary.filtre}</th> : null}
+            <th className="py-2">{Dictionary.codeLevel}</th>
+            <th className="py-2">{Dictionary.codeValue}</th>
+            <th className="py-2">{Dictionary.codeLabel}</th>
             {allowPrecision ? (
               <th className="py-2">{Dictionary.codePrecision}</th>
             ) : null}
+            {allowFilter ? <th className="py-2">{Dictionary.filtre}</th> : null}
           </tr>
         </thead>
         <tbody>
@@ -274,8 +312,9 @@ CodesListsCodes.defaultProps = {
 
 const mapStateToProps = (state) => {
   const selector = formValueSelector('component');
+
   return {
-    Type: selector(state, 'responseFormat.type'),
+    codeFilters: selector(state, 'codeFilters'),
   };
 };
 
