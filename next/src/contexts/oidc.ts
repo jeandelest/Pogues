@@ -8,6 +8,9 @@ const decodedIdTokenSchema = z.object({
   timbre: z.string().nullish(), // timbre can be not defined (undefined or null) in case of "external" user
 });
 
+export const DEFAULT_STAMP = (import.meta.env.VITE_DEFAULT_USER_STAMP ||
+  'FAKEPERMISSION') as string;
+
 export const { OidcProvider, useOidc, getOidc } =
   import.meta.env.VITE_OIDC_ENABLED === 'false'
     ? createMockReactOidc({
@@ -18,7 +21,7 @@ export const { OidcProvider, useOidc, getOidc } =
           decodedIdToken: {
             given_name: import.meta.env.VITE_DEFAULT_USER_NAME ?? 'Guybrush',
             family_name: '',
-            timbre: import.meta.env.VITE_DEFAULT_USER_STAMP ?? 'FAKEPERMISSION',
+            timbre: DEFAULT_STAMP,
           } satisfies z.infer<typeof decodedIdTokenSchema>,
         },
       })
