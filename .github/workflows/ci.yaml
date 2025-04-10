@@ -2,7 +2,7 @@ name: Main CI
 
 on:
   push:
-    branches: ['main', 'next']
+    branches: ['**']
   pull_request:
     types: [opened, synchronize, reopened]
 
