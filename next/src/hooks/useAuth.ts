@@ -1,4 +1,4 @@
-import { useOidc } from '@/contexts/oidc';
+import { DEFAULT_STAMP, useOidc } from '@/contexts/oidc';
 
 export type User = {
   givenName?: string;
@@ -13,7 +13,7 @@ export function useAuth(): User | undefined {
   const user = {
     givenName: decodedIdToken?.given_name as string,
     familyName: decodedIdToken?.family_name as string,
-    stamp: decodedIdToken?.timbre as string,
+    stamp: decodedIdToken?.timbre ?? DEFAULT_STAMP,
   };
 
   return user;
