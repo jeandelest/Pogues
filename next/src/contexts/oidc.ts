@@ -5,7 +5,7 @@ import { z } from 'zod';
 const decodedIdTokenSchema = z.object({
   family_name: z.string().optional(),
   given_name: z.string(),
-  timbre: z.string(),
+  timbre: z.string().nullish(), // timbre can be not defined (undefined or null) in case of "external" user
 });
 
 export const { OidcProvider, useOidc, getOidc } =
