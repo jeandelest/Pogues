@@ -140,7 +140,7 @@ const dictionary: Dictionary = {
   },
   generateCollectedVariables: {
     en: 'Generate collected variables',
-    fr: 'Générer variables collectées',
+    fr: 'Générer les variables collectées',
   },
   import: {
     en: 'Import',

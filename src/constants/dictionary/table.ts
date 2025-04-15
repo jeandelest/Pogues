@@ -42,12 +42,12 @@ export const tableDictionary: Dictionary = {
     fr: 'Information mesurée',
     en: 'Measure information',
   },
-  collectionFilter: {
-    fr: 'Filtre de collecte',
-    en: 'Collection filter',
+  filteredCells: {
+    fr: 'Cases filtrées',
+    en: 'Filtered cells',
   },
   conditionFilter: {
-    fr: 'Condition de collecte',
-    en: 'Collection condition',
+    en: 'Display condition',
+    fr: "Condition d'affichage",
   },
 };

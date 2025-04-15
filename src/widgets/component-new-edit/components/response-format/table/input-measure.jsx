@@ -65,7 +65,7 @@ function InputMeasure({
           <Field
             name="hasFilter"
             component={ListRadios}
-            label={Dictionary.collectionFilter}
+            label={Dictionary.filteredCells}
             required
             // Reset condition filter to undefined value on change
             onChange={handleFilterChange}
