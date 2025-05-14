@@ -415,8 +415,8 @@ const dictionary: Dictionary = {
     fr: 'Avertissement (Non bloquant)',
   },
   ERROR: {
-    en: 'Error (Blocking soon)',
-    fr: 'Erreur (Bientôt bloquant)',
+    en: 'Error (Blocking)',
+    fr: 'Erreur (Bloquant)',
   },
   control_scope: {
     en: 'Level',
