@@ -50,4 +50,12 @@ export const tableDictionary: Dictionary = {
     en: 'Display condition',
     fr: "Condition d'affichage",
   },
+  readOnlyCells: {
+    fr: 'Cases en lecture seule',
+    en: 'Read-only cells',
+  },
+  conditionReadOnly: {
+    fr: 'Condition de lecture seule',
+    en: 'Read-only condition',
+  },
 };

@@ -60,6 +60,8 @@ export const defaultMeasureState = {
   label: '',
   hasFilter: false,
   conditionFilter: undefined,
+  isReadOnly: false,
+  conditionReadOnly: undefined,
   type: SIMPLE,
   [SIMPLE]: defaultMeasureSimpleState,
   [SINGLE_CHOICE]: {
@@ -75,6 +77,8 @@ export const defaultMeasureForm = {
   label: '',
   hasFilter: false,
   conditionFilter: undefined,
+  isReadOnly: false,
+  conditionReadOnly: undefined,
   type: SIMPLE,
   [SIMPLE]: defaultMeasureSimpleState,
   [SINGLE_CHOICE]: {
@@ -156,12 +160,21 @@ export function formToStateSecondary(form, codesListSecondary) {
 }
 
 export function formToStateMeasure(form, codesListMeasure) {
-  const { label, conditionFilter, type, [type]: measureForm } = form;
+  const {
+    label,
+    conditionFilter,
+    conditionReadOnly,
+    type,
+    [type]: measureForm,
+  } = form;
   const state = {
     label: verifyVariable(label),
     conditionFilter: conditionFilter
       ? verifyVariable(conditionFilter)
       : conditionFilter,
+    conditionReadOnly: conditionReadOnly
+      ? verifyVariable(conditionReadOnly)
+      : conditionReadOnly,
     type,
   };
 
@@ -252,6 +265,7 @@ export function stateToFormMeasure(
   const {
     label,
     conditionFilter,
+    conditionReadOnly,
     type,
     [SIMPLE]: simpleState,
     [SINGLE_CHOICE]: {
@@ -262,6 +276,7 @@ export function stateToFormMeasure(
 
   // since we do not have hasFilter in the model, we create the boolean here : true if conditionFilter has a value
   const hasFilter = !!conditionFilter;
+  const isReadOnly = !!conditionReadOnly;
 
   let codesListForm;
 
@@ -278,6 +293,8 @@ export function stateToFormMeasure(
     label,
     hasFilter,
     conditionFilter,
+    isReadOnly,
+    conditionReadOnly,
     type,
     [SIMPLE]: simpleState,
     [SINGLE_CHOICE]: {
@@ -375,11 +392,18 @@ const Factory = (initialState = {}, codesListsStore) => {
   });
   currentState[LIST_MEASURE].measures = currentState[LIST_MEASURE].measures.map(
     (m) => {
-      const { type, label, conditionFilter, [type]: measureState } = m;
+      const {
+        type,
+        label,
+        conditionFilter,
+        conditionReadOnly,
+        [type]: measureState,
+      } = m;
       const state = {
         type,
         label,
         conditionFilter,
+        conditionReadOnly,
       };
 
       if (type === SINGLE_CHOICE) {
