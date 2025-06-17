@@ -1,7 +1,7 @@
 {
   "name": "pogues",
   "private": true,
-  "version": "1.9.5",
+  "version": "1.10.0-rc.0",
   "type": "module",
   "scripts": {
     "prepare": "vite-envs update-types",
