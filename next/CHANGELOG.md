@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Handle network errors instead of crashing.
 - Translation in breadcrumbs.
 - Improved accessibility in navigation bar and breadcrumb.
 
