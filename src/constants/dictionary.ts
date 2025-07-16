@@ -846,10 +846,6 @@ const dictionary: Dictionary = {
     fr: 'Ouvrir',
     en: 'Open',
   },
-  loopMinMaxHouseholdContextWarning: {
-    fr: "Rappel : pour les enquêtes en contexte entreprises, le nombre d'occurrences minimum et maximum d'une boucle doivent être égaux.",
-    en: 'Reminder: for business surveys, the min and max number of occurences of a loop must be equal.',
-  },
 };
 
 // Dynamic translations
