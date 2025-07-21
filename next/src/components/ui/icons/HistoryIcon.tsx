@@ -1,3 +1,4 @@
+/** Icon of a clock which should be used to designate things save related. */
 export default function HistoryIcon({
   height = '24px',
   width = '24px',
