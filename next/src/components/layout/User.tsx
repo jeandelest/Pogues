@@ -25,7 +25,6 @@ export default function User({ user }: Readonly<UserProps>) {
       redirectTo: 'home',
     });
   }
-  console.log('logoutEnabled', logoutEnabled);
   return (
     <Menu
       items={[
@@ -41,7 +40,7 @@ export default function User({ user }: Readonly<UserProps>) {
           : {
               label: t('common.logoutDialog.label'),
               icon: <LogoutIcon />,
-              onClick: () => onLogout,
+              onClick: onLogout,
               disabled: !logoutEnabled,
             },
       ]}
