@@ -98,6 +98,7 @@
     "nomenclatures": "Nomenclatures",
     "questionnaire": "Questionnaire {{id}}",
     "questionnaires": "Questionnaires",
+    "variables": "Variables",
     "version": "Version {{id}}"
   },
   "error": {
@@ -230,7 +231,16 @@
       "text": "Text"
     },
     "description": "Description",
+    "form": {
+      "mustProvideName": "You must provide a name",
+      "mustProvideScreamingSnakeCaseName": "Name must be in SCREAMING_SNAKE_CASE format"
+    },
+    "maxLength": "Max length",
+    "maximum": "Max",
+    "minimum": "Min",
     "name": "Name",
+    "precision": "Precision",
+    "scope": "Scope",
     "type": {
       "calculated": "Calculated",
       "collected": "Collected",
@@ -241,6 +251,7 @@
   "variables": {
     "create": "Create a variable",
     "datatype": "Datatype",
+    "questionnaireHasNoVariable": "The questionnaire does not have any variables.",
     "name": "Name",
     "none": "No variables",
     "scope": "Scope {{ scope}}",
