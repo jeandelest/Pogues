@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Modal overlap with next.
+
+### Removed
+
+- Static tables can no longer be set as readonly.
+- Personalization link button, since it's now handled by next.
+- Home redirection button in questionnaire page, since it's now displayed by next.
+
+## [1.11.0] - 2025-07-17
+
+### Changed
+
+- Loops' length can be set as fixed or dynamic (with a min and a max) if they are not based on another loop.
+- Loops with a fixed length can be displayed as one page per iteration.
+
 ### Removed
 
 - Save button since it is now handled by next.
