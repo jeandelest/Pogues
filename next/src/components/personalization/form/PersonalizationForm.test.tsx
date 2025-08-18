@@ -1,26 +1,44 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Papa from 'papaparse';
 import { expect } from 'vitest';
 
 import {
   PersonalizationQuestionnaire,
   SurveyContextEnum,
   SurveyContextValueEnum,
-  UploadError,
 } from '@/models/personalizationQuestionnaire';
 import { renderWithRouter } from '@/tests/tests';
 
 import PersonalizationForm from './PersonalizationForm';
 
-vi.mock('@/i18n', () => ({
-  useTranslation: () => ({ t: (keyMessage: string) => keyMessage }),
-}));
+vi.mock('@/api/personalization', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/api/personalization')>();
+
+  return {
+    ...actual,
+    // Had to redefine the whole constant to avoid vitest throwing an error
+    personalizationKeys: {
+      base: (poguesId: string) =>
+        ['personalization', 'base', poguesId] as const,
+      fromPogues: (poguesId: string) =>
+        ['personalizationFromPogues', { poguesId }] as const,
+      file: (poguesId: string) =>
+        ['personalizationFile', { poguesId }] as const,
+      interrogationData: (poguesId: string) =>
+        ['getPersonalizationInterrogationData', { poguesId }] as const,
+      checkFileData: (poguesId: string) =>
+        ['checkFileData', { poguesId }] as const,
+      csvSchema: (poguesId: string) => ['csvSchema', { poguesId }] as const,
+    },
+    checkInterrogationsData: vi.fn(() => Promise.resolve()),
+  };
+});
 
 vi.mock('papaparse', () => ({
   __esModule: true,
   default: {
-    parse: vi.fn((file, opts) => {
+    unparse: vi.fn(() => 'id,name\n1,Teemo\n2,Panda\n'),
+    parse: vi.fn((_file, opts) => {
       if (opts && typeof opts.complete === 'function') {
         opts.complete({
           data: [{ id: '1', name: 'Test' }],
@@ -48,11 +66,11 @@ describe('PersonalizationForm', () => {
       value: SurveyContextValueEnum.HOUSEHOLD,
     },
     interrogationData: undefined,
-    isSynchronized: true,
+    state: 'STARTED',
+    isOutdated: false,
   };
 
   const setQuestionnaire = vi.fn();
-  const setErrorUpload = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -65,65 +83,29 @@ describe('PersonalizationForm', () => {
           questionnaireId="1"
           questionnaire={baseQuestionnaire}
           setQuestionnaire={setQuestionnaire}
-          errorUpload={null}
-          setErrorUpload={setErrorUpload}
           handleSubmit={vi.fn()}
+          fileData={null}
         />,
       ),
     );
+    expect(screen.getByText('Context')).toBeInTheDocument();
+    const radiogroups = screen.getAllByRole('radiogroup');
+    expect(radiogroups).toHaveLength(2);
+    expect(screen.getByText('Personalization type')).toBeInTheDocument();
     expect(screen.getByText('Upload survey units data')).toBeInTheDocument();
   });
 
-  it('displays uploaded CSV file content', async () => {
+  it('does not show error component initially', () => {
     renderWithRouter(
       <PersonalizationForm
         questionnaireId="1"
         questionnaire={baseQuestionnaire}
         setQuestionnaire={setQuestionnaire}
-        errorUpload={null}
-        setErrorUpload={setErrorUpload}
         handleSubmit={vi.fn()}
       />,
     );
 
-    const uploadBtn = screen.getByRole('button', {
-      name: /upload survey units data/i,
-    });
-    fireEvent.click(uploadBtn);
-
-    const fileInput = document.querySelector(
-      'input[type="file"]',
-    ) as HTMLInputElement;
-    expect(fileInput).toBeTruthy();
-
-    const file = new File(['id,name\n1,Teemo\n2,Panda'], 'test.csv', {
-      type: 'text/csv',
-    });
-    await userEvent.upload(fileInput, file);
-
-    expect(Papa.parse).toHaveBeenCalledWith(
-      file,
-      expect.objectContaining({
-        header: true,
-        complete: expect.any(Function),
-      }),
-    );
-  });
-
-  it('shows error component if there is errors', () => {
-    renderWithRouter(
-      <PersonalizationForm
-        questionnaireId="1"
-        questionnaire={baseQuestionnaire}
-        setQuestionnaire={setQuestionnaire}
-        errorUpload={
-          { message: 'error', details: ['error message 1'] } as UploadError
-        }
-        setErrorUpload={setErrorUpload}
-        handleSubmit={vi.fn()}
-      />,
-    );
-    expect(screen.getByText('error message 1')).toBeInTheDocument();
+    expect(screen.queryByLabelText('error-component')).not.toBeInTheDocument();
   });
 
   it('disables validate button if no file is uploaded', async () => {
@@ -133,8 +115,6 @@ describe('PersonalizationForm', () => {
           questionnaireId="1"
           questionnaire={{ ...baseQuestionnaire, interrogationData: undefined }}
           setQuestionnaire={setQuestionnaire}
-          errorUpload={null}
-          setErrorUpload={setErrorUpload}
           handleSubmit={vi.fn()}
         />,
       ),
@@ -143,25 +123,143 @@ describe('PersonalizationForm', () => {
     expect(button).toBeDisabled();
   });
 
-  it('disables validate button if errorUpload is present', async () => {
+  it('shows my csv data', async () => {
+    const mockCsvData = {
+      data: [
+        { id: '1', name: 'Teemo' },
+        { id: '2', name: 'Panda' },
+      ],
+      errors: [],
+      meta: {
+        fields: ['id', 'name'],
+        delimiter: ',',
+        linebreak: '\n',
+        aborted: false,
+        truncated: false,
+        cursor: 42,
+      },
+    };
+
     await waitFor(() =>
       renderWithRouter(
         <PersonalizationForm
           questionnaireId="1"
-          questionnaire={{
-            ...baseQuestionnaire,
-            interrogationData: new File([''], 'a.csv'),
-          }}
+          questionnaire={baseQuestionnaire}
           setQuestionnaire={setQuestionnaire}
-          errorUpload={
-            { message: 'error', details: ['error message 1'] } as UploadError
-          }
-          setErrorUpload={setErrorUpload}
           handleSubmit={vi.fn()}
+          fileData={mockCsvData}
         />,
       ),
     );
-    const button = screen.getByText('Validate');
-    expect(button).toBeDisabled();
+
+    expect(screen.queryByTestId('json-viewer')).not.toBeInTheDocument();
+    expect(screen.getByText('Teemo')).toBeInTheDocument();
+  });
+
+  it('clear data on filetype change', async () => {
+    const mockJsonData = [
+      { id: '1', name: 'Teemo' },
+      { id: '2', name: 'Panda' },
+    ];
+
+    await waitFor(() =>
+      renderWithRouter(
+        <PersonalizationForm
+          questionnaireId="1"
+          questionnaire={baseQuestionnaire}
+          setQuestionnaire={setQuestionnaire}
+          handleSubmit={vi.fn()}
+          fileData={JSON.stringify(mockJsonData)}
+        />,
+      ),
+    );
+    const radiogroups = screen.getAllByRole('radiogroup');
+    const personalizationTypeGroup = radiogroups.find((group) =>
+      within(group).queryByText(/Personalization type/i),
+    );
+    expect(personalizationTypeGroup).toBeTruthy();
+
+    const jsonOption = within(personalizationTypeGroup!).getByText(/JSON/i);
+    fireEvent.click(jsonOption);
+
+    expect(screen.queryByTestId('json-viewer')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('csv-viewer-table')).not.toBeInTheDocument();
+  });
+
+  it('handle file input', async () => {
+    const mockJsonFile = new File(
+      [JSON.stringify({ id: '1', name: 'Teemo' })],
+      'filename.json',
+      { type: 'application/json' },
+    );
+    mockJsonFile.text = () =>
+      Promise.resolve(JSON.stringify({ id: '1', name: 'Teemo' }));
+    await waitFor(() =>
+      renderWithRouter(
+        <PersonalizationForm
+          questionnaireId="1"
+          questionnaire={baseQuestionnaire}
+          setQuestionnaire={setQuestionnaire}
+          handleSubmit={vi.fn()}
+          fileData={null}
+        />,
+      ),
+    );
+
+    const radiogroups = screen.getAllByRole('radiogroup');
+    const personalizationTypeGroup = radiogroups.find((group) =>
+      within(group).queryByText(/Personalization type/i),
+    );
+    expect(personalizationTypeGroup).toBeTruthy();
+
+    const jsonOption = within(personalizationTypeGroup!).getByText(/JSON/i);
+    fireEvent.click(jsonOption);
+
+    const uploadButton = screen.getByText('Upload survey units data');
+    fireEvent.click(uploadButton);
+    const fileInput = screen.getByTestId('file-upload') as HTMLInputElement;
+    await userEvent.upload(fileInput, mockJsonFile);
+
+    expect(fileInput.files).toHaveLength(1);
+    expect(fileInput.files?.[0]).toEqual(mockJsonFile);
+    await waitFor(() => {
+      expect(setQuestionnaire).toHaveBeenCalledWith(
+        expect.objectContaining({
+          interrogationData: mockJsonFile,
+        }),
+      );
+    });
+  });
+
+  it('handle context change', async () => {
+    await waitFor(() =>
+      renderWithRouter(
+        <PersonalizationForm
+          questionnaireId="1"
+          questionnaire={baseQuestionnaire}
+          setQuestionnaire={setQuestionnaire}
+          handleSubmit={vi.fn()}
+          fileData={null}
+        />,
+      ),
+    );
+
+    const radiogroups = screen.getAllByRole('radiogroup');
+    const contextTypeGroup = radiogroups.find((group) =>
+      within(group).queryByText(/Context/i),
+    );
+    expect(contextTypeGroup).toBeTruthy();
+
+    const businessOption = within(contextTypeGroup!).getByText(/Entreprise/i);
+    fireEvent.click(businessOption);
+
+    expect(setQuestionnaire).toHaveBeenCalledWith(
+      expect.objectContaining({
+        context: {
+          name: SurveyContextEnum.BUSINESS,
+          value: SurveyContextValueEnum.BUSINESS,
+        },
+      }),
+    );
   });
 });

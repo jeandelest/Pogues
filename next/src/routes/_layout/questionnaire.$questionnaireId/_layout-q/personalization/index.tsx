@@ -2,15 +2,18 @@ import { useEffect } from 'react';
 
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { ParseResult } from 'papaparse';
 import { useTranslation } from 'react-i18next';
 
 import {
   basePersonalizationQueryOptions,
-  getInterrogationDataQueryOptions,
+  personalizationFromPoguesQueryOptions,
+  personalizationKeys,
 } from '@/api/personalization';
 import ContentHeader from '@/components/layout/ContentHeader';
 import ContentMain from '@/components/layout/ContentMain';
 import PersonalizationsOverview from '@/components/personalization/overview/PersonalizationOverview';
+import { InterrogationModeDataResponse } from '@/models/personalizationQuestionnaire';
 
 /**
  * Previously handled by Public Enemy
@@ -21,31 +24,54 @@ export const Route = createFileRoute(
   component: RouteComponent,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   loader: async ({ context: { queryClient }, params: { questionnaireId } }) => {
-    await queryClient.ensureQueryData(
-      basePersonalizationQueryOptions(questionnaireId),
-    );
+    queryClient.invalidateQueries({
+      queryKey: personalizationKeys.fromPogues(questionnaireId),
+    });
+    await queryClient.ensureQueryData({
+      ...personalizationFromPoguesQueryOptions(questionnaireId),
+    });
+  },
+  loaderDeps() {
+    return { timestamp: Date.now() };
   },
 });
 
 function RouteComponent() {
   const questionnaireId = Route.useParams().questionnaireId;
+  const navigate = useNavigate();
 
+  const { data: questionnaire } = useSuspenseQuery(
+    personalizationFromPoguesQueryOptions(questionnaireId),
+  );
   const {
-    data: [questionnaire, csvData],
-  } = useSuspenseQuery(basePersonalizationQueryOptions(questionnaireId));
-
-  const { data: interrogationData } = useQuery({
-    ...getInterrogationDataQueryOptions(questionnaire.id, questionnaire.modes),
+    data = [
+      {} as InterrogationModeDataResponse,
+      '' as ParseResult<unknown> | string,
+    ],
+  } = useQuery<[InterrogationModeDataResponse, ParseResult<unknown> | string]>({
+    ...basePersonalizationQueryOptions(questionnaire?.poguesId),
+    enabled: !!questionnaire?.id,
     retry: false,
     throwOnError: false,
   });
+
+  const [interrogationData, fileData] = data;
+  //If questionnaire.id is null or undefined, redirect to personalization creation
+  if (!questionnaire?.id) {
+    navigate({
+      to: '/questionnaire/$questionnaireId/personalization/new',
+      params: { questionnaireId },
+      replace: true,
+    });
+    return null;
+  }
 
   return (
     <ComponentWrapper>
       <PersonalizationsOverview
         questionnaireId={questionnaireId}
         data={questionnaire}
-        csvData={csvData}
+        fileData={fileData}
         interrogationData={interrogationData || null}
       />
     </ComponentWrapper>
@@ -67,9 +93,6 @@ function ErrorComponent({ error }: Readonly<{ error: Error }>) {
     }
   }, [error, navigate, questionnaireId]);
 
-  if (error?.message?.includes('500')) {
-    return null;
-  }
   if (error?.message?.includes('404')) {
     return null;
   }

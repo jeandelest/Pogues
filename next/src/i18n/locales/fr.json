@@ -132,9 +132,11 @@
   "personalization": {
     "create": {
       "business": "Entreprise",
+      "brokenQuestionnaire": "Veuillez vérifier que votre questionnaire est bien fonctionnel et intègre.",
       "context": "Contexte",
       "createQuestionnaire": "Charger les données dans les orchestrateurs",
       "createQuestionnaireDescription": "Créer le questionnaire dans les orchestrateurs avec les données chargées.",
+      "csvDescription": "Variables externes seules (CSV)",
       "description": "Créez une personnalisation pour pré-remplir le questionnaire avec les données des unités enquêtées.",
       "downloadError": "Erreur lors du téléchargement du schéma CSV",
       "downloadSuccess": "Schéma CSV téléchargé avec succès",
@@ -142,8 +144,11 @@
       "expectedFileSchema": "Schéma de fichier attendu",
       "fileViewerError": "Erreur lors des l'affichage du fichier.",
       "household": "Ménage",
+      "invalidFileType": "Type de fichier invalide. Format attendu : {{expected}}.",
+      "jsonDescription": "Variables externes et pré-remplissage (JSON)",
       "noFileChosen": "Aucun fichier choisi",
-      "saveError": "Erreur lors de la sauvegarde du questionnaire",
+      "personalizationType": "Type de personnalisation",
+      "saveError": "Erreur lors du chargement des interrogations",
       "saveSuccess": "Questionnaire sauvegardé avec succès",
       "success": "La personnalisation a été créée avec succès",
       "title": "Personnaliser mon questionnaire",
@@ -155,24 +160,33 @@
     "edit": {
       "editQuestionnaire": "Confirmer le rechargement",
       "editQuestionnaireDescription": "Attention, le rechargement du questionnaire dans les orchestrateurs entraîne la suppression du questionnaire actuel. Souhaitez vous continuer ?",
-      "resetInterrogation": "L'unité enquêtée a été réinitialisée",
       "resetInterrogationDescription": "Réinitialiser les données de l'unité enquêtée",
+      "resetInterrogationSuccess": "L'intorrogation a été réinitialisée avec succès",
+      "resetInterrogationError": "Erreur lors de la réinitialisation de l'interrogation",
+      "saveSuccess": "Le questionnaire a bien été rechargé",
+      "saveError": "Erreur lors du rechargement du questionnaire",
       "title": "Modifier la personnalisation"
     },
     "overview": {
-      "currentInterrogations": "Unités enquêtées actuelles",
+      "currentInterrogations": "Personnalisation existante",
+      "dataInterrogationError": "Erreur lors du chargement des interrogations",
+      "dataInterrogationErrorDetails": "Une erreur est survenue lors du chargement des données d'interrogation. Veuillez réessayer plus tard.",
       "deleteDialogConfirm": "Êtes-vous sûr de vouloir supprimer ces unités enquêtées ?",
       "deleteDialogTitle": "Supprimer la personnalisation",
       "deleteSuccess": "Personnalisation supprimée avec succès",
       "editDisabledTooltip": "La personnalisation ne peut pas être modifiée pour le moment.",
-      "existingFileData": "Jeu de données existantes",
+      "existingFileData": "Télécharger le jeu de données existantes",
       "modes": "Modes : ",
-      "syncErrorDetails": "Un problème est survenu pendant l'enregistrement du questionnaire. Merci de bien vouloir recharger le questionnaire en renseignant à nouveau le contexte et le fichier de données",
-      "syncErrorTitle": "Erreur de chargement dans les orchestrateurs",
+      "syncErrorContent": "Le questionnaire n'est plus à jour. Merci de bien vouloir le recharger en cliquant sur l'icône de synchronisation.",
+      "syncErrorTitle": "Avertissement",
       "title": "Personnaliser mon questionnaire",
+      "updateQuestionnaire": "Mettre à jour le questionnaire",
+      "updateSuccess": "Le questionnaire a bien été mis à jour",
+      "updateError": "Erreur lors de la mise à jour du questionnaire",
+      "updateFileCheckError": "Le fichier actuel n'est plus valide. Veuillez télécharger un nouveau fichier.",
       "visualiseInterrogations": "Visualiser les unités enquêtées"
     },
-    "title": "Personalisation"
+    "title": "Personnalisation"
   },
   "questionnaire": {
     "common": {

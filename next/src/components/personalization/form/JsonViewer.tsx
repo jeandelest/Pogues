@@ -22,14 +22,14 @@ export default function JsonViewer({ data }: Readonly<JsonViewerProps>) {
   }, [data]);
 
   return (
-    <div className="overflow-x-auto w-full my-3">
+    <div className="overflow-x-auto w-full my-4">
       <div
         style={{
-          maxHeight: shouldScroll ? '320px' : 'none',
+          maxHeight: shouldScroll ? '420px' : 'none',
           overflowY: shouldScroll ? 'auto' : 'visible',
         }}
       >
-        <pre style={{ backgroundColor: 'bg-blue-200' }}>
+        <pre className="bg-main">
           <code ref={codeRef} className="language-json" />
         </pre>
       </div>

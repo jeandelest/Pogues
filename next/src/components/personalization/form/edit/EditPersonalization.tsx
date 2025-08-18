@@ -2,30 +2,29 @@ import { useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
 import type { ParseResult } from 'papaparse';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import { editQuestionnaireData } from '@/api/personalization';
+import {
+  editQuestionnaireData,
+  personalizationKeys,
+} from '@/api/personalization';
 import PersonalizationForm from '@/components/personalization/form/PersonalizationForm';
 import PersonalisationTile from '@/components/personalization/overview/PersonalizationTile';
-import {
-  PersonalizationQuestionnaire,
-  UploadError,
-} from '@/models/personalizationQuestionnaire';
+import { PersonalizationQuestionnaire } from '@/models/personalizationQuestionnaire';
 
 interface EditPersonalizationProps {
   questionnaireId: string;
   data: PersonalizationQuestionnaire;
-  csvData: ParseResult | null;
+  fileData: ParseResult<unknown> | string | null;
 }
 
 /** Display the personalization windows */
 export default function EditPersonalization({
   questionnaireId,
   data,
-  csvData,
+  fileData,
 }: Readonly<EditPersonalizationProps>) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -33,32 +32,45 @@ export default function EditPersonalization({
   const [questionnaire, setQuestionnaire] =
     useState<PersonalizationQuestionnaire>(data);
 
-  const [errorUpload, setErrorUpload] = useState<UploadError | null>(null);
-
   const saveQuestionnaire = useMutation({
     mutationFn: (questionnaire: PersonalizationQuestionnaire) => {
       return editQuestionnaireData(questionnaire);
     },
-    onSuccess: () => {
-      toast.success(t('personalization.create.saveSuccess'));
+    onSuccess: async (result) => {
+      if (result.state === 'COMPLETED') {
+        await queryClient.refetchQueries({
+          queryKey: personalizationKeys.fromPogues(questionnaireId),
+        });
+      }
       queryClient.invalidateQueries({
-        queryKey: ['editQuestionnaire', { questionnaireId }],
+        queryKey: personalizationKeys.fromPogues(questionnaireId),
       });
-    },
-    onError: (error: AxiosError) => {
-      toast.error(
-        t('personalization.create.saveError', { error: error.message }),
-      );
     },
   });
 
-  function handleSubmit(questionnaire: PersonalizationQuestionnaire) {
-    saveQuestionnaire.mutateAsync(questionnaire, {
-      onSuccess: () =>
-        navigate({
-          to: '/questionnaire/$questionnaireId/personalization',
-          params: { questionnaireId },
-        }),
+  function handleSubmit() {
+    const label = questionnaire.label;
+    const promise = saveQuestionnaire.mutateAsync(questionnaire);
+
+    toast.promise(promise, {
+      loading: t('common.loading'),
+      success: (result) => {
+        if (result.state === 'COMPLETED') {
+          navigate({
+            to: `/questionnaire/${questionnaireId}/personalization`,
+            replace: true,
+          });
+          return t('personalization.edit.saveSuccess');
+        }
+        if (result.state === 'ERROR') {
+          console.error('Error saving questionnaire', result);
+          toast.error(t('personalization.edit.brokenQuestionnaire'));
+          return null;
+        }
+        return t('personalization.create.saveError');
+      },
+      error: (err) =>
+        t('personalization.create.saveError', { label, error: err.message }),
     });
   }
 
@@ -68,9 +80,7 @@ export default function EditPersonalization({
         questionnaire={questionnaire}
         setQuestionnaire={setQuestionnaire}
         questionnaireId={questionnaireId}
-        errorUpload={errorUpload}
-        setErrorUpload={setErrorUpload}
-        csvData={csvData}
+        fileData={fileData}
         handleSubmit={handleSubmit}
       />
     </PersonalisationTile>

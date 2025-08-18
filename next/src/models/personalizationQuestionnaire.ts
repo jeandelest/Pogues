@@ -5,7 +5,8 @@ export type PersonalizationQuestionnaire = {
   modes: Mode[];
   context: SurveyContext;
   interrogationData?: File;
-  isSynchronized: boolean;
+  state: 'STARTED' | 'COMPLETED' | 'ERROR' | 'NONE';
+  isOutdated: boolean;
 };
 
 export type Mode = {
@@ -23,9 +24,15 @@ export type FileType = {
   value: string;
 };
 
-export type UploadError = {
+export type UploadMessage = {
   message: string;
-  details: string[];
+  details?: UploadMessageDetails[];
+};
+
+export type UploadMessageDetails = {
+  dataIndex?: number;
+  attributeKey?: string;
+  message: string;
 };
 
 export type InterrogationModeData = {
@@ -34,11 +41,10 @@ export type InterrogationModeData = {
   url: string;
 };
 
-//Temp type
-export type InterrogationModeDataResponse = {
-  questionnaireModelId: string;
-  interrogations: InterrogationModeData[];
-};
+export type InterrogationModeDataResponse = Record<
+  'CAPI' | 'CAWI' | 'PAPI' | 'CATI',
+  InterrogationModeData[]
+>;
 
 export enum SurveyContextEnum {
   HOUSEHOLD = 'HOUSEHOLD',

@@ -1,16 +1,16 @@
 import { ParseResult } from 'papaparse';
 
 interface CsvViewerTableProps {
-  parsedCsv: ParseResult;
+  parsedCsv: ParseResult<unknown>;
 }
 
 /** Display uploaded csv file as a table. */
 export default function CsvViewerTable({
   parsedCsv,
 }: Readonly<CsvViewerTableProps>) {
-  const shouldScroll = parsedCsv.data.length > 4;
+  const shouldScroll = parsedCsv.data.length > 6;
   return (
-    <div className="overflow-x-auto w-full my-3">
+    <div className="overflow-x-auto w-full my-4">
       <div
         className={`${
           shouldScroll
@@ -21,7 +21,7 @@ export default function CsvViewerTable({
         <table className="border border-default w-full min-w-max shadow-sm">
           <thead className="bg-accent sticky top-0 ">
             <tr className="*:font-semibold *:p-4 text-left">
-              {parsedCsv.meta.fields.map((field: string) => (
+              {parsedCsv.meta.fields?.map((field: string) => (
                 <th key={field} className="text-default">
                   {field}
                 </th>
@@ -29,15 +29,15 @@ export default function CsvViewerTable({
             </tr>
           </thead>
           <tbody className="text-default">
-            {parsedCsv.data.map((row: Record<string, string>) => {
+            {(parsedCsv.data as Record<string, string>[]).map((row) => {
               const key =
                 row.id ??
                 parsedCsv.meta.fields
-                  .map((field: string) => row[field])
+                  ?.map((field: string) => row[field])
                   .join('__');
               return (
                 <tr key={key} className="bg-default odd:bg-main *:p-4">
-                  {parsedCsv.meta.fields.map((field: string) => (
+                  {parsedCsv.meta.fields?.map((field: string) => (
                     <td key={field}>{row[field]}</td>
                   ))}
                 </tr>

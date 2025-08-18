@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import {
   personalizationFileQueryOptions,
-  personalizationQueryOptions,
+  personalizationFromPoguesQueryOptions,
 } from '@/api/personalization';
 import ContentHeader from '@/components/layout/ContentHeader';
 import ContentMain from '@/components/layout/ContentMain';
@@ -23,7 +23,7 @@ export const Route = createFileRoute(
     params: { questionnaireId, publicEnemyId },
   }) => {
     const personalizationPromise = queryClient.ensureQueryData(
-      personalizationQueryOptions(questionnaireId),
+      personalizationFromPoguesQueryOptions(questionnaireId),
     );
     const filePromise = queryClient.ensureQueryData(
       personalizationFileQueryOptions(publicEnemyId),
@@ -35,9 +35,9 @@ export const Route = createFileRoute(
 function RouteComponent() {
   const { questionnaireId, publicEnemyId } = Route.useParams();
   const { data: questionnaire } = useSuspenseQuery(
-    personalizationQueryOptions(questionnaireId),
+    personalizationFromPoguesQueryOptions(questionnaireId),
   );
-  const { data: csvData } = useSuspenseQuery(
+  const { data: fileData } = useSuspenseQuery(
     personalizationFileQueryOptions(publicEnemyId),
   );
 
@@ -46,7 +46,7 @@ function RouteComponent() {
       <EditPersonalization
         data={questionnaire}
         questionnaireId={questionnaireId}
-        csvData={csvData}
+        fileData={fileData}
       />
     </ComponentWrapper>
   );

@@ -2,15 +2,14 @@ import { useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import { addQuestionnaireData } from '@/api/personalization';
 import {
-  PersonalizationQuestionnaire,
-  UploadError,
-} from '@/models/personalizationQuestionnaire';
+  addQuestionnaireData,
+  personalizationKeys,
+} from '@/api/personalization';
+import { PersonalizationQuestionnaire } from '@/models/personalizationQuestionnaire';
 
 import PersonalisationTile from '../../overview/PersonalizationTile';
 import PersonalizationForm from '../PersonalizationForm';
@@ -26,48 +25,59 @@ export default function CreatePersonalization({
   data,
 }: Readonly<CreatePersonalizationProps>) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [questionnaire, setQuestionnaire] =
     useState<PersonalizationQuestionnaire>(data);
-
-  const [errorUpload, setErrorUpload] = useState<UploadError | null>(null);
 
   const saveQuestionnaire = useMutation({
     mutationFn: (questionnaire: PersonalizationQuestionnaire) => {
       return addQuestionnaireData(questionnaire);
     },
-    onSuccess: () => {
-      toast.success(t('personalization.create.saveSuccess'));
+    onSuccess: async (result) => {
+      if (result.state === 'COMPLETED') {
+        await queryClient.refetchQueries({
+          queryKey: personalizationKeys.fromPogues(questionnaireId),
+        });
+      }
       queryClient.invalidateQueries({
-        queryKey: ['saveQuestionnaire', { questionnaireId }],
+        queryKey: personalizationKeys.fromPogues(questionnaireId),
       });
-    },
-    onError: (error: AxiosError) => {
-      toast.error(
-        t('personalization.create.save_error', { error: error.message }),
-      );
     },
   });
 
   function handleSubmit() {
-    saveQuestionnaire.mutateAsync(questionnaire, {
-      onSuccess: () =>
-        navigate({
-          to: '/questionnaire/$questionnaireId/personalization',
-          params: { questionnaireId },
-        }),
+    const label = questionnaire.label;
+    const promise = saveQuestionnaire.mutateAsync(questionnaire);
+
+    toast.promise(promise, {
+      loading: t('common.loading'),
+      success: (result) => {
+        if (result.state === 'COMPLETED') {
+          navigate({
+            to: `/questionnaire/${questionnaireId}/personalization`,
+            replace: true,
+          });
+          return t('personalization.create.saveSuccess');
+        }
+        if (result.state === 'ERROR') {
+          console.error('Error saving questionnaire', result);
+          toast.error(t('personalization.create.brokenQuestionnaire'));
+          return null;
+        }
+        return t('personalization.create.saveError');
+      },
+      error: (err) =>
+        t('personalization.create.saveError', { label, error: err.message }),
     });
   }
 
   return (
-    <PersonalisationTile data={data}>
+    <PersonalisationTile data={questionnaire}>
       <PersonalizationForm
         questionnaire={questionnaire}
         setQuestionnaire={setQuestionnaire}
         questionnaireId={questionnaireId}
-        errorUpload={errorUpload}
-        setErrorUpload={setErrorUpload}
         handleSubmit={handleSubmit}
       />
     </PersonalisationTile>

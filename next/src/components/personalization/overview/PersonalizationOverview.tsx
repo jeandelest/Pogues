@@ -4,66 +4,76 @@ import type { ParseResult } from 'papaparse';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-import { deleteQuestionnaireData } from '@/api/personalization';
-import { openParsedCsv } from '@/api/utils/personalization';
+import {
+  deleteQuestionnaireData,
+  personalizationKeys,
+} from '@/api/personalization';
+import { openParsedCsv, openParsedJson } from '@/api/utils/personalization';
 import PersonalizationContentTile from '@/components/personalization/overview/PersonalisationContentTile';
 import Button, { ButtonStyle } from '@/components/ui/Button';
 import ButtonLink from '@/components/ui/ButtonLink';
 import DialogButton from '@/components/ui/DialogButton';
 import {
-  InterrogationModeData,
+  InterrogationModeDataResponse,
   PersonalizationQuestionnaire,
-  UploadError,
 } from '@/models/personalizationQuestionnaire';
 
 import CsvViewerTable from '../form/CsvViewerTable';
-import ErrorTile from './ErrorTile';
-import ModeOverview from './ModeOverview';
+import JsonViewer from '../form/JsonViewer';
+import PersonalizationCheckPanel from './PersonalizationCheckPanel';
 import PersonalisationTile from './PersonalizationTile';
 
 interface PersonalizationOverviewProps {
   questionnaireId: string;
   data: PersonalizationQuestionnaire;
-  csvData: ParseResult<unknown> | null;
-  interrogationData: InterrogationModeData[] | null;
+  fileData: ParseResult<unknown> | string;
+  interrogationData: InterrogationModeDataResponse | null;
 }
 
 /** Display the personalization windows */
 export default function PersonalizationOverview({
   questionnaireId,
   data,
-  csvData,
+  fileData = '',
   interrogationData,
 }: Readonly<PersonalizationOverviewProps>) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  function onDownload() {
-    if (csvData && csvData.data.length > 0) {
-      const fileName = 'interrogations-' + questionnaireId + '.csv';
-      openParsedCsv(csvData, fileName);
+  const downloadMutation = useMutation({
+    mutationFn: async () => {
+      const fileName = 'interrogations-' + questionnaireId;
+      if (typeof fileData !== 'string' && 'data' in fileData) {
+        openParsedCsv(fileData, `${fileName}.csv`);
+      } else {
+        openParsedJson(JSON.parse(fileData as string), `${fileName}.json`);
+      }
+      return fileName;
+    },
+    onSuccess: (fileName: string) => {
       toast.success(
         t('personalization.create.downloadSuccess', {
           fileName,
         }),
       );
-    } else {
+    },
+    onError: () => {
       toast.error(
         t('personalization.create.downloadError', {
           error: t('personalization.create.downloadError'),
         }),
       );
-    }
-  }
+    },
+  });
 
   const deleteMutation = useMutation({
     mutationFn: ({ data }: { data: PersonalizationQuestionnaire }) => {
-      return deleteQuestionnaireData(data.id);
+      return deleteQuestionnaireData(data.poguesId);
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({
-        queryKey: ['allPersonalization', { questionnaireId }],
+        queryKey: personalizationKeys.fromPogues(questionnaireId),
       });
       navigate({
         to: '/questionnaire/$questionnaireId/personalization/new',
@@ -83,40 +93,39 @@ export default function PersonalizationOverview({
     });
   }
 
+  const hasValidInterrogationData =
+    interrogationData &&
+    Object.values(interrogationData).some(
+      (modeData) => Array.isArray(modeData) && modeData.length > 0,
+    );
+
   return (
     <>
       <PersonalisationTile data={data}>
         <div className="grid grid-cols-[1fr_auto] my-3">
           <h3>{t('personalization.overview.visualiseInterrogations')}</h3>
         </div>
-        {interrogationData && interrogationData.length > 0 ? (
-          <ModeOverview
-            modes={data.modes}
-            interrogationData={interrogationData}
-          />
-        ) : (
-          <ErrorTile
-            error={
-              {
-                message: t('personalization.overview.syncErrorTitle'),
-                details: [t('personalization.overview.syncErrorDetails')],
-              } as UploadError
-            }
-          />
-        )}
+        <PersonalizationCheckPanel
+          questionnaireId={questionnaireId}
+          data={data}
+          fileData={fileData}
+          interrogationData={interrogationData}
+          hasValidInterrogationData={
+            hasValidInterrogationData ? hasValidInterrogationData : false
+          }
+        />
       </PersonalisationTile>
       <PersonalizationContentTile data={data}>
-        {csvData && csvData.data.length > 0 && (
-          <CsvViewerTable parsedCsv={csvData} />
-        )}
         <div className="overflow-hidden flex flex-row gap-3 my-3">
-          <Button onClick={onDownload} buttonStyle={ButtonStyle.Primary}>
+          <Button
+            onClick={() => downloadMutation.mutate()}
+            buttonStyle={ButtonStyle.Primary}
+          >
             {t('personalization.overview.existingFileData')}
           </Button>
           <ButtonLink
             to="/questionnaire/$questionnaireId/personalization/$publicEnemyId"
-            params={{ questionnaireId, publicEnemyId: data.id.toString() }}
-            title={t('personalization.overview.editDisabledTooltip')}
+            params={{ questionnaireId, publicEnemyId: data.poguesId }}
           >
             {t('common.edit')}
           </ButtonLink>
@@ -129,6 +138,11 @@ export default function PersonalizationOverview({
             onValidate={onDelete}
           />
         </div>
+        {typeof fileData !== 'string' && 'data' in fileData ? (
+          <CsvViewerTable parsedCsv={fileData} />
+        ) : (
+          <JsonViewer data={fileData} />
+        )}
       </PersonalizationContentTile>
     </>
   );

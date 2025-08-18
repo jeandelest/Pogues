@@ -2,11 +2,14 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import { personalizationNewQueryOptions } from '@/api/personalization';
+import { personalizationFromPoguesQueryOptions } from '@/api/personalization';
 import ContentHeader from '@/components/layout/ContentHeader';
 import ContentMain from '@/components/layout/ContentMain';
 import CreatePersonalization from '@/components/personalization/form/create/CreatePersonalization';
-import { PersonalizationQuestionnaire } from '@/models/personalizationQuestionnaire';
+import {
+  PersonalizationQuestionnaire,
+  SurveyContext,
+} from '@/models/personalizationQuestionnaire';
 
 /**
  * Page that allow to create a new survey unit dataset.
@@ -18,15 +21,17 @@ export const Route = createFileRoute(
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   loader: async ({ context: { queryClient }, params: { questionnaireId } }) =>
     queryClient.ensureQueryData(
-      personalizationNewQueryOptions(questionnaireId),
+      personalizationFromPoguesQueryOptions(questionnaireId),
     ),
 });
 
 function RouteComponent() {
   const questionnaireId = Route.useParams().questionnaireId;
   const { data }: { data: PersonalizationQuestionnaire } = useSuspenseQuery(
-    personalizationNewQueryOptions(questionnaireId),
+    personalizationFromPoguesQueryOptions(questionnaireId),
   );
+  // household context is set by default (feedback changes)
+  data.context = { name: 'HOUSEHOLD', value: 'Ménage' } as SurveyContext;
   return (
     <ComponentWrapper>
       <CreatePersonalization data={data} questionnaireId={questionnaireId} />

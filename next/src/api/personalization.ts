@@ -1,32 +1,46 @@
 import { queryOptions } from '@tanstack/react-query';
+// I have to use ParseResult<unknown> because the type changes based on the CSV content.
 import Papa, { ParseResult } from 'papaparse';
 
 import {
-  InterrogationModeData,
   InterrogationModeDataResponse,
-  Mode,
   PersonalizationQuestionnaire,
+  UploadMessage,
 } from '@/models/personalizationQuestionnaire';
 
 import { instancePersonalization } from './instancePersonalization';
 import { getFileName, openDocument } from './utils/personalization';
+
+export const personalizationKeys = {
+  base: (poguesId: string) => ['personalization', 'base', poguesId] as const,
+  fromPogues: (poguesId: string) =>
+    ['personalizationFromPogues', { poguesId }] as const,
+  file: (poguesId: string) => ['personalizationFile', { poguesId }] as const,
+  interrogationData: (poguesId: string) =>
+    ['getPersonalizationInterrogationData', { poguesId }] as const,
+  checkFileData: (poguesId: string) => ['checkFileData', { poguesId }] as const,
+  csvSchema: (poguesId: string) => ['csvSchema', { poguesId }] as const,
+};
 
 /**
  * Used to retrieve questionnaireData used by a Public Enemy.
  *
  * @see {@link getPublicEnemyBaseData}
  */
-export const basePersonalizationQueryOptions = (questionnaireId: string) => ({
-  queryKey: ['personalization', 'base', questionnaireId],
-  queryFn: () => getPublicEnemyBaseData(questionnaireId),
+export const basePersonalizationQueryOptions = (poguesId: string) => ({
+  queryKey: personalizationKeys.base(poguesId),
+  queryFn: () => getPublicEnemyBaseData(poguesId),
 });
+
 export async function getPublicEnemyBaseData(
-  questionnaireId: string,
-): Promise<[PersonalizationQuestionnaire, ParseResult]> {
+  poguesId: string,
+): Promise<[InterrogationModeDataResponse, ParseResult<unknown> | string]> {
   try {
-    const existingData = await getExistingPublicEnemyData(questionnaireId);
-    const fileData = await getExistingCsvSchema(existingData.id);
-    return [existingData, fileData];
+    const [interrogations, fileData] = await Promise.all([
+      getAllInterrogationData(poguesId),
+      getExistingFileSchema(poguesId),
+    ]);
+    return [interrogations, fileData];
   } catch (error) {
     console.error('Error fetching Public Enemy base data:', error);
     throw error;
@@ -34,23 +48,27 @@ export async function getPublicEnemyBaseData(
 }
 
 /**
- * Used to retrieve questionnaireData used by a Public Enemy.
+ * Used to retrieve data used to a create survey Units.
  *
- * @see {@link getExistingPublicEnemyData}
+ * @see {@link getPublicEnemyDataFromPogues}
  */
-export const personalizationQueryOptions = (questionnaireId: string) =>
+export const personalizationFromPoguesQueryOptions = (poguesId: string) =>
   queryOptions({
-    queryKey: ['personalization', { questionnaireId }],
-    queryFn: () => getExistingPublicEnemyData(questionnaireId),
-    retryOnMount: true,
+    queryKey: personalizationKeys.fromPogues(poguesId),
+    queryFn: () => getPublicEnemyDataFromPogues(poguesId),
+    staleTime: 0,
+    gcTime: 0,
   });
 
-/** Fetch questionnaire data from Public Enemy Back Office. */
-export async function getExistingPublicEnemyData(
-  questionnaireId: string,
+/**
+ * Fallback fetch questionnaire data if existing data is not found.
+ * Uses poguesId to create the questionnaire data.
+ */
+export async function getPublicEnemyDataFromPogues(
+  poguesId: string,
 ): Promise<PersonalizationQuestionnaire> {
   return instancePersonalization
-    .get(`/questionnaires/${questionnaireId}/db`, {
+    .get(`/questionnaires/${poguesId}`, {
       headers: { Accept: 'application/json' },
     })
     .then(({ data }: { data: PersonalizationQuestionnaire }) => {
@@ -59,85 +77,34 @@ export async function getExistingPublicEnemyData(
 }
 
 /**
- * Used to retrieve data used to a create survey Units.
- *
- * @see {@link getPublicEnemyData}
- */
-export const personalizationNewQueryOptions = (questionnaireId: string) =>
-  queryOptions({
-    queryKey: ['personalizationNewQuestionnaire', { questionnaireId }],
-    queryFn: () => getPublicEnemyData(questionnaireId),
-  });
-
-/** Fallback fetch questionnaire data if existing data is not found. */
-export async function getPublicEnemyData(
-  questionnaireId: string,
-): Promise<PersonalizationQuestionnaire> {
-  return instancePersonalization
-    .get(`/questionnaires/pogues/${questionnaireId}`, {
-      headers: { Accept: 'application/json' },
-    })
-    .then(({ data }: { data: PersonalizationQuestionnaire }) => {
-      return data;
-    });
-}
-
-/**
- * Used to retrieve data used to a create survey Units.
+ * Used to retrieve interrogations data.
  *
  * @see {@link getAllInterrogationData}
  */
-export const getInterrogationDataQueryOptions = (
-  publicEnemyId: string,
-  modes: Mode[],
-) =>
+export const getInterrogationDataQueryOptions = (poguesId: string) =>
   queryOptions({
-    queryKey: ['getPersonalizationInterrogationData', { publicEnemyId, modes }],
-    queryFn: () => getAllInterrogationData(publicEnemyId, modes),
+    queryKey: personalizationKeys.interrogationData(poguesId),
+    queryFn: () => getAllInterrogationData(poguesId),
     retryOnMount: true,
   });
 
-export async function getInterrogationData(
-  publicEnemyId: string,
-  mode: Mode,
-): Promise<InterrogationModeData[]> {
+export async function getAllInterrogationData(
+  poguesId: string,
+): Promise<InterrogationModeDataResponse> {
   return instancePersonalization
-    .get(`/questionnaires/${publicEnemyId}/modes/${mode.name}/interrogations`, {
+    .get(`/questionnaires/${poguesId}/interrogations`, {
       headers: { Accept: 'application/json' },
     })
-    .then(({ data }: { data: InterrogationModeData[] }) => {
+    .then(({ data }: { data: InterrogationModeDataResponse }) => {
       return data;
     });
 }
 
-export async function getAllInterrogationData(
-  publicEnemyId: string,
-  mode: Mode[] = [],
-): Promise<InterrogationModeData[]> {
-  const filteredModes = mode.filter((m) => m.isWebMode);
-
-  const promises = filteredModes.map((m) =>
-    instancePersonalization.get(
-      `/questionnaires/${publicEnemyId}/modes/${m.name}/interrogations`,
-      {
-        headers: { Accept: 'application/json' },
-      },
-    ),
-  );
-
-  const responses = await Promise.all(promises);
-  return responses.flatMap(
-    ({ data }: { data: InterrogationModeDataResponse }) => data.interrogations,
-  );
-}
-
 /* Fetch the empty csv file to be filled */
-export async function getInitialCsvSchema(
-  questionnaireId: string,
-): Promise<void> {
+export async function getInitialCsvSchema(poguesId: string): Promise<void> {
   try {
     const response = await instancePersonalization.get(
-      `/questionnaires/${questionnaireId}/csv`,
+      `/questionnaires/${poguesId}/csv`,
       {
         headers: { Accept: 'application/json' },
         responseType: 'blob',
@@ -146,7 +113,7 @@ export async function getInitialCsvSchema(
     const disposition = response.headers['content-disposition'];
     const fileName = disposition
       ? getFileName(disposition)
-      : `schema-${questionnaireId}.csv`;
+      : `schema-${poguesId}.csv`;
     openDocument(new Blob([response.data], { type: 'text/csv' }), fileName);
   } catch (error) {
     console.error('Failed to download CSV schema:', error);
@@ -156,50 +123,73 @@ export async function getInitialCsvSchema(
 /**
  * Used to retrieve data used to a create survey Units.
  *
- * @see {@link getExistingCsvSchema}
+ * @see {@link getExistingFileSchema}
  */
-export const personalizationFileQueryOptions = (publicEnemyId: string) =>
+export const personalizationFileQueryOptions = (poguesId: string) =>
   queryOptions({
-    queryKey: ['personalizationFile', { publicEnemyId }],
-    queryFn: () => getExistingCsvSchema(publicEnemyId),
+    queryKey: personalizationKeys.file(poguesId),
+    queryFn: () => getExistingFileSchema(poguesId),
     retryOnMount: true,
   });
 
-/* Fetch the existing csv file */
-export async function getExistingCsvSchema(
-  publicEnemyId: string,
-): Promise<ParseResult> {
+/**
+ * Fetch the existing data file (CSV or JSON)
+ * Returns ParseResult for CSV files, or the parsed JSON object for JSON files
+ */
+export async function getExistingFileSchema(
+  poguesId: string,
+): Promise<ParseResult<unknown> | string> {
   try {
     const response = await instancePersonalization.get(
-      `/questionnaires/${publicEnemyId}/data`,
+      `/questionnaires/${poguesId}/data`,
       {
-        headers: { Accept: 'text/csv' },
+        headers: { Accept: 'text/csv, application/json' },
         responseType: 'blob',
       },
     );
-    const csvData = new Blob([response.data], { type: 'text/csv' });
-    const csvText = await csvData.text();
-    const result = Papa.parse(csvText, {
-      skipEmptyLines: true,
-      header: true,
-    });
-    return result;
+    const contentType = response.headers['content-type'] || '';
+    const text: string = await response.data.text();
+
+    if (
+      contentType.includes('text/csv') ||
+      contentType.includes('application/csv')
+    ) {
+      const result = Papa.parse(text, {
+        skipEmptyLines: true,
+        header: true,
+        dynamicTyping: true,
+      });
+      return result;
+    } else if (contentType.includes('application/json')) {
+      return text;
+    } else {
+      const text = await response.data.text();
+      const trimmed = text.trim();
+      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        return trimmed;
+      } else {
+        const result = Papa.parse(text, {
+          skipEmptyLines: true,
+          header: true,
+        });
+        return result;
+      }
+    }
   } catch (error) {
-    console.error('Failed to download CSV schema:', error);
-    return { data: [], errors: [], meta: {} };
+    console.error('Failed to download data:', error);
+    return '';
   }
 }
 
-/** Check the survey units CSV file for errors & warning messages */
-export async function checkInterrogationsCSV(
-  questionnaireId: string,
-  interrogationCSVData: File,
-): Promise<string[]> {
+/** Check the survey units file for errors & warning messages */
+export async function checkInterrogationsData(
+  poguesId: string,
+  interrogationData: File,
+): Promise<UploadMessage> {
   const formData = new FormData();
-  formData.append('interrogationData', interrogationCSVData);
-
-  return instancePersonalization.post(
-    `/questionnaires/${questionnaireId}/checkdata`,
+  formData.append('interrogationData', interrogationData);
+  const response = await instancePersonalization.post(
+    `/questionnaires/${poguesId}/checkdata`,
     formData,
     {
       headers: {
@@ -207,6 +197,7 @@ export async function checkInterrogationsCSV(
       },
     },
   );
+  return response.data;
 }
 
 /** Upload questionnaire data with personalization to PE db */
@@ -223,31 +214,33 @@ export async function addQuestionnaireData(
   if (questionnaire.interrogationData) {
     formData.append('interrogationData', questionnaire.interrogationData);
   }
-  return instancePersonalization.post(`/questionnaires/add`, formData);
+  const response = await instancePersonalization.post(
+    `/questionnaires`,
+    formData,
+  );
+  return response.data;
 }
 
 /** Edit questionnaire data with personalization in PE db*/
 export async function editQuestionnaireData(
   questionnaire: PersonalizationQuestionnaire,
+  isOutdated: boolean = false,
 ): Promise<PersonalizationQuestionnaire> {
   const formData = new FormData();
-  formData.append('context', JSON.stringify(questionnaire.context));
-
-  if (questionnaire.interrogationData) {
+  const questionnaireRest = {
+    poguesId: questionnaire.poguesId,
+    context: questionnaire.context,
+  };
+  formData.append('questionnaire', JSON.stringify(questionnaireRest));
+  if (questionnaire.interrogationData && !isOutdated) {
     formData.append('interrogationData', questionnaire.interrogationData);
   }
-  return instancePersonalization.post(
-    `/questionnaires/${questionnaire.id}`,
+
+  const response = await instancePersonalization.put(
+    `/questionnaires`,
     formData,
   );
-}
-
-export async function deleteQuestionnaireData(
-  questionnaireId: string,
-): Promise<void> {
-  return instancePersonalization.delete(
-    `/questionnaires/${questionnaireId}/delete`,
-  );
+  return response.data;
 }
 
 export async function resetInterrogation(
@@ -257,4 +250,8 @@ export async function resetInterrogation(
     `/interrogations/${interrogationId}/reset`,
     undefined,
   );
+}
+
+export async function deleteQuestionnaireData(poguesId: string): Promise<void> {
+  return instancePersonalization.delete(`/questionnaires/${poguesId}`);
 }

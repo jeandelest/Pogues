@@ -18,9 +18,9 @@ interface HeaderProps {
  */
 export default function Header({ user }: Readonly<HeaderProps>) {
   const { t } = useTranslation();
-  
+
   const appVersion = import.meta.env.APP_VERSION;
-  
+
   return (
     <div className="grid grid-cols-[auto_1fr_auto] bg-negative text-negative fill-negative items-center">
       <div className="px-3 py-2">
