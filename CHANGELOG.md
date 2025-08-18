@@ -7,17 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- Modal overlap with next.
-
 ### Removed
 
 - Static tables can no longer be set as readonly.
 - Personalization link button, since it's now handled by next.
 - Home redirection button in questionnaire page, since it's now displayed by next.
 
-## [1.11.0] - 2025-07-17
+### Fixed
+
+- Modal overlap with next.
+
+## [1.11.0](https://github.com/InseeFr/Pogues/releases/tag/1.11.0) - 2025-07-17
 
 ### Changed
 
@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Save button since it is now handled by next.
 
-## [1.10.0] - 2025-07-09
+## [1.10.0](https://github.com/InseeFr/Pogues/releases/tag/1.10.0) - 2025-07-09
 
 ### Added
 
@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed redundant API calls.
 - Improved assets compression.
 
-## [1.8.15] - 2025-06-17
+## [1.8.15](https://github.com/InseeFr/Pogues/releases/tag/1.8.15) - 2025-06-17
 
 ### Added
 
@@ -60,37 +60,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Clarification can no longer be specified for UCQ > dropdown (they were not processed by Lunatic for methodology reasons).
 
-## [1.8.14] - 2025-05-28
+## [1.8.14](https://github.com/InseeFr/Pogues/releases/tag/1.8.14) - 2025-05-28
 
 ### Added
 
 - In dynamic tables, cells can be specified as "read only". They can be read (but not edited) by the respondent to provide information to answer the survey.
 
-## [1.8.13] - 2025-05-20
+## [1.8.13](https://github.com/InseeFr/Pogues/releases/tag/1.8.13) - 2025-05-20
 
 ### Fixed
 
 - Required inputs could not be of value '0'.
 
-## [1.8.12] - 2025-05-14
+## [1.8.12](https://github.com/InseeFr/Pogues/releases/tag/1.8.12) - 2025-05-14
 
 ### Changed
 
 - The "blocking" error label no longer is "working soon" (now it's working!).
 
-## [1.8.11] - 2025-05-07
+## [1.8.11](https://github.com/InseeFr/Pogues/releases/tag/1.8.11) - 2025-05-07
 
 ### Changed
 
 - The explanation about how saves work and when they are deleted should be clearer.
 
-## [1.8.10] - 2025-04-24
+## [1.8.10](https://github.com/InseeFr/Pogues/releases/tag/1.8.10) - 2025-04-24
 
 ### Removed
 
 - Suggesters cannot be specified as mandatory.
 
-## [1.8.9] - 2025-04-15
+## [1.8.9](https://github.com/InseeFr/Pogues/releases/tag/1.8.9) - 2025-04-15
 
 ### Added
 
@@ -100,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Info criticity.
 
-## [1.8.8] - 2025-04-01
+## [1.8.8](https://github.com/InseeFr/Pogues/releases/tag/1.8.8) - 2025-04-01
 
 ### Changed
 
@@ -123,25 +123,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated OIDC SPA version.
 
-## [1.8.6] - 2025-03-04
+## [1.8.6](https://github.com/InseeFr/Pogues/releases/tag/1.8.6) - 2025-03-04
 
 ### Added
 
 - Pogues metadata download link.
 
-## [1.8.5] - 2025-02-19
+## [1.8.5](https://github.com/InseeFr/Pogues/releases/tag/1.8.5) - 2025-02-19
 
 ### Fixed
 
 - Removed an arbitrary and incorrect maximum value for year durations.
 
-## [1.8.4] - 2025-02-18
+## [1.8.4](https://github.com/InseeFr/Pogues/releases/tag/1.8.4) - 2025-02-18
 
 ### Added
 
 - An arbitrary response can be specified for suggesters.
 
-## [1.8.3] - 2025-02-14
+## [1.8.3](https://github.com/InseeFr/Pogues/releases/tag/1.8.3) - 2025-02-14
 
 ### Changed
 
@@ -153,14 +153,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Display an error when the questionnaire cannot be found.
 
-## [1.8.2] - 2025-01-24
+## [1.8.2](https://github.com/InseeFr/Pogues/releases/tag/1.8.2) - 2025-01-24
 
 ### Changed
 
 - Filters can be specified in VTL.
 - Improved modals responsiveness.
 
-## [1.8.1] - 2025-01-21
+## [1.8.1](https://github.com/InseeFr/Pogues/releases/tag/1.8.1) - 2025-01-21
 
 ### Changed
 
@@ -174,13 +174,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Checkbox values are correctly updated.
 
-## [1.8.0] - 2025-01-08
+## [1.8.0](https://github.com/InseeFr/Pogues/releases/tag/1.8.0) - 2025-01-08
 
 ### Added
 
 - The versions modal allows to load data from the previous saves. It put the questionnaire in dirty state with the previous data and allow to rollback to this previous version.
 
-## [1.7.7] - 2025-01-06
+## [1.7.7](https://github.com/InseeFr/Pogues/releases/tag/1.7.7) - 2025-01-06
 
 ### Added
 
@@ -191,7 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated nomenclatures.
 - External and Calculated variable scope label should be clearer.
 
-## [1.3.0] - 2022-05-11
+## [1.3.0](https://github.com/InseeFr/Pogues/releases/tag/1.3.0) - 2022-05-11
 
 - **[Features]** : Integration of the VTL Editor
 - **[Features]** : All fields are now mandatory for the creation of a questionnaire
@@ -202,7 +202,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[Techs]** Fixing units tests after integration of VTL Editor
 - **[Techs]** Upgrading dependancies : moment, async et cross-fetch
 
-## [1.2.0] - 2022-03-31
+## [1.2.0](https://github.com/InseeFr/Pogues/releases/tag/1.2.0) - 2022-03-31
 
 - **[Features]** : A spinner is displayed on the screen when waiting for a visualization and an information box appears if an error occured
 - **[Features]** : Stamps are sorted alphabetically on Home page
@@ -210,7 +210,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[Features]** : In the declaration tab, the label is modified when card code is selected
 - **[Techs]** Upgrading dependancies.
 
-## [1.1.0] - 2022-02-02
+## [1.1.0](https://github.com/InseeFr/Pogues/releases/tag/1.1.0) - 2022-02-02
 
 - **[Features]** : Update measurement unit list
 - **[Fixes][input]** : Fixing a bug making the validation of a question impossible when the user wants to collect dates in a table.

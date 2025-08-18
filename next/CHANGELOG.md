@@ -27,13 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Breadcrumb now correctly redirects to clicked crumb.
 
-## [2.0.1] - 2025-07-10
+## [2.0.1](https://github.com/InseeFr/Pogues/releases/tag/2.0.1) - 2025-07-10
 
 ### Fixed
 
 - Fixed an issue where composition could not be accessed anymore.
 
-## [2.0.0] - 2025-07-09
+## [2.0.0](https://github.com/InseeFr/Pogues/releases/tag/2.0.0) - 2025-07-09
 
 ### Added
 
@@ -54,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved translations in breadcrumb and titles.
 - Improved accessibility in navigation bar and breadcrumb.
 
-## [1.9.5] - 2025-05-28
+## [1.9.5](https://github.com/InseeFr/Pogues/releases/tag/1.9.5) - 2025-05-28
 
 ### Added
 
@@ -64,7 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved VTL editor responsiveness.
 
-## [1.9.3] - 2025-05-14
+## [1.9.3](https://github.com/InseeFr/Pogues/releases/tag/1.9.3) - 2025-05-14
 
 ### Added
 
@@ -78,7 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Correctly display code list values after an update.
 
-## [1.9.1] - 2025-04-10
+## [1.9.1](https://github.com/InseeFr/Pogues/releases/tag/1.9.1) - 2025-04-10
 
 ### Added
 
@@ -93,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Correctly display codes lists after a code list has been deleted or duplicated.
 - Improved accessibility in codes list page.
 
-## [1.9.0] - 2025-04-01
+## [1.9.0](https://github.com/InseeFr/Pogues/releases/tag/1.9.0) - 2025-04-01
 
 ### Added
 
