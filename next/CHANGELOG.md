@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Loop details could not be accessed when the questionnaire had a module.
 - Modal overlap.
 
 ## [2.1.0](https://github.com/InseeFr/Pogues/releases/tag/2.1.0) - 2025-08-19

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.1](https://github.com/InseeFr/Pogues/releases/tag/1.11.1) - 2025-08-19
+
 ### Removed
 
 - Static tables can no longer be set as readonly.
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Loop details could not be accessed when the questionnaire had a module.
 - Modal overlap with next.
 
 ## [1.11.0](https://github.com/InseeFr/Pogues/releases/tag/1.11.0) - 2025-07-17
