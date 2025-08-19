@@ -16,9 +16,6 @@ import Button, { ButtonSize } from '../ui/Button';
 import NavigationBar, { type NavigationItem } from './NavigationBar';
 import NavigationBarItem from './NavigationBarItem';
 
-const enablePersonalizationPage = import.meta.env
-  .VITE_ENABLE_PERSONALIZATION_PAGE;
-
 /** Display the available navigation items in a questionnaire. */
 export default function QuestionnaireNavigation() {
   const { t } = useTranslation();
@@ -80,8 +77,6 @@ export default function QuestionnaireNavigation() {
       Icon: PersonalizeIcon,
       path: '/questionnaire/$questionnaireId/personalization',
       innerPaths: ['/questionnaire/$questionnaireId/personalization/new'],
-      isDisabled: !enablePersonalizationPage,
-      isHidden: !enablePersonalizationPage,
     },
   ];
 

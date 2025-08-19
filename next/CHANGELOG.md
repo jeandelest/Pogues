@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - A variables page that display every variables defined by the questionnaire.
-- Logout button in the header.
+- A personalization page that allow to test the latest version of the questionnaire with external variables.
+- Logout button in the header (that can be disabled thanks to `VITE_ENABLE_LOGOUT`).
 - A variable form page that can only be accessed with `VITE_ENABLE_VARIABLES_PAGE_FORM`. It is still a work in progress.
-- A personalization page that can only be accessed with `VITE_ENABLE_PERSONALIZATION_PAGE`. It is still a work in progress.
 
 ### Changed
 
