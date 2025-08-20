@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import Dictionary from '../utils/dictionary/dictionary';
+import Dictionary from '../dictionary/dictionary';
 import {
   cartCodeModeCollecte,
   emptyMeasures,
@@ -16,7 +16,7 @@ import {
   requiredSelect,
   validateDuplicates,
   validateExistingTarget,
-} from './validation-rules';
+} from './validate-rules';
 
 describe('required', () => {
   it('should return required field message if value is null or undefined', () => {
