@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Logout functionality is now always enabled, env var `VITE_ENABLE_LOGOUT` has been removed.
+
+### Fixed
+
+- Correctly download JSON data in personalization.
+- Improved messages in personalization.
+
+## [2.1.2](https://github.com/InseeFr/Pogues/releases/tag/2.1.2) - 2025-08-21
+
+### Fixed
+
+- Button to download CSV schema is correctly enabled.
+
 ## [2.1.1](https://github.com/InseeFr/Pogues/releases/tag/2.1.1) - 2025-08-19
 
 ### Fixed

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Visualization of referenced questionnaires no longer crash.
+
 ## [1.11.1](https://github.com/InseeFr/Pogues/releases/tag/1.11.1) - 2025-08-19
 
 ### Removed
