@@ -89,7 +89,8 @@
     "questionnaire": "Questionnaire {{id}}",
     "questionnaires": "Questionnaires",
     "variables": "Variables",
-    "version": "Version {{id}}"
+    "version": "Version {{id}}",
+    "articulation": "Articulation"
   },
   "error": {
     "boundary": "Un problème est survenu, si le problème persiste, veuillez contacter l'assistance."
@@ -238,5 +239,40 @@
     "variable": "{{count}} variable",
     "variable_other": "{{count}} variables",
     "variable_zero": "{{count}} variable"
+  },
+  "articulation": {
+    "common": {
+      "firstName": "Prénom",
+      "gender": "Sexe",
+      "age": "Âge"
+    },
+    "overview": {
+      "variableTable": "Variables du tableau d'articulation",
+      "title": "Articulation",
+      "noArticulation": "Aucune articulation n'a été définie",
+      "error": {
+        "formulaNotVtl": "L'articulation n'est disponible que pour les questionnaires en VTL",
+        "roundaboutNotFound": "L'articulation n'est disponible que pour les formulaires avec un rond-point"
+      }
+    },
+    "create": {
+      "create": "Créer une articulation",
+      "success": "L'articulation a été créée",
+      "title": "Nouvelle articulation"
+    },
+    "delete": {
+      "dialogTitle": "Supprimer l'articulation",
+      "dialogConfirm": "Êtes-vous sûr de vouloir supprimer l'articulation ?",
+      "success": "L'articulation a été supprimée"
+    },
+    "edit": {
+      "success": "L'articulation a été modifiée",
+      "title": "Editer l'articulation"
+    },
+    "form": {
+      "mustProvideFirstName": "Vous devez renseigner une formule pour le prénom",
+      "mustProvideGender": "Vous devez renseigner une formule pour le sexe",
+      "mustProvideAge": "Vous devez renseigner une formule pour l'âge"
+    }
   }
 }
