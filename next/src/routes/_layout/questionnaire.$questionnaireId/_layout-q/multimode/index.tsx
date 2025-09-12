@@ -2,39 +2,39 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import { articulationQueryOptions } from '@/api/articulation';
 import { ErrorCodes, isPoguesAPIError } from '@/api/error';
-import { ArticulationOverview } from '@/components/articulation/overview/ArticulationOverview';
+import { multimodeQueryOptions } from '@/api/multimode';
 import ContentHeader from '@/components/layout/ContentHeader';
 import ContentMain from '@/components/layout/ContentMain';
+import MultimodeOverview from '@/components/multimode/MultimodeOverview';
+import { MultimodeIsMovedRules } from '@/models/multimode';
 
 /**
- * Main articulation page where we display the articulation items of our
- * questionnaire and allow to set them.
+ * Display the current questionnaire multimode and allow to set them.
  *
- * This functionality is only available to questionnaire in CATI or CAPI,
- * with a roundabout.
+ * This functionality is only available to questionnaire in CAWI
+ * and (CATI or CAPI).
  */
 export const Route = createFileRoute(
-  '/_layout/questionnaire/$questionnaireId/_layout-q/articulation/',
+  '/_layout/questionnaire/$questionnaireId/_layout-q/multimode/',
 )({
   component: RouteComponent,
   errorComponent: ({ error }) => <ErrorComponent error={error} />,
   loader: async ({ context: { queryClient }, params: { questionnaireId } }) =>
-    queryClient.ensureQueryData(articulationQueryOptions(questionnaireId)),
+    queryClient.ensureQueryData(multimodeQueryOptions(questionnaireId)),
 });
 
 function RouteComponent() {
   const questionnaireId = Route.useParams().questionnaireId;
-  const { data: articulation } = useSuspenseQuery(
-    articulationQueryOptions(questionnaireId),
+  const { data }: { data: MultimodeIsMovedRules } = useSuspenseQuery(
+    multimodeQueryOptions(questionnaireId),
   );
 
   return (
     <ComponentWrapper>
-      <ArticulationOverview
+      <MultimodeOverview
         questionnaireId={questionnaireId}
-        articulationItems={articulation.items}
+        isMovedRules={data}
       />
     </ComponentWrapper>
   );
@@ -44,15 +44,12 @@ function ErrorComponent({ error }: Readonly<{ error: Error }>) {
   const { t } = useTranslation();
   let errorMessage = error.message;
 
-  if (isPoguesAPIError(error)) {
-    switch (error.response?.data.errorCode) {
-      case ErrorCodes.QuestionnaireFormulaLanguageNotVTL:
-        errorMessage = t('articulation.overview.error.formulaNotVtl');
-        break;
-      case ErrorCodes.QuestionnaireRoundaboutNotFound:
-        errorMessage = t('articulation.overview.error.roundaboutNotFound');
-        break;
-    }
+  if (
+    isPoguesAPIError(error) &&
+    error.response?.data.errorCode ===
+      ErrorCodes.QuestionnaireFormulaLanguageNotVTL
+  ) {
+    errorMessage = t('multimode.error.formulaNotVtl');
   }
 
   return (
@@ -69,7 +66,7 @@ function ComponentWrapper({
 
   return (
     <>
-      <ContentHeader title={t('articulation.overview.title')} />
+      <ContentHeader title={t('multimode.title')} />
       <ContentMain>{children}</ContentMain>
     </>
   );

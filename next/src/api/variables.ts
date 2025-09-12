@@ -2,12 +2,15 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { Variable } from '@/models/variables';
 
+import { ErrorCodes } from './error';
 import { instance } from './instance';
 import { VariableDTO } from './models/variableDTO';
 import { computeVariableDTO, computeVariables } from './utils/variables';
 
 export const variablesKeys = {
   all: (questionnaireId: string) => ['variables', questionnaireId] as const,
+  roundabout: (questionnaireId: string) =>
+    ['variables', questionnaireId, 'roundabout'] as const,
   version: (questionnaireId: string, versionId: string) =>
     ['variablesVersion', questionnaireId, versionId] as const,
 };
@@ -19,6 +22,15 @@ export const variablesQueryOptions = (questionnaireId: string) =>
   queryOptions({
     queryKey: variablesKeys.all(questionnaireId),
     queryFn: () => getVariables(questionnaireId),
+  });
+
+/**
+ * Used to retrieve roundabout variables from a questionnaire id.
+ */
+export const roundaboutVariablesQueryOptions = (questionnaireId: string) =>
+  queryOptions({
+    queryKey: variablesKeys.all(questionnaireId),
+    queryFn: () => getRoundaboutVariables(questionnaireId),
   });
 
 /**
@@ -63,6 +75,35 @@ export async function getVariablesFromVersion(
     )
     .then(({ data }: { data: VariableDTO[] }) => {
       return computeVariables(data);
+    });
+}
+
+/**
+ * Retrieve all variables associated to the questionnaire roundabout.
+ *
+ * If there is no roundabouts, return an empty array.
+ */
+export async function getRoundaboutVariables(
+  questionnaireId: string,
+): Promise<Variable[]> {
+  return instance
+    .get(
+      `/persistence/questionnaire/${questionnaireId}/articulation/variables`,
+      {
+        headers: { Accept: 'application/json' },
+      },
+    )
+    .then(({ data }: { data: VariableDTO[] }) => {
+      return computeVariables(data);
+    })
+    .catch((error) => {
+      if (
+        error.response?.data?.errorCode ===
+        ErrorCodes.QuestionnaireRoundaboutNotFound
+      ) {
+        return [];
+      }
+      throw error;
     });
 }
 
