@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A multimode page, which allow to set VTL rules to trigger a change in collect method from web to interviewer.
 - Personalization page allow to download PDF recap.
 
+### Changed
+
+- Removed user information from header when not logged in.
+- Removed questionnaires link from header.
+
 ## [2.1.3](https://github.com/InseeFr/Pogues/releases/tag/2.1.3) - 2025-08-25
 
 ### Changed
