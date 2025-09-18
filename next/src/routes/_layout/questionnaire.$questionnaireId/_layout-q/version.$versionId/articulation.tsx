@@ -1,22 +1,24 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useTranslation } from 'react-i18next';
 
 import { articulationFromVersionQueryOptions } from '@/api/articulation';
-import { ErrorCodes, isPoguesAPIError } from '@/api/error';
 import { ArticulationOverview } from '@/components/articulation/overview/ArticulationOverview';
-import ContentHeader from '@/components/layout/ContentHeader';
-import ContentMain from '@/components/layout/ContentMain';
+import ArticulationOverviewErrorComponent from '@/components/articulation/overview/ArticulationOverviewErrorComponent';
+import ArticulationOverviewVersionLayout from '@/components/articulation/overview/ArticulationOverviewVersionLayout';
 
 /**
- * Main articulation page where we display the articulation items related to our
- * version of a questionnaire for information.
+ * Articulation page that provide a recap of the the articulation items used by
+ * our questionnaire backup.
  */
 export const Route = createFileRoute(
   '/_layout/questionnaire/$questionnaireId/_layout-q/version/$versionId/articulation',
 )({
   component: RouteComponent,
-  errorComponent: ({ error }) => <ErrorComponent error={error} />,
+  errorComponent: ({ error }) => (
+    <CustomLayout>
+      <ArticulationOverviewErrorComponent error={error} />
+    </CustomLayout>
+  ),
   loader: async ({
     context: { queryClient, t },
     params: { questionnaireId, versionId },
@@ -35,53 +37,25 @@ function RouteComponent() {
   );
 
   return (
-    <ComponentWrapper>
+    <CustomLayout>
       <ArticulationOverview
         questionnaireId={questionnaireId}
         articulationItems={articulation.items}
         readonly
       />
-    </ComponentWrapper>
+    </CustomLayout>
   );
 }
 
-function ErrorComponent({ error }: Readonly<{ error: Error }>) {
-  const { t } = useTranslation();
-  let errorMessage = error.message;
-
-  if (isPoguesAPIError(error)) {
-    switch (error.response?.data.errorCode) {
-      case ErrorCodes.QuestionnaireFormulaLanguageNotVTL:
-        errorMessage = t('articulation.overview.error.formulaNotVtl');
-        break;
-      case ErrorCodes.QuestionnaireRoundaboutNotFound:
-        errorMessage = t('articulation.overview.error.roundaboutNotFound');
-        break;
-    }
-  }
-
-  return (
-    <ComponentWrapper>
-      <div className="text-error">{errorMessage}</div>
-    </ComponentWrapper>
-  );
-}
-
-function ComponentWrapper({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
-  const { t } = useTranslation();
+function CustomLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { questionnaireId, versionId } = Route.useParams();
 
   return (
-    <>
-      <ContentHeader
-        isReadonly
-        questionnaireId={questionnaireId}
-        title={t('articulation.overview.title')}
-        versionId={versionId}
-      />
-      <ContentMain>{children}</ContentMain>
-    </>
+    <ArticulationOverviewVersionLayout
+      questionnaireId={questionnaireId}
+      versionId={versionId}
+    >
+      {children}
+    </ArticulationOverviewVersionLayout>
   );
 }
