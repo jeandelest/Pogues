@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useBlocker, useNavigate } from '@tanstack/react-router';
 import i18next from 'i18next';
 import {
   type Control,
@@ -13,9 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import DirtyStateDialog from '@/components/layout/DirtyStateDialog';
 import Button, { ButtonStyle } from '@/components/ui/Button';
 import ButtonIcon, { ButtonIconStyle } from '@/components/ui/ButtonIcon';
-import ButtonLink from '@/components/ui/ButtonLink';
 import Input from '@/components/ui/form/Input';
 import Label from '@/components/ui/form/Label';
 import VTLEditor from '@/components/ui/form/VTLEditor';
@@ -87,10 +88,12 @@ export default function CodesListForm({
   onSubmit,
 }: Readonly<CodesListFormProps>) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
-    formState: { isDirty, isValid },
+    formState: { isDirty, isValid, isSubmitted },
     trigger,
   } = useForm<FormValues>({
     mode: 'onChange',
@@ -102,46 +105,65 @@ export default function CodesListForm({
     resolver: zodResolver(schema),
   });
 
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => isDirty && !isSubmitted,
+    withResolver: true,
+  });
+
+  const handleCancel = () => {
+    navigate({
+      to: '/questionnaire/$questionnaireId/codes-lists',
+      params: { questionnaireId },
+      ignoreBlocker: true,
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Controller
-        name="label"
-        control={control}
-        render={({ field, fieldState: { error } }) => (
-          <Input
-            label={t('codesList.common.label')}
-            error={error?.message}
-            {...field}
-            required
-          />
-        )}
-      />
-      <div className="grid grid-cols-[1fr_2fr_auto_auto] auto-cols-min items-start gap-x-2 gap-y-2">
-        <Label className="col-start-1">{t('codesList.common.codeValue')}</Label>
-        <Label className="col-start-2">{t('codesList.common.codeLabel')}</Label>
-        <CodesFields
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <Controller
+          name="label"
           control={control}
-          formulasLanguage={formulasLanguage}
-          variables={variables}
-          trigger={trigger}
+          render={({ field, fieldState: { error } }) => (
+            <Input
+              label={t('codesList.common.label')}
+              error={error?.message}
+              {...field}
+              required
+            />
+          )}
         />
-      </div>
-      <div className="flex gap-x-2 mt-6 justify-end">
-        <ButtonLink
-          to="/questionnaire/$questionnaireId/codes-lists"
-          params={{ questionnaireId }}
-        >
-          {t('common.cancel')}
-        </ButtonLink>
-        <Button
-          type="submit"
-          buttonStyle={ButtonStyle.Primary}
-          disabled={!isDirty || !isValid}
-        >
-          {t('common.validate')}
-        </Button>
-      </div>
-    </form>
+        <div className="grid grid-cols-[1fr_2fr_auto_auto] auto-cols-min items-start gap-x-2 gap-y-2">
+          <Label className="col-start-1">
+            {t('codesList.common.codeValue')}
+          </Label>
+          <Label className="col-start-2">
+            {t('codesList.common.codeLabel')}
+          </Label>
+          <CodesFields
+            control={control}
+            formulasLanguage={formulasLanguage}
+            variables={variables}
+            trigger={trigger}
+          />
+        </div>
+        <div className="flex gap-x-2 mt-6 justify-end">
+          <Button type="button" onClick={handleCancel}>
+            {t('common.cancel')}
+          </Button>
+          <Button
+            type="submit"
+            buttonStyle={ButtonStyle.Primary}
+            disabled={!isDirty || !isValid}
+          >
+            {t('common.validate')}
+          </Button>
+        </div>
+      </form>
+      {status === 'blocked' ? (
+        <DirtyStateDialog onValidate={proceed} onCancel={reset} />
+      ) : null}
+    </>
   );
 }
 

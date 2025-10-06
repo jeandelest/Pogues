@@ -4,7 +4,18 @@ import { renderWithRouter } from '@/testing/render';
 
 import CodesListForm from './CodesListForm';
 
+const mockNavigate = vi.fn();
+
 vi.mock('@/components/ui/form/VTLEditor');
+
+// Mock useNavigate from @tanstack/react-router
+vi.mock('@tanstack/react-router', async () => {
+  const actual = await vi.importActual('@tanstack/react-router');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 describe('CodesListForm', () => {
   it('should enable the button only when all fields are filled', async () => {
@@ -146,6 +157,35 @@ describe('CodesListForm', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('codes.1.value')).toBeNull();
+    });
+  });
+
+  it("allows to go back to codesLists overview page by clicking 'cancel' button", async () => {
+    await renderWithRouter(
+      <CodesListForm
+        questionnaireId="q-id"
+        onSubmit={vi.fn()}
+        variables={[]}
+      />,
+    );
+
+    // edit form for being in dirty state
+    fireEvent.input(screen.getByRole('textbox', { name: /Code list name/i }), {
+      target: {
+        value: 'my label',
+      },
+    });
+
+    const cancelButton = screen.getByRole('button', { name: /cancel/i });
+
+    expect(cancelButton).toBeEnabled();
+    fireEvent.click(cancelButton);
+
+    // navigate to codesList page, ignoring the dirty state
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/questionnaire/$questionnaireId/codes-lists',
+      params: { questionnaireId: 'q-id' },
+      ignoreBlocker: true,
     });
   });
 });

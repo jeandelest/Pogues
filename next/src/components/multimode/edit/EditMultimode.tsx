@@ -48,7 +48,7 @@ export default function EditMultimode({
       { isMovedRules, questionnaireId },
       {
         onSuccess: () =>
-          void navigate({
+          navigate({
             to: '/questionnaire/$questionnaireId/multimode',
             params: { questionnaireId },
           }),
