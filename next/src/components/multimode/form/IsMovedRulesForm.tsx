@@ -69,9 +69,6 @@ export default function MultimodeIsMovedRulesForm({
               label={t('multimode.form.questionnaireFormula')}
               className="h-20"
               error={error?.message}
-              // Warning : it should be roundaboutVariables but currently VTLEditor can't be rendered twice
-              // with different suggestionsVariables else every field has the suggestionsVariables of the last field.
-              // Until we find a solution, we prefer to use the questionnaire variables.
               suggestionsVariables={variables}
               {...field}
             />
@@ -86,7 +83,10 @@ export default function MultimodeIsMovedRulesForm({
                 label={t('multimode.form.leafFormula')}
                 className="h-20"
                 error={error?.message}
-                suggestionsVariables={roundaboutVariables}
+                // Warning : it should be roundaboutVariables but currently VTLEditor can't be rendered twice
+                // with different suggestionsVariables else every field has the suggestionsVariables of the last field.
+                // Until we find a solution, we prefer to use the questionnaire variables.
+                suggestionsVariables={variables}
                 {...field}
               />
             )}
